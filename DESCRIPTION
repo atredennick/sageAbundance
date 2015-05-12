@@ -1,0 +1,11 @@
+Package: sageAbundance
+Type: Package
+Title: Fits population model for sagebrush based on remote sensing data.
+Version: 0.1
+Date: 2015-05-12
+Author: Andrew Tredennick
+Maintainer: Andrew Tredennick <atredenn@gmail.com>
+Description: Uses `rstan` to fit a population model based on remote sensing
+              pixels and then uses that model to simulate the population under
+              different climate change scenarios.
+License: MIT
