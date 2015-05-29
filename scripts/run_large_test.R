@@ -42,8 +42,8 @@ load("../results/Knot_cell_distances.Rdata")
 ####
 ## Quick glm for initial values
 ####
-mod <- glm(Cover ~ CoverLag, family="poisson", data=growD)
-summary(mod)
+# mod <- glm(Cover ~ CoverLag, family="poisson", data=growD)
+# summary(mod)
 
 
 ####

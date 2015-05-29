@@ -11,7 +11,8 @@
 #' @param warmup Number of MCMC iterations to throw out before sampling (< iters)
 #' @param nchains Number of MCMC chains to sample
 #' @export
-#' @return ggs object with MCMC values from rstan
+#' @return A list with ggs object with MCMC values from rstan and 
+#'          Rhat values for each parameter.
 model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1, inits){
   ##  Stan C++ model
   model_string <- "
@@ -30,19 +31,19 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
     real int_mu;
     real beta_mu;
     vector[nknots] alpha;
-    real<lower=0> sigma;
   }
   transformed parameters{
-    //vector[ncells] eta;
+    vector[ncells] eta;
     vector[nobs] lambda;
-    //eta <- K*alpha;
+    eta <- K*alpha;
     for(n in 1:nobs)
-      lambda[n] <- exp(int_mu + beta_mu*lag[n]); //+ eta[cellid[n]]);
+      lambda[n] <- exp(int_mu + beta_mu*lag[n] + eta[cellid[n]]);
   }
   model{
     // Priors
-    alpha ~ normal(0,sigma);
-    sigma ~ normal(0,1000);
+    for(k in 1:nknots){
+      alpha[k] ~ normal(0,1000);
+    }
     int_mu ~ normal(0,1000);
     beta_mu ~ normal(0,1000);
     // Likelihood
@@ -51,9 +52,12 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
   "
   datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
                    cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K))
-  pars <- c("int_mu", "beta_mu",  "alpha", "sigma")
+  pars <- c("int_mu", "beta_mu",  "alpha")
   fit <- stan(model_code=model_string, data=datalist, iter=iters,
               warmup=warmup, pars=pars, chains=nchains, init=inits)
   long <- ggs(fit)
+#   stansumm <- as.data.frame(summary(fit)["summary"])
+#   rhats <- stansumm["summary.Rhat"]
+#   return_list <- list(mcmc=long, rhat=rhats)
   return(long)
 }

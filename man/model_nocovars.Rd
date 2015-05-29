@@ -26,7 +26,8 @@ model_nocovars(y, lag, K, cellid, iters = 2000, warmup = 1000,
 include initial values for parameters to be estimated.}
 }
 \value{
-ggs object with MCMC values from rstan
+A list with ggs object with MCMC values from rstan and
+         Rhat values for each parameter.
 }
 \description{
 Estimate model parameters in GLMM using rstan with no environmental covariates

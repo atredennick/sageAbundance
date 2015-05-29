@@ -1,5 +1,9 @@
 ##  Script to run GLMM fit on subset of sagebrush data
 
+# Clear workspace 
+rm(list=ls(all=TRUE))
+
+# Load libraries
 library(sageAbundance)
 library(rstan)
 library(ggmcmc)
@@ -35,8 +39,12 @@ summary(mod)
 ####
 ##  Send data to stan function for fitting
 ####
+inits <- list()
+inits[[1]] <- list(int_mu = 1, beta_mu = 0.05, 
+                   alpha = rep(0,ncol(K.data$K)), sigma=0.5)
 mcmc <- model_nocovars(y = growD$Cover, lag = growD$CoverLag, K = K.data$K, 
-                       cellid = growD$ID, iters = 1000, warmup = 500, nchains = 1)
+                       cellid = growD$ID, iters = 1000, warmup = 250, 
+                       nchains = 1, inits=inits)
 
 
 
