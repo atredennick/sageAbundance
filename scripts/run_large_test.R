@@ -24,10 +24,10 @@ growD$CoverLag <- round(growD$CoverLag,0) # round for count-like data
 # Remove NA values
 rms <- which(is.na(growD$Cover) == TRUE)
 growD <- growD[-rms, ]
-if(length(which(is.na(growD$CoverLag)))>0){
-  rms <- which(is.na(growD$CoverLag) == TRUE)
-  growD <- growD[-rms, ]
-}
+# if(length(which(is.na(growD$CoverLag)))>0){
+#   rms <- which(is.na(growD$CoverLag) == TRUE)
+#   growD <- growD[-rms, ]
+# }
 
 # Set up new, continuous cell IDs
 num_ids <- length(unique(growD$ID))
@@ -37,7 +37,8 @@ growD$newID <- new_ids
 
 # Load knot data
 load("../results/Knot_cell_distances.Rdata")
-
+K <- K.data$K
+K <- K[-rms,]
 
 ####
 ## Quick glm for initial values
@@ -51,8 +52,8 @@ load("../results/Knot_cell_distances.Rdata")
 ####
 inits <- list()
 inits[[1]] <- list(int_mu = 2, beta_mu = 0.05, 
-                   alpha = rep(0,ncol(K.data$K)), sigma=1)
-mcmc <- model_nocovars(y = growD$Cover, lag = growD$CoverLag, K = K.data$K, 
+                   alpha = rep(0,ncol(K)), sigma=1)
+mcmc <- model_nocovars(y = growD$Cover, lag = growD$CoverLag, K = K, 
                        cellid = growD$newID, iters = 500, warmup = 100, 
                        nchains = 1, inits=inits)
 

@@ -45,6 +45,6 @@ inits[[1]] <- list(int_mu = 1, beta_mu = 0.05,
 mcmc <- model_nocovars(y = growD$Cover, lag = growD$CoverLag, K = K.data$K, 
                        cellid = growD$ID, iters = 1000, warmup = 250, 
                        nchains = 1, inits=inits)
-
+ggs_traceplot(mcmc, "int")
 
 
