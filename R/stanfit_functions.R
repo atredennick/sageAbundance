@@ -6,11 +6,13 @@
 #' @param K Spatial field matrix
 #' @param cellid Vector of unique ID's for each spatial cell, replicate through time
 #' @param iters Number of MCMC iterations to run
+#' @param inits A list of lists whose length is equal to number of chains. Elements
+#'              include initial values for parameters to be estimated.
 #' @param warmup Number of MCMC iterations to throw out before sampling (< iters)
 #' @param nchains Number of MCMC chains to sample
 #' @export
 #' @return ggs object with MCMC values from rstan
-model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1){
+model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1, inits){
   ##  Stan C++ model
   model_string <- "
   data{
@@ -28,7 +30,7 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
     real int_mu;
     real beta_mu;
     vector[nknots] alpha;
-    real tau;
+    real<lower=0> sigma;
   }
   transformed parameters{
     //vector[ncells] eta;
@@ -39,8 +41,8 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
   }
   model{
     // Priors
-    alpha ~ normal(0,tau);
-    tau ~ normal(0,1000);
+    alpha ~ normal(0,sigma);
+    sigma ~ normal(0,1000);
     int_mu ~ normal(0,1000);
     beta_mu ~ normal(0,1000);
     // Likelihood
@@ -49,9 +51,9 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
   "
   datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
                    cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K))
-  pars <- c("int_mu", "beta_mu",  "alpha", "tau")
+  pars <- c("int_mu", "beta_mu",  "alpha", "sigma")
   fit <- stan(model_code=model_string, data=datalist, iter=iters,
-              warmup=warmup, pars=pars, chains=nchains)
+              warmup=warmup, pars=pars, chains=nchains, init=inits)
   long <- ggs(fit)
   return(long)
 }

@@ -21,6 +21,20 @@ growD <- subset(fullD, Year>1984) # get rid of NA lagcover years
 growD$Cover <- round(growD$Cover,0) # round for count-like data
 growD$CoverLag <- round(growD$CoverLag,0) # round for count-like data
 
+# Remove NA values
+rms <- which(is.na(growD$Cover) == TRUE)
+growD <- growD[-rms, ]
+if(length(which(is.na(growD$CoverLag)))>0){
+  rms <- which(is.na(growD$CoverLag) == TRUE)
+  growD <- growD[-rms, ]
+}
+
+# Set up new, continuous cell IDs
+num_ids <- length(unique(growD$ID))
+num_reps <- nrow(growD)/num_ids
+new_ids <- rep(c(1:num_ids), num_reps)
+growD$newID <- new_ids
+
 # Load knot data
 load("../results/Knot_cell_distances.Rdata")
 
@@ -35,8 +49,12 @@ summary(mod)
 ####
 ##  Send data to stan function for fitting
 ####
+inits <- list()
+inits[[1]] <- list(int_mu = 2, beta_mu = 0.05, 
+                   alpha = rep(0,ncol(K.data$K)), sigma=1)
 mcmc <- model_nocovars(y = growD$Cover, lag = growD$CoverLag, K = K.data$K, 
-                       cellid = growD$ID, iters = 50, warmup = 25, nchains = 1)
+                       cellid = growD$newID, iters = 500, warmup = 100, 
+                       nchains = 1, inits=inits)
 
 
 

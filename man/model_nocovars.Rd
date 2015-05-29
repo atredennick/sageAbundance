@@ -5,7 +5,7 @@
 \title{Estimate model parameters in GLMM using rstan with no environmental covariates}
 \usage{
 model_nocovars(y, lag, K, cellid, iters = 2000, warmup = 1000,
-  nchains = 1)
+  nchains = 1, inits)
 }
 \arguments{
 \item{y}{Vector of responses (cover observations)}
@@ -21,6 +21,9 @@ model_nocovars(y, lag, K, cellid, iters = 2000, warmup = 1000,
 \item{warmup}{Number of MCMC iterations to throw out before sampling (< iters)}
 
 \item{nchains}{Number of MCMC chains to sample}
+
+\item{inits}{A list of lists whose length is equal to number of chains. Elements
+include initial values for parameters to be estimated.}
 }
 \value{
 ggs object with MCMC values from rstan
