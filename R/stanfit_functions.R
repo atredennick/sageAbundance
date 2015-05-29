@@ -53,8 +53,19 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
   datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
                    cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K))
   pars <- c("int_mu", "beta_mu",  "alpha")
-  fit <- stan(model_code=model_string, data=datalist, iter=iters,
-              warmup=warmup, pars=pars, chains=nchains, init=inits)
+  
+  # Compile the model
+  mcmc_samples <- stan(model_code=model_string, data=datalist,
+                       pars=pars, chains=0)
+  
+  # Run parallel chains
+  rng_seed <- 123
+  sflist <-
+    mclapply(1:nchains, mc.cores=nchains,
+             function(i) stan(fit=mcmc_samples, data=datalist, pars=pars,
+                              seed=rng_seed, chains=1, chain_id=i, refresh=-1,
+                              iter=2000, warmup=1000, init=list(inits[[i]])))
+  fit <- sflist2stanfit(sflist)
   long <- ggs(fit)
 #   stansumm <- as.data.frame(summary(fit)["summary"])
 #   rhats <- stansumm["summary.Rhat"]
