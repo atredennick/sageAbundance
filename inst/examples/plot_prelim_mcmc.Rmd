@@ -1,0 +1,23 @@
+---
+title: ''
+output: html_document
+---
+
+Check preliminary results from Rstan MCMC. Took 19 days and 9 hours to fit the full spatial dataset at 2000 iterations with 3 chains in parallel.
+
+```{r plot_mcmc, echo=TRUE, include=TRUE, message=FALSE, warning=FALSE}
+library(ggmcmc)
+library(ggplot2)
+mcmc <- readRDS("../../results/stanmcmc_sage.RDS")
+ggplot(subset(mcmc, Parameter=="beta_mu"),
+       aes(x=Iteration, y=value, color=as.factor(Chain)))+
+  geom_line()
+ggplot(subset(mcmc, Parameter=="int_mu"),
+       aes(x=Iteration, y=value, color=as.factor(Chain)))+
+  geom_line()
+ggplot(subset(mcmc, Parameter=="alpha[1]"),
+       aes(x=Iteration, y=value, color=as.factor(Chain)))+
+  geom_line()
+```
+
+The slope mixed well, but clearly the alphas and the intercept are fighting. Need to work this out with Mevin.
