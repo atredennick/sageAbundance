@@ -30,6 +30,7 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
   parameters{
     real int_mu;
     real beta_mu;
+    real<lower=0> sig_a;
     vector[nknots] alpha;
   }
   transformed parameters{
@@ -42,10 +43,11 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
   model{
     // Priors
     for(k in 1:nknots){
-      alpha[k] ~ normal(0,1000);
+      alpha[k] ~ normal(0,sig_a);
     }
-    int_mu ~ normal(0,1000);
-    beta_mu ~ normal(0,1000);
+    sig_a ~ uniform(0,10);
+    int_mu ~ normal(0,100);
+    beta_mu ~ normal(0,10);
     // Likelihood
     y ~ poisson(lambda);
   }
@@ -63,8 +65,8 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
   sflist <-
     mclapply(1:nchains, mc.cores=nchains,
              function(i) stan(fit=mcmc_samples, data=datalist, pars=pars,
-                              seed=rng_seed, chains=1, chain_id=i, refresh=-1,
-                              iter=2000, warmup=1000, init=list(inits[[i]])))
+                              seed=rng_seed, chains=nchains, chain_id=i, refresh=-1,
+                              iter=iters, warmup=warmup, init=list(inits[[i]])))
   fit <- sflist2stanfit(sflist)
   long <- ggs(fit)
 #   stansumm <- as.data.frame(summary(fit)["summary"])

@@ -7,6 +7,7 @@ rm(list=ls(all=TRUE))
 library(sageAbundance)
 library(rstan)
 library(ggmcmc)
+library(parallel)
 
 ####
 ##  Get data
@@ -32,19 +33,93 @@ load("../results/Knot_cell_distances_smallSet.Rdata")
 ####
 ## Quick glm for initial values
 ####
-mod <- glm(Cover ~ CoverLag, family="poisson", data=growD)
-summary(mod)
+# mod <- glm(Cover ~ CoverLag, family="poisson", data=growD)
+# summary(mod)
 
+model_string <- "
+data{
+  int<lower=0> nobs; // number of observations
+  int<lower=0> nknots; // number of interpolation knots
+  int<lower=0> ncells; // number of cells
+  int<lower=0> cellid[nobs]; // cell id
+  int<lower=0> dK1; // row dim for K
+  int<lower=0> dK2; // column dim for K
+  int y[nobs]; // observation vector
+  int lag[nobs]; // lag cover vector
+  matrix[dK1,dK2] K; // spatial field matrix
+}
+parameters{
+  real int_mu;
+  real<lower=0> beta_mu;
+  real<lower=0> sig_a;
+  real<lower=0> sig_mu;
+  vector[nknots] alpha;
+  vector[nobs] lambda;
+}
+transformed parameters{
+  vector[ncells] eta;
+  vector[nobs] mu;
+  eta <- K*alpha;
+  for(n in 1:nobs)
+    mu[n] <- int_mu + beta_mu*lag[n] + eta[cellid[n]];
+}
+model{
+  // Priors
+  alpha ~ normal(0,sig_a);
+  sig_a ~ uniform(0,10);
+  sig_mu ~ uniform(0,10);
+  int_mu ~ normal(0,100);
+  beta_mu ~ normal(0,10);
+  // Likelihood
+  lambda ~ normal(mu, sig_mu);
+  y ~ poisson(exp(lambda));
+}
+"
 
 ####
 ##  Send data to stan function for fitting
 ####
 inits <- list()
 inits[[1]] <- list(int_mu = 1, beta_mu = 0.05, 
-                   alpha = rep(0,ncol(K.data$K)), sigma=0.5)
-mcmc <- model_nocovars(y = growD$Cover, lag = growD$CoverLag, K = K.data$K, 
-                       cellid = growD$ID, iters = 1000, warmup = 250, 
-                       nchains = 1, inits=inits)
-ggs_traceplot(mcmc, "int")
+                   alpha = rep(0,ncol(K.data$K)), sigma=0.05, sig_a=0.05)
+inits[[2]] <- list(int_mu = 2, beta_mu = 0.01, 
+                   alpha = rep(0.5,ncol(K.data$K)), sigma=0.02, sig_a=0.005)
+inits[[3]] <- list(int_mu = 1.5, beta_mu = 0.02, 
+                   alpha = rep(0.25,ncol(K.data$K)), sigma=0.04, sig_a=0.025)
+
+y = growD$Cover
+lag = growD$CoverLag
+K = K.data$K
+cellid = growD$ID
+
+datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
+                   cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K))
+pars <- c("int_mu", "beta_mu",  "alpha")
+  
+  # Compile the model
+  mcmc_samples <- stan(model_code=model_string, data=datalist,
+                       pars=pars, chains=3, iter=1000, warmup=500)
+
+outs <- ggs(mcmc_samples)
+saveRDS(outs, file = "small_test_mcmc.RDS")
 
 
+
+
+
+
+
+
+
+
+# 
+# 
+# 
+# inits[[2]] <- list(int_mu = 2, beta_mu = 0.005, 
+#                    alpha = rep(0.003,ncol(K.data$K)), sigma=0.05)
+# mcmc <- model_nocovars(y = growD$Cover, lag = growD$CoverLag, K = K.data$K, 
+#                        cellid = growD$ID, iters = 100, warmup = 25, 
+#                        nchains = 2, inits=inits)
+# ggs_traceplot(mcmc, "int")
+# 
+# 
