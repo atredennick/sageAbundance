@@ -39,6 +39,7 @@ load("../results/Knot_cell_distances_smallSet.Rdata")
 model_string <- "
 data{
   int<lower=0> nobs; // number of observations
+  int<lower=0> ncovs; // number of climate covariates
   int<lower=0> nknots; // number of interpolation knots
   int<lower=0> ncells; // number of cells
   int<lower=0> cellid[nobs]; // cell id
@@ -47,21 +48,25 @@ data{
   int y[nobs]; // observation vector
   int lag[nobs]; // lag cover vector
   matrix[dK1,dK2] K; // spatial field matrix
+  matrix[nobs,ncovs] X; // spatial field matrix
 }
 parameters{
   real int_mu;
   real<lower=0> beta_mu;
-  real<lower=0> sig_a;
-  real<lower=0> sig_mu;
+  real<lower=0.000001> sig_a;
+  real<lower=0.000001> sig_mu;
   vector[nknots] alpha;
   vector[nobs] lambda;
+  vector[ncovs] beta;
 }
 transformed parameters{
   vector[ncells] eta;
   vector[nobs] mu;
+  vector[nobs] climEffs;
   eta <- K*alpha;
+  climEffs <- X*beta;
   for(n in 1:nobs)
-    mu[n] <- int_mu + beta_mu*lag[n] + eta[cellid[n]];
+    mu[n] <- int_mu + beta_mu*lag[n] + climEffs[n] + eta[cellid[n]];
 }
 model{
   // Priors
@@ -70,6 +75,7 @@ model{
   sig_mu ~ uniform(0,10);
   int_mu ~ normal(0,100);
   beta_mu ~ normal(0,10);
+  beta ~ normal(0,10);
   // Likelihood
   lambda ~ normal(mu, sig_mu);
   y ~ poisson(exp(lambda));
@@ -79,47 +85,63 @@ model{
 ####
 ##  Send data to stan function for fitting
 ####
-inits <- list()
-inits[[1]] <- list(int_mu = 1, beta_mu = 0.05, 
-                   alpha = rep(0,ncol(K.data$K)), sigma=0.05, sig_a=0.05)
-inits[[2]] <- list(int_mu = 2, beta_mu = 0.01, 
-                   alpha = rep(0.5,ncol(K.data$K)), sigma=0.02, sig_a=0.005)
-inits[[3]] <- list(int_mu = 1.5, beta_mu = 0.02, 
-                   alpha = rep(0.25,ncol(K.data$K)), sigma=0.04, sig_a=0.025)
-
 y = growD$Cover
 lag = growD$CoverLag
 K = K.data$K
 cellid = growD$ID
+X = growD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+X = scale(X, center = TRUE, scale = TRUE)
+
+inits <- list()
+inits[[1]] <- list(int_mu = 1, beta_mu = 0.05, beta = rep(0, ncol(X)),
+                   alpha = rep(0,ncol(K.data$K)), sigma=0.05, sig_a=0.05,
+                   sig_mu=0.05, lambda=rep(1, length(y)))
+inits[[2]] <- list(int_mu = 2, beta_mu = 0.01, beta = rep(0.5, ncol(X)),
+                   alpha = rep(0.5,ncol(K.data$K)), sigma=0.02, sig_a=0.005,
+                   sig_mu=0.025, lambda=rep(10, length(y)))
+inits[[3]] <- list(int_mu = 1.5, beta_mu = 0.02, beta = rep(0.2, ncol(X)),
+                   alpha = rep(0.25,ncol(K.data$K)), sigma=0.04, sig_a=0.025,
+                   sig_mu=0.5, lambda=rep(5, length(y)))
 
 datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
-                   cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K))
-pars <- c("int_mu", "beta_mu",  "alpha")
+                 cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K),
+                 X=X, ncovs=ncol(X))
+pars <- c("int_mu", "beta_mu",  "alpha", "beta")
   
   # Compile the model
-  mcmc_samples <- stan(model_code=model_string, data=datalist,
-                       pars=pars, chains=3, iter=1000, warmup=500)
+  mcmc_samples <- stan(model_code=model_string, data=datalist, init = list(inits[[1]]),
+                       pars=pars, chains=1, iter=1000, warmup=500)
 
 outs <- ggs(mcmc_samples)
-saveRDS(outs, file = "small_test_mcmc.RDS")
+ggs_traceplot(outs, "alpha")
+# saveRDS(outs, file = "small_test_mcmc.RDS")
 
 
+## Look at spatial field
+alpha <- outs[grep("alpha", outs$Parameter),]
+alpha_means <- ddply(alpha, .(Parameter), summarise,
+                     mean = mean(value))
+eta <- K%*%alpha_means$mean
+oneyear <- subset(growD, Year==1985)
+oneyear$eta <- eta
+
+library(ggplot2)
+library(gridExtra)
+tmp.theme=theme(axis.ticks = element_blank(), axis.text = element_blank(),
+                strip.text=element_text(face="bold"),
+                axis.title=element_text(size=16),text=element_text(size=16),
+                legend.text=element_text(size=16))
+library(RColorBrewer)
+myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")))
+ggplot(oneyear, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=eta, fill=eta))+
+  scale_fill_gradientn(colours=myPalette(100))
+
+ggplot(growD, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=Cover, fill=Cover))+
+  facet_wrap("Year")+
+  scale_fill_gradientn(colours=myPalette(100))+
+  tmp.theme+
+  theme(strip.background=element_rect(fill="white"))
 
 
-
-
-
-
-
-
-# 
-# 
-# 
-# inits[[2]] <- list(int_mu = 2, beta_mu = 0.005, 
-#                    alpha = rep(0.003,ncol(K.data$K)), sigma=0.05)
-# mcmc <- model_nocovars(y = growD$Cover, lag = growD$CoverLag, K = K.data$K, 
-#                        cellid = growD$ID, iters = 100, warmup = 25, 
-#                        nchains = 2, inits=inits)
-# ggs_traceplot(mcmc, "int")
-# 
-# 
