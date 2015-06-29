@@ -4,18 +4,21 @@ library(raster)
 library(sp)
 library(rgeos)
 library(Matrix)
+library(gstat)
+
 
 ####
 #### Bring in data
 ####
+setwd("/Users/atredenn/Dropbox/sageAbundance_data/")
 studyArea="1"
 
 ifelse(studyArea=="1",
-       climD<-read.csv("../../studyarea1/climate/DAYMET/FormattedClimate_WY_SA1.csv"),
-       climD<-read.csv("../../studyarea2/climate/DAYMET/FormattedClimate_WY_SA2.csv"))
+       climD<-read.csv("./studyarea1/climate/DAYMET/FormattedClimate_WY_SA1.csv"),
+       climD<-read.csv("./studyarea2/climate/DAYMET/FormattedClimate_WY_SA2.csv"))
 ifelse(studyArea=="1",
-       rawD<-read.csv("../../cover_structure/WY_SAGECoverData_V2check.csv"),
-       rawD<-read.csv("../../cover_structure/WY_SAGECoverData_SA2.csv"))
+       rawD<-read.csv("./WY_SAGECoverData_V2check.csv"),
+       rawD<-read.csv("./WY_SAGECoverData_SA2.csv"))
 
 # merge in climate data 
 fullD <- merge(rawD,climD,by.x="Year", by.y="year",all.x=T)
@@ -44,6 +47,25 @@ coordinates(dat) <- c("Lon", "Lat")
 proj4string(dat)
 image(resMat, x=lon.locs,y=lat.locs,asp=TRUE,col=gray.colors.rev(100))
 
+
+####
+####  Construct variograms to estimate range parameter for knots
+####
+# par(xaxt="s",yaxt="s",mar= c(2, 2, 4, 2), mfrow=c(4,7))
+# n.years <- length(unique(fullD$Year))
+# for(t in 1:n.years){
+#   resD <- subset(fullD, Year==years[t])
+#   lon.locs=sort(unique(resD$Lon))
+#   lat.locs=sort(unique(resD$Lat))
+#   dat <- subset(resD, select = c("Lon", "Lat", "Cover"))
+#   dat <- dat[which(is.na(dat$Cover)==FALSE),]
+#   coordinates(dat) <- c("Lon", "Lat")
+#   varMod <- variogram(Cover~1, data=dat, width=50)
+#   plot(varMod$dist, varMod$gamma, ylim=c(0,max(varMod$gamma)), col="dodgerblue", type="l", main=years[t])
+#   points(varMod$dist, varMod$gamma, ylim=c(0,max(varMod$gamma)), col="dodgerblue", pch=21, bg="white")
+# }
+
+
 ####
 #### Generate knots and plot
 ####
@@ -68,8 +90,14 @@ Which.include=which(Distances<my.buffer)
 Knot.cell.distances=gDistance(Knots[Which.include,],obsPts,byid=TRUE)
 diff.x=(x.max-x.min)/splits #normally 6
 diff.y=(y.max-y.min)/splits #normally 6
-# sigma=(diff.x+diff.y)/2
-sigma=250
+sigma=(diff.x+diff.y)/2
+# sigma=250
+
+#plot knot distances
+Knot.distances=gDistance(Knots[Which.include,],Knots[Which.include,],byid=TRUE)
+m <- melt(Knot.distances)
+ggplot(data=m, aes(x=Var1, y=Var2))+
+  geom_raster(aes(z=value, fill=value))
 
 source("Conn_util_funcs.R")
 Knot.Adj=rect_adj(splits+1,splits+1)
@@ -83,6 +111,13 @@ K=((2*pi*sigma)^-1)*exp(-Knot.cell.distances/(2*sigma))
 K=K/apply(K,1,'sum')
 K.data=list(K=K,Q.knot=Q.knot)
 save(K.data,file="Knot_cell_distances.Rdata")
+
+#plot Conn's K
+# load("/Users/atredenn/Desktop/STabundance-0.91/STabundance/data/Knot_cell_distances.rda")
+m <- melt(K.data$K)
+ggplot(data=m, aes(x=Var2, y=Var1))+
+  geom_raster(aes(z=value, fill=value))
+
 
 png('SAGE_Grid_wKnots.png', width=4, height=4, units = "in", res=200)
 image(resMat, x=lon.locs,y=lat.locs,asp=TRUE,col=gray.colors.rev(100), ylab="Latitude", xlab="Longitude")
