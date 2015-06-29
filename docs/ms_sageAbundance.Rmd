@@ -18,6 +18,20 @@ geometry: margin=1in
 
 ---
 
+```{r caching, include=FALSE}
+library("methods")
+library("knitr")
+basename <- "manuscript"
+opts_chunk$set(fig.path = paste("components/figure/", basename, "-", sep=""),
+               cache.path = paste("components/cache/", basename, "/", sep=""))
+opts_chunk$set(cache = 2)
+opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, 
+               comment = NA, verbose = TRUE, echo=FALSE)
+
+# PDF-based figures
+opts_chunk$set(dev='pdf')
+```
+
 Forecasting climate change impacts on plant population dynamics at large spatial extents: a test case with sagebrush (\emph{Artemisia}) species
 ===========================================================================================
 
@@ -142,6 +156,15 @@ K_{s,m} &= w_{s,m}/\sum_{s} w_{s,m}, \text{where} \\
 w_{s,m} &= (2 \pi \sigma^{2})^{-1} \text{exp}(\frac{-d_{s,m}}{2 \sigma^{2}}),
 \end{align}
 
-where $d_{s,m}$ is the Euclidean distance between the centroid of sample cell \emph{s} and the location of knot \emph{m}, and $\sigma$ is the kernel bandwidth. It is possible through exhaustive model selection and fitting to determine the optimal form of the kernel and to estimate optimal values for $\sigma$. However, given the relative largeness of our dataset and computational limitations, we decided to to create kernels around eight knots and used a rule-of-thumb to set $\sigma$ equal to the distance between nearest neighbor knots (Higdon 2002, Conn et al. 2014). 
+where $d_{s,m}$ is the Euclidean distance between the centroid of sample cell \emph{s} and the location of knot \emph{m}, and $\sigma$ is the kernel bandwidth. It is possible through exhaustive model selection and fitting to determine the optimal form of the kernel and to estimate optimal values for $\sigma$. However, given the relative largeness of our dataset and computational limitations, we decided to to create kernels around 81 knots (Figure #) and used a rule-of-thumb to set $\sigma$ equal to the distance between nearest neighbor knots (Higdon 2002, Conn et al. 2014). 
+
 
 ### Computing and model estimation
+
+Figures
+-------
+```{r figure_1,dependson="plot-options", fig.cap="Average percent cover or each grid cell of the study area with knots used for spatial convolution in dimension reduction.", fig.height=6}
+library(png)
+library(grid)
+img <- readPNG("components/figure/SAGE_Grid_wKnots.png")
+grid.raster(img)

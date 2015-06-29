@@ -1,0 +1,10 @@
+base
+datasets
+graphics
+grDevices
+grid
+knitr
+methods
+png
+stats
+utils
