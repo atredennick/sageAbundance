@@ -110,22 +110,49 @@ K=((2*pi*sigma)^-1)*exp(-Knot.cell.distances/(2*sigma))
 # K=dnorm(Knot.cell.distances,0,sigma)
 K=K/apply(K,1,'sum')
 K.data=list(K=K,Q.knot=Q.knot)
-save(K.data,file="Knot_cell_distances.Rdata")
+# save(K.data,file="Knot_cell_distances.Rdata")
 
 #plot Conn's K
 # load("/Users/atredenn/Desktop/STabundance-0.91/STabundance/data/Knot_cell_distances.rda")
-m <- melt(K.data$K)
-ggplot(data=m, aes(x=Var2, y=Var1))+
-  geom_raster(aes(z=value, fill=value))
+# m <- melt(K.data$K)
+# ggplot(data=m, aes(x=Var2, y=Var1))+
+#   geom_raster(aes(z=value, fill=value))
 
 
-png('SAGE_Grid_wKnots.png', width=4, height=4, units = "in", res=200)
-image(resMat, x=lon.locs,y=lat.locs,asp=TRUE,col=gray.colors.rev(100), ylab="Latitude", xlab="Longitude")
-points(Knots[Which.include,],,col='red',pch=20, add=TRUE)
+
+library(plyr)
+avgD <- ddply(fullD, .(Lon, Lat), summarise,
+              cover = mean(Cover))
+knotsD <- as.data.frame(Knots)
+
+library(RColorBrewer)
+myPalette <- colorRampPalette(brewer.pal(11, "Greens"))
+tmp.theme=theme(axis.ticks = element_blank(), axis.text = element_blank(),
+                strip.text=element_text(face="bold"),
+                axis.title=element_text(size=14),text=element_text(size=16),
+                legend.text=element_text(size=12), legend.title=element_text(size=16))
+
+png('SAGE_Grid_wKnots.png', width=6, height=6, units = "in", res=200)
+g <- ggplot()+
+  geom_raster(data=avgD, aes(x=Lon, y=Lat, z=cover, fill=cover))+
+  geom_point(data=knotsD, aes(x,y), size=4, color="white")+
+  geom_point(data=knotsD, aes(x,y), size=3, color="black")+
+  scale_fill_gradientn(colours=myPalette(100), name="Percent \nCover")+
+  tmp.theme+
+  theme(strip.background=element_rect(fill="white"))+
+  coord_equal()+
+  xlab("Longitude")+
+  ylab("Latitude")
+print(g)
 dev.off()
 
+# png('SAGE_Grid_wKnots.png', width=4, height=4, units = "in", res=200)
+# image(resMat, x=lon.locs,y=lat.locs,asp=TRUE,col=gray.colors.rev(100), ylab="Latitude", xlab="Longitude")
+# points(Knots[Which.include,],,col='red',pch=20, add=TRUE)
+# dev.off()
+
 Knots=Knots[Which.include,]
-save(Knots,file="SAGE_Knots_SP.Rda")
+# save(Knots,file="SAGE_Knots_SP.Rda")
 
 
 
