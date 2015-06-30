@@ -13,11 +13,12 @@
 #' @export
 #' @return A list with ggs object with MCMC values from rstan and 
 #'          Rhat values for each parameter.
-model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1, inits){
+model_nocovars <- function(y, lag, K, X, cellid, iters=2000, warmup=1000, nchains=1, inits){
   ##  Stan C++ model
   model_string <- "
   data{
     int<lower=0> nobs; // number of observations
+    int<lower=0> ncovs; // number of climate covariates
     int<lower=0> nknots; // number of interpolation knots
     int<lower=0> ncells; // number of cells
     int<lower=0> cellid[nobs]; // cell id
@@ -26,35 +27,43 @@ model_nocovars <- function(y, lag, K, cellid, iters=2000, warmup=1000, nchains=1
     int y[nobs]; // observation vector
     int lag[nobs]; // lag cover vector
     matrix[dK1,dK2] K; // spatial field matrix
+    matrix[nobs,ncovs] X; // spatial field matrix
   }
   parameters{
     real int_mu;
-    real beta_mu;
-    real<lower=0> sig_a;
+    real<lower=0> beta_mu;
+    real<lower=0.000001> sig_a;
+    real<lower=0.000001> sig_mu;
     vector[nknots] alpha;
+    vector[nobs] lambda;
+    vector[ncovs] beta;
   }
   transformed parameters{
     vector[ncells] eta;
-    vector[nobs] lambda;
+    vector[nobs] mu;
+    vector[nobs] climEffs;
     eta <- K*alpha;
+    climEffs <- X*beta;
     for(n in 1:nobs)
-      lambda[n] <- exp(int_mu + beta_mu*lag[n] + eta[cellid[n]]);
+    mu[n] <- int_mu + beta_mu*lag[n] + climEffs[n] + eta[cellid[n]];
   }
   model{
     // Priors
-    for(k in 1:nknots){
-      alpha[k] ~ normal(0,sig_a);
-    }
-    sig_a ~ uniform(0,10);
+    alpha ~ normal(0,sig_a);
+    sig_a ~ cauchy(0, 5);
+    sig_mu ~ cauchy(0, 5);
     int_mu ~ normal(0,100);
     beta_mu ~ normal(0,10);
+    beta ~ normal(0,10);
     // Likelihood
-    y ~ poisson(lambda);
+    lambda ~ normal(mu, sig_mu);
+    y ~ poisson(exp(lambda));
   }
   "
   datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
-                   cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K))
-  pars <- c("int_mu", "beta_mu",  "alpha")
+                   cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K),
+                   X=X, ncovs=ncol(X))
+  pars <- c("int_mu", "beta_mu",  "alpha", "beta", "sig_mu", "sig_a")
   
   # Compile the model
   mcmc_samples <- stan(model_code=model_string, data=datalist,

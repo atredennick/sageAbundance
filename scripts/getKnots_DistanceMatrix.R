@@ -5,6 +5,8 @@ library(sp)
 library(rgeos)
 library(Matrix)
 library(gstat)
+library(plyr)
+library(ggplot2)
 
 
 ####
@@ -49,18 +51,48 @@ image(resMat, x=lon.locs,y=lat.locs,asp=TRUE,col=gray.colors.rev(100))
 
 
 ####
+#### Run simple Poisson GLM to get residual surface
+####
+modelD <- subset(fullD, Year>1984)
+modelD <- modelD[complete.cases(modelD),]
+outp <- glm(Cover ~ CoverLag+ppt2+ppt1+pptLag+TmeanSpr1+TmeanSpr2,
+            family = "poisson", data = modelD)
+summary(outp)
+modelD$resids <- resid(outp)
+
+
+####
 ####  Construct variograms to estimate range parameter for knots
 ####
+resD <- ddply(modelD, .(Lat, Lon), summarise,
+                  resid = mean(resids))
+lon.locs=sort(unique(resD$Lon))
+lat.locs=sort(unique(resD$Lat))
+dat <- subset(resD, select = c("Lon", "Lat", "resid"))
+coordinates(dat) <- c("Lon", "Lat")
+varMod <- variogram(resid~1, data=dat, width=50)
+
+png("avgresidual_variogram_withrange.png", width = 5, height = 5, 
+    units = "in", res=200)
+plot(varMod$dist, varMod$gamma, ylim=c(0,max(varMod$gamma)), col="dodgerblue", 
+     type="l", main="variogram of model residuals", xlab="distance (m)",
+     ylab="semivariance")
+points(varMod$dist, varMod$gamma, ylim=c(0,max(varMod$gamma)), col="dodgerblue", pch=21, bg="white")
+abline(v = 500/3, lwd=3, lty=2)
+dev.off()
+
+range_parameter <- round(500/3)
+
 # par(xaxt="s",yaxt="s",mar= c(2, 2, 4, 2), mfrow=c(4,7))
-# n.years <- length(unique(fullD$Year))
-# for(t in 1:n.years){
-#   resD <- subset(fullD, Year==years[t])
+# years <- unique(modelD$Year)
+# for(t in years){
+#   resD <- subset(modelD, Year==t)
 #   lon.locs=sort(unique(resD$Lon))
 #   lat.locs=sort(unique(resD$Lat))
-#   dat <- subset(resD, select = c("Lon", "Lat", "Cover"))
-#   dat <- dat[which(is.na(dat$Cover)==FALSE),]
+#   dat <- subset(resD, select = c("Lon", "Lat", "resids"))
+# #   dat <- dat[which(is.na(dat$Cover)==FALSE),]
 #   coordinates(dat) <- c("Lon", "Lat")
-#   varMod <- variogram(Cover~1, data=dat, width=50)
+#   varMod <- variogram(resids~1, data=dat, width=50)
 #   plot(varMod$dist, varMod$gamma, ylim=c(0,max(varMod$gamma)), col="dodgerblue", type="l", main=years[t])
 #   points(varMod$dist, varMod$gamma, ylim=c(0,max(varMod$gamma)), col="dodgerblue", pch=21, bg="white")
 # }
@@ -69,13 +101,15 @@ image(resMat, x=lon.locs,y=lat.locs,asp=TRUE,col=gray.colors.rev(100))
 ####
 #### Generate knots and plot
 ####
+dat <- subset(resD, select = c("Lon", "Lat", "resid"))
+coordinates(dat) <- c("Lon", "Lat")
 Coords=coordinates(dat)
 x.min=min(Coords[,1])
 x.max=max(Coords[,1])
 y.min=min(Coords[,2])
 y.max=max(Coords[,2])
 
-splits <- 8
+splits <- 20
 X=x.min+(x.max-x.min)/splits*c(0:splits)
 Y=y.min+(y.max-y.min)/splits*c(splits:0)
 XY=expand.grid(x=X,y=Y)
@@ -90,8 +124,8 @@ Which.include=which(Distances<my.buffer)
 Knot.cell.distances=gDistance(Knots[Which.include,],obsPts,byid=TRUE)
 diff.x=(x.max-x.min)/splits #normally 6
 diff.y=(y.max-y.min)/splits #normally 6
-sigma=(diff.x+diff.y)/2
-# sigma=250
+test=(diff.x+diff.y)/2
+sigma=range_parameter
 
 #plot knot distances
 Knot.distances=gDistance(Knots[Which.include,],Knots[Which.include,],byid=TRUE)
@@ -99,6 +133,7 @@ m <- melt(Knot.distances)
 ggplot(data=m, aes(x=Var1, y=Var2))+
   geom_raster(aes(z=value, fill=value))
 
+setwd("~/Repos/sageAbundance/R")
 source("Conn_util_funcs.R")
 Knot.Adj=rect_adj(splits+1,splits+1)
 Knot.Adj=Knot.Adj[Which.include,Which.include]
@@ -126,17 +161,18 @@ avgD <- ddply(fullD, .(Lon, Lat), summarise,
 knotsD <- as.data.frame(Knots)
 
 library(RColorBrewer)
-myPalette <- colorRampPalette(brewer.pal(11, "Greens"))
+myPalette <- colorRampPalette(brewer.pal(9, "Greens"))
 tmp.theme=theme(axis.ticks = element_blank(), axis.text = element_blank(),
                 strip.text=element_text(face="bold"),
                 axis.title=element_text(size=14),text=element_text(size=16),
                 legend.text=element_text(size=12), legend.title=element_text(size=16))
 
+setwd("/Users/atredenn/Dropbox/sageAbundance_data/")
 png('SAGE_Grid_wKnots.png', width=6, height=6, units = "in", res=200)
 g <- ggplot()+
   geom_raster(data=avgD, aes(x=Lon, y=Lat, z=cover, fill=cover))+
-  geom_point(data=knotsD, aes(x,y), size=4, color="white")+
-  geom_point(data=knotsD, aes(x,y), size=3, color="black")+
+  geom_point(data=knotsD, aes(x,y), size=1.5, color="white")+
+  geom_point(data=knotsD, aes(x,y), size=1, color="black")+
   scale_fill_gradientn(colours=myPalette(100), name="Percent \nCover")+
   tmp.theme+
   theme(strip.background=element_rect(fill="white"))+
@@ -152,7 +188,7 @@ dev.off()
 # dev.off()
 
 Knots=Knots[Which.include,]
-# save(Knots,file="SAGE_Knots_SP.Rda")
+save(Knots,file="SAGE_Knots_SP.Rda")
 
 
 
