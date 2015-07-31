@@ -32,66 +32,70 @@ opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE,
 opts_chunk$set(dev='pdf')
 ```
 
-Forecasting climate change impacts on plant population dynamics at large spatial extents: a test case with sagebrush (\emph{Artemisia}) species
-===========================================================================================
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
 
-### Andrew T. Tredennick[^corrauth], Mevin B. Hooten, Cameron L. Aldridge, Colin G. Homer, David T. Iles, Andrew Kleinhesselink, Eric LaMalfa, Rebecca Mann, and Peter B. Adler
+\begin{centering}
+\textbf{\large{Remote-sensing based population models for projecting climate change impacts on plant populations at large spatial extents: a test case with sagebrush (\emph{Artemisia}) species}}
 
-*Andrew T. Tredennick, Department of Wildland Resources and the Ecology Center, Utah State University, Logan, UT*
+\textsc{\small{Andrew T. Tredennick\footnote{E-mail: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4,5}, Cameron L. Aldridge\textsuperscript{5,6,7}, Colin G. Homer, David T. Iles\textsuperscript{1}, Andrew Kleinhesselink\textsuperscript{1}, Eric LaMalfa\textsuperscript{1}, Rebecca Mann\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
 
-*Mevin B. Hooten, U.S. Geological Survey, Colorado Cooperative Fish and Wildlife Research Unit; Department of Fish, Wildlife, and Conservation Biology, Colorado State University; Department of Statistics, Colorado State University; Graduate Degree Program in Ecology, Colorado State University, Fort Collins, CO*
+\textit{\small{\textsuperscript{1}Department of Wildland Resources and the Ecology Center, 5230 Old Main Hill, Utah State University, Logan, Utah 84322-5230 USA; \textsuperscript{2}U.S. Geological Survey, Colorado Cooperative Fish and Wildlife Research Unit; \textsuperscript{3}Department of Fish, Wildlife, and Conservation Biology, Colorado State University; \textsuperscript{4}Department of Statistics, Colorado State University; \textsuperscript{5}Graduate Degree Program in Ecology, Colorado State University, Fort Collins, CO; \textsuperscript{6}Department of Ecosystem Science and Sustainability and Natural Resource Ecology Laboratory, Colorado State University; \textsuperscript{7}U.S. Geological Survey, Fort Collins Science Center; \textsuperscript{8}U.S. Geological Survey (USGS) Earth Resources Observation and Science (EROS) Center, Sioux Falls, SD}}
 
-*Cameron L. Aldridge, Department of Ecosystem Science and Sustainability, Colorado State University; Natural Resource Ecology Laboratory, Colorado State University; U.S. Geological Survey, Fort Collins Science Center; Graduate Degree Program in Ecology, Colorado State University, Fort Collins, CO*
+\end{centering}
 
-*Colin G. Homer, U.S. Geological Survey (USGS) Earth Resources Observation and Science (EROS) Center, Sioux Falls, SD*
+\renewcommand*{\thefootnote}{\arabic{footnote}}
 
-*David T. Iles, Department of Wildland Resources and the Ecology Center, Utah State University, Logan, UT*
-
-*Andrew Kleinhesselink, Department of Wildland Resources and the Ecology Center, Utah State University, Logan, UT*
-
-*Eric LaMalfa, Department of Wildland Resources and the Ecology Center, Utah State University, Logan, UT*
-
-*Rebecca Mann, Department of Wildland Resources and the Ecology Center, Utah State University, Logan, UT*
-
-*Peter B. Adler, Department of Wildland Resources and the Ecology Center, Utah State University, Logan, UT*
-
-[^corrauth]: Corresponding author: [atredenn@gmail.com](mailto:atredenn@gmail.com)
-
-Summary
--------
-\begin{enumerate}
-\item Global environmental changes, like climate change, tend to play out at the landscape and regional scales. Thus, it is reasonable that attempts to forecast the impacts of such change do so at similar spatial scales. For plant species, this has meant relying primarily on a single tool, species distribution models, that contain little information on population dynamics and states.
-
-\item Plant population models have proven exceedingly useful for projecting population dynamics and states under altered climate regimes, but most models are parameterized using “local” scale data from, generally, 1 $\text{m}^{2}$ plots. These models, even if highly predictive, cannot capture the full spatial variability in population responses to climate and thus are difficult to extrapolate from the micro to meso scale.
-
-\item Here we build on density-structured population modeling approaches and describe a population model based on remote sensing pixels -- a `pixel-based' population model. At its core the model is simply an individual-based population model where, instead of individuals, we focus on pixels as super individuals. To demonstrate the approach, we model the rate of transitions among discrete percent cover classes using a 27 year remotely sensed time series of sagebrush (Artemesia spp.) cover in southwestern Wyoming. We use climate covariates in vital rate regressions so that we can forecast future population states under projected climate change.
-
-\item The pixel-based population model successfully recovers the the mean and spread of the observed data when we use observed climate covariates. 
-
-\item Our approach...
-\end{enumerate}
+Abstract
+--------
+Global environmental changes, like climate change, tend to play out at the landscape and regional scales.
+Thus, it is reasonable that attempts to forecast the impacts of such change do so at similar spatial scales.
+For plant species, this has meant relying primarily on a single tool, species distribution models, that contain little information on population dynamics and states.
+Plant population models have proven exceedingly useful for projecting population dynamics and states under altered climate regimes, but most models are parameterized using local scale data from, generally, 1 $\text{m}^{2}$ plots.
+These models, even if highly predictive, cannot capture the full spatial variability in population responses to climate and thus are difficult to extrapolate from the micro to meso scale.
+Here we build on density-structured population modeling approaches and describe a population model based on remote sensing pixels -- a `pixel-based' population model.
+At its core the model is simply an individual-based population model where, instead of individuals, we focus on pixels as super individuals.
+To demonstrate the approach, we model the rate of transitions among discrete percent cover classes using a 27 year remotely sensed time series of sagebrush (\emph{Artemesia} spp.) cover in southwestern Wyoming.
+We use climate covariates in vital rate regressions so that we can forecast future population states under projected climate change.
+The pixel-based population model successfully recovers the the mean and spread of the observed data when we use observed climate covariates. 
 
 
-*Keywords*: population model, forecasting, integral projection model, etc.
+*Key words: population model, climate change, forecasting, remote sensing, sagebrush*, Artemesia 
 
 Introduction
 -------------
+Forecasting the impacts of climate change on plant populations and communities is a central challenge of modern ecology.
+The challenge lies in faithfully representing population dynamics at spatial and temporal scales relevant to policy and management decisions.
+However, almost every study of plant population dynamics relies on demographic observations recorded at the meter to sub-meter scale.
+Local-scale demographic data make building population projection models an easy task (Ellner et al., 2006; Rees et al., 2009; Adler et al., 2012), but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions.
+Also, given the costliness (in time and money) of collecting detailed demographic data, it is unlikely that “enough” local-scale data can be collected to accurately project large-scale population dynamics. 
 
-Forecasting the impacts of climate change on plant populations and communities is a central challenge of modern ecology. The challenge lies in faithfully representing population dynamics at spatial and temporal scales relevant to policy and management decisions. However, almost every study of plant population dynamics relies on demographic observations recorded at the meter to sub-meter scale. Local-scale demographic data make building population projection models an easy task (Ellner et al., 2006; Rees et al., 2009; Adler et al., 2012), but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions. Also, given the costliness (in time and money) of collecting detailed demographic data, it is unlikely that “enough” local-scale data can be collected to accurately project large-scale population dynamics. 
+The fundamental limitation of local-scale data is that they are insufficient for estimating the full extent of variation in model parameters possible at larger spatial and temporal extents (Freckleton et al., 2011; Queenborough et al., 2011).
+It is possible to estimate the variance of population model parameters related to spatial and temporal variability, but the observations used to estimate parameter uncertainty tend to be clustered in space or time.
+Thus, extrapolating beyond the spatial or temporal resolution of the data used to parameterize models can lead to biased and wrong forecasts of future population states. 
 
-The fundamental limitation of local-scale data is that they are insufficient for estimating the full extent of variation in model parameters possible at larger spatial and temporal extents (Freckleton et al., 2011; Queenborough et al., 2011). It is possible to estimate the variance of population model parameters related to spatial and temporal variability, but the observations used to estimate parameter uncertainty tend to be clustered in space or time. Thus, extrapolating beyond the spatial or temporal resolution of the data used to parameterize models can lead to biased and wrong forecasts of future population states. 
+Alternatively, large-scale trends in populations are easily detected using widely available monitoring data, but such data are rarely used to project future population states. 
+Given the tradeoffs between the spatial-scale of data and the inference that can be drawn from the data, we suggest combining the best features of local-scale population modeling and large-scale monitoring data.
+Specifically, we propose a new approach for modeling population dynamics at large spatial extents based on the theory and mechanics of individual-based models (IBMs) as applied to remotely-sensed time series data.
 
-Alternatively, large-scale trends in populations are easily detected using widely available monitoring data, but such data are rarely used to project future population states. Given the tradeoffs between the spatial-scale of data and the inference that can be drawn from the data, we suggest combining the best features of local-scale population modeling and large-scale monitoring data. Specifically, we propose a new approach for modeling population dynamics at large spatial extents based on the theory and mechanics of individual-based models (IBMs) as applied to remotely-sensed time series data.
-
-The approach we describe in this paper flows naturally from recent work on density-structured population models. Density-structured models rely on modeling the transitions of a population among discrete states rather than the traditional approach of modeling the transitions of individuals. Relatively few ecologists have taken up the density-structured mantle first proposed by Taylor, C. M. et al. (2004), but recently Freckleton et al. (2011) and Queenborough et al. (2011) have higlighted the potential value the approach.
+The approach we describe in this paper flows naturally from recent work on density-structured population models.
+Density-structured models rely on modeling the transitions of a population among discrete states rather than the traditional approach of modeling the transitions of individuals.
+Relatively few ecologists have taken up the density-structured mantle first proposed by Taylor, C. M. et al. (2004), but recently Freckleton et al. (2011) and Queenborough et al. (2011) have higlighted the potential value the approach.
 
 Materials and Methods
 ---------------------
 ### Data: Remotely-sensed time series
-To show our pixel-based modeling approach we use a subset of a remotely-sensed time series of sagebrush (\emph{Artemisia} spp.) shrub percent cover in Wyoming (Homer et al., 2012) (Figure [fig:Location-of-the]). Sagebrush percent cover was estimated using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1,780 field observations of sagebrush cover distributed across Wyoming. The regression tree model was further validated using another 500 field observations. For Wyoming sagebrush, the model achieved an $R^{2}$ = 0.65. To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images. This resulted in an annual time series of sagebrush cover at 30 m resolution from 1984 to 2011. In this dataset, values represent the percentage of a 30 $\times$ 30 m pixel covered by sagebrush. For our purposes we use two 5 $\times$ 5 km subsets (study areas 1 and 2), totaling 27,948 pixels each. Thus, each full dataset contains 754,596 observations (27 years $\times$ 27,948 pixels).
+To demonstrate our pixel-based modeling approach we use a subset of a remotely-sensed time series of sagebrush (\emph{Artemisia} spp.) shrub percent cover in Wyoming (Homer et al., 2012) (Figure 1).
+Sagebrush percent cover was estimated using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1,780 field observations of sagebrush cover distributed across Wyoming.
+The regression tree model was further validated using another 500 field observations. For Wyoming sagebrush, the model achieved an $R^{2}$ = 0.65.
+To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images. This resulted in an annual time series of sagebrush cover at 30 m resolution from 1984 to 2011.
+In this dataset, values represent the percentage of a 30 $\times$ 30 m pixel covered by sagebrush.
+For our purposes we use two 5 $\times$ 5 km subsets (study areas 1 and 2), totaling 27,948 pixels each.
+Thus, each full dataset contains 754,596 observations (27 years $\times$ 27,948 pixels).
 
 ### Data: Climate covariates
-Our approach is based on modeling how changes in plant populations relate to climate variables. We a priori narrowed our focus to climate covariates we know are important for sagebrush and that could be easily calculated from general circulation model future projections. In all vital rate regressions we focus on the demographic processes driving changes in percent sagebrush cover in year \emph{t}-1 to year \emph{t}, and how these processes are mediated by climate. The four climate variables in our vital rate regressions are: (1) year \emph{t} fall through summer precipitation, (2) year \emph{t}-1 fall through summer precipitation, (3) year \emph{t} average spring temperature, and (4) year \emph{t}-1 average spring temperature (Table [tab:Definition-of-climate]). Climate data to parameterize vital rate regressions (`observed' climate) came from the PRISM climate database. Climate data were extracted for the centroid our study area.
+Our approach is based on modeling how changes in plant populations relate to climate variables.
+We narrowed our focus to climate covariates we know are important for sagebrush and that could be easily calculated from general circulation model projections. The four climate variables in our population model are: (1) year \emph{t} fall through summer precipitation, (2) year \emph{t}-1 fall through summer precipitation, (3) year \emph{t} average spring temperature, and (4) year \emph{t}-1 average spring temperature (Table [tab:Definition-of-climate]).
+Climate data to parameterize vital rate regressions (`observed' climate) came from the PRISM climate database. Climate data were extracted for the centroid our study area.
 
 Climate data used to inform model projections of future sagebrush
 cover came from average outputs of all models used in the most recent
@@ -128,43 +132,112 @@ RCP 8.5 & 4.79\textdegree & 11.0\% &  & 4.90\textdegree & 8.81\%\tabularnewline
 \end{table}
 
 ### Additive spatio-temporal model for sagebrush cover
-We use a descriptive model for sagebrush cover that includes additive spatial and temporal effects. Since the spatial and temporal effects are additive, we are not considering space-time interactions. Our model aims to relate observed sagebrush cover, $C_{s,t}$, at time \emph{t} and spatial location \emph{s} to an underlying process $\mu_{s,t}$ that is defined over all spatial locations and observation times. For statistical convenience, we consider discrete values of sagebrush percent cover as counts, giving us the formulation
+We use a descriptive model for sagebrush cover that includes additive spatial and temporal effects (Conn et al. 2014).
+Since the spatial and temporal effects are additive, we are not considering space-time interactions.
+We model observed integer percent cover (*y*) in cell *i* at time *t* as conditionally negative binomial:
 
 \begin{align}
-[\textbf{C}] &= \text{Poisson}(\boldsymbol{\lambda}) \\
-\boldsymbol{\lambda} &= \text{exp}(\boldsymbol{\mu}) 
+y_{i,t} \sim \text{NegBinom}(\mu_{i,t}, \zeta)
 \end{align}
 
-which states that counts (integer percent cover) are Poisson distributed with a log link function on abundance intensity ($\boldsymbol{\lambda}$). We assume the underlying process, $\boldsymbol{\mu}$, is a function of climate covariates (\textbf{X}), lagged sagebrush abundace (a temporal process), and a purely spatial random effect ($\boldsymbol{\eta}$):
+where $\mu_{i,t}$ is the determinstic expected population growth:
 
 \begin{align}
-\mu_{s,t} = \underbrace{\beta_{0} + \beta_{1}\mu_{s,t-1}}_\text{temporal} + \underbrace{\mathbf{X}_{t}\boldsymbol{\gamma}}_\text{climate} + \underbrace{\eta_{s}}_\text{spatial} + \underbrace{\varepsilon_{s,t}}_\text{error}
+\text{log}(\mu_{i,t}) &= \underbrace{\beta_{0} + \beta_{1}y_{i,t-1}}_\text{temporal} + \underbrace{\textbf{x}_{t}'\boldsymbol{\gamma}}_\text{climate} + \underbrace{\eta_{i}}_\text{spatial}
 \end{align}
 
-Fitting the spatial random effect ($\eta$) is computationally demanding when the observations come from 10s of 1,000s locations. The dimensionality is just too large. To overcome these computational constraints we employed a dimension reduction strategy to reduce the number of parameters that need to be estimated to account for spatial variation. A common strategy is to express high dimensional effects, like $\boldsymbol{\eta}$, as the product of an expansion matrix, \textbf{K}, and a smaller parameter vector, $\boldsymbol{\alpha}$. We can then define the spatial effect as
+Our model of population growth includes a temporal effect of cover in the previous year ($y_{i,t-1}$), climate effects ($\textbf{x}_t$), and a spatial random effect ($\eta$) for each pixel *i*.
+Fitting the spatial random effect ($\eta$) is computationally demanding when the observations come from 10s of 1,000s locations.
+The dimensionality is just too large.
+To overcome these computational constraints we employed a dimension reduction strategy to reduce the number of parameters that need to be estimated to account for spatial variation.
+A common strategy is to express high dimensional effects, like $\boldsymbol{\eta}$, as the product of an expansion matrix, \textbf{K}, and a smaller parameter vector, $\boldsymbol{\alpha}$.
+We can then define the spatial effect as
 
 \begin{align}
-\boldsymbol{\eta} = \textbf{K}\boldsymbol{\alpha}.
+\boldsymbol{\eta} &= \textbf{K}\boldsymbol{\alpha} \\
+\alpha_{j} &\sim \text{Normal}(0,\sigma_{\eta}^2)
 \end{align}
 
-In this case, $\boldsymbol{\alpha}$ is a $m \times 1$ vector of reduced spatial random effects, and \textbf{K} is a $S \times m$ matrix that maps the reduced effects to the full \emph{S}-dimensional space, where \emph{S} is the total number of observed locations. Thus, we are able to reduce the effective number of parameters from ${S} \rightarrow m$.
+In this case, $\boldsymbol{\alpha}$ is a $m \times 1$ vector of reduced spatial random effects, and \textbf{K} is a $S \times m$ matrix that maps the reduced effects to the full \emph{S}-dimensional space, where \emph{S} is the total number of observed locations.
+Thus, we are able to reduce the effective number of parameters from ${S} \rightarrow m$.
 
-Obviously, the last remaining obstacle is to parameterize \textbf{K}. Here we use kernel convolution to interpolate the spatial random effect between \emph{m} "knots" that are nonrandomly distributed across the space of our study area. These means we are modeling spatial random effects at the knot level, and we use \textbf{K} to interpolate those effects between knots. We use a simple Gaussian kernel density to define the distance-decay function around the knots (\textbf{w}), such that the entries of \textbf{K} are
+Obviously, the last remaining obstacle is to parameterize \textbf{K}.
+Here we use kernel convolution to interpolate the spatial random effect between \emph{m} "knots" that are nonrandomly distributed across the space of our study area.
+This means we are modeling spatial random effects at the knot level, and we use \textbf{K} to interpolate those effects between knots.
+We use an exponential kernel density to define the distance-decay function around the knots (\textbf{w}), such that the entries of \textbf{K} are
 
 \begin{align}
-K_{s,m} &= w_{s,m}/\sum_{s} w_{s,m}, \text{where} \\
-w_{s,m} &= (2 \pi \sigma^{2})^{-1} \text{exp}(\frac{-d_{s,m}}{2 \sigma^{2}}),
+K_{s,m} &= w_{s,m} / \sum_{s} w_{s,m}, \text{where} \\
+w_{s,m} &= (2 \pi \sigma)^{-1} \text{exp}(\frac{-d_{s,m}}{2 \sigma})
 \end{align}
 
-where $d_{s,m}$ is the Euclidean distance between the centroid of sample cell \emph{s} and the location of knot \emph{m}, and $\sigma$ is the kernel bandwidth. It is possible through exhaustive model selection and fitting to determine the optimal form of the kernel and to estimate optimal values for $\sigma$. However, given the relative largeness of our dataset and computational limitations, we decided to to create kernels around 81 knots (Figure #) and used a rule-of-thumb to set $\sigma$ equal to the distance between nearest neighbor knots (Higdon 2002, Conn et al. 2014). 
+where $d_{s,m}$ is the Euclidean distance between the centroid of sample cell \emph{s} and the location of knot \emph{m}, and $\sigma$ is the kernel bandwidth.
+It is possible through exhaustive model selection and fitting to determine the optimal form of the kernel and to estimate optimal values for $\sigma$.
+However, given the relative largeness of our dataset and computational limitations, we decided to to create kernels around 271 knots (Figure 2) whose nearest neighbor distances are approximately equal to the range of spatial dependence in residuals from a simple GLM fit without climate covariates and the spatial random effect (Appendix A).
+
+The full model can be expressed as:
+
+\begin{align}
+[\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2, \zeta] \propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \boldsymbol{\beta}, \boldsymbol{\gamma},\boldsymbol{\alpha}, \zeta] \right) \prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2][\beta_{0}][\beta_{1}][\gamma][\sigma^2][\sigma_{\eta}^2]
+\end{align}
+
+### Model estimation and model projections
+We fit the model using the 'No-U-Turn' MCMC sampler in Stan.
+We obtained posterior distributions of all model parmaters from 1,000 MCMC iterations after discarding an initial 1,000 iterations as burn in.
+We assessed convergence visually and ensured all scale reduction factors were less than 1.01 (Gelman citation). 
+
+With the posterior estimates of model parameters in hand, we were able to simulate a matrix of pixels equal to the size of the study area.
+To do so, we initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series.
+We ran the simulation for 2,500 time steps and then compared the output to the observed time series to see if the model could reproduce the observed cover.
+We then ran simulations where the projected climate changes in Table 1 were applied to the observed climate time series.
+
+Results
+-------
+Our pixel-based population model was able to reproduce observed percent cover (Figure 3).
+Three of five climate covariates were strong predictors of cover change (Figure 4).
+In particular, mean spring temperature and precipitation at time *t*-2 had strong positive effects on population growth, only slightly offset by a negative effect of precipitation at time  *t*-1.
+The positive effects of precipitation and temperature resulted in projected increases of cover for all climate change scenarios (Figure 5) since precipitation and temperature are both predicted to increase (Table 1).
+
+Discussion
+-----------
 
 
-### Computing and model estimation
+\pagebreak{}
 
 Figures
 -------
-```{r figure_1,dependson="plot-options", fig.cap="Average percent cover or each grid cell of the study area with knots used for spatial convolution in dimension reduction.", fig.height=6}
+```{r figure_1,dependson="plot-options", fig.cap="Location of the study area in southwester Wyoming and a snapshot of the percent cover data in 1984 for each site (a and b). Green shading on the map shows projected distribution of sagebrush from Kuchler (19xx). Latitude and longitude are in decimal degrees.", fig.height=6, eval=TRUE}
+library(png)
+library(grid)
+img <- readPNG("components/figure/StudyAreasMap_1and2.png")
+grid.raster(img)
+```
+
+
+```{r figure_2,dependson="plot-options", fig.cap="Average percent cover or each grid cell of the study area with knots used for spatial convolution in dimension reduction.", fig.height=6, eval=TRUE}
 library(png)
 library(grid)
 img <- readPNG("components/figure/SAGE_Grid_wKnots.png")
 grid.raster(img)
+```
+
+```{r figure_3,dependson="plot-options", fig.cap="Observed and predicted cover, averaged over years for each pixel. This histogram shows the distribution of observed cover and then density curve shows the distribution of predicted cover from the model.", fig.height=6, eval=TRUE}
+library(png)
+library(grid)
+img <- readPNG("../results/obs_pred_spatial_small.png")
+grid.raster(img)
+```
+
+```{r figure_4,dependson="plot-options", fig.cap="Posterior distributions of climate covariates.", fig.height=6, eval=TRUE}
+library(png)
+library(grid)
+img <- readPNG("../results/climeff_dens_small.png")
+grid.raster(img)
+```
+
+```{r figure_5,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels show the projections in space, averaged over time for each pixel. Lower panel shows distributions of cover under each scenario", fig.height=6, eval=TRUE}
+library(png)
+library(grid)
+img <- readPNG("../results/climchange_small.png")
+grid.raster(img)
+```

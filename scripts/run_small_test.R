@@ -125,7 +125,7 @@ outs <- ggs(fit)
 # ggs_traceplot(outs, "alpha")
 # ggs_traceplot(outs, "beta")
 saveRDS(outs, file = "../results/small_test_mcmc.RDS")
-
+outs <- readRDS("../results/small_test_mcmc.RDS")
 
 ## Look at spatial field
 alpha <- outs[grep("alpha", outs$Parameter),]
@@ -213,7 +213,7 @@ g1 <- ggplot(sp.equil2, aes(x=Lon, y=Lat))+
 g2 <- ggplot(sp.equil)+
   geom_histogram(aes(x=Observed, y = ..density..), col="white", fill="grey45", binwidth=1)+
   geom_line(stat="density", aes(x=Predicted, y= ..density..), 
-            col="black", size=1.5, adjust=15, linetype=2)+
+            col="black", size=1.5, linetype=2)+
   xlab("Percent Cover")+
   ylab("Estimated Kernel Density")+
   theme_bw()
@@ -226,11 +226,13 @@ dev.off()
 betas <- outs[grep("beta", outs$Parameter),]
 betas <- as.data.frame(subset(betas, Parameter!="beta_mu"))
 beta.names <- c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")
+cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", 
+               "#CC79A7", "#0072B2", "#D55E00", "#CC79A7")
 
 png("../results/climeff_dens_small.png", width = 6, height=3.5, units = "in", res=200)
 ggplot(betas)+
   geom_line(stat="density", aes(x=value, y=..density..,color=Parameter), size=1.5)+
-  scale_color_discrete(labels=beta.names, name="Coefficient")+
+  scale_color_manual(labels=beta.names, name="Coefficient", values=cbPalette[1:5])+
   geom_vline(xintercept=0, linetype=2)+
   xlab("Standardized Coefficient Value")+
   ylab("Posterior Density")+
@@ -251,7 +253,13 @@ mean_params <- ddply(outs, .(Parameter), summarise,
 alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
 betas <- mean_params[grep("beta", mean_params$Parameter),"..1"][2:6]
 eta <- K%*%alphas
-time.steps <- 1000
+time.steps <- 2500
+
+p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+clim_avg <- apply(X = p.climD, MARGIN = 2, FUN = mean)
+clim_sd <- apply(X = p.climD, MARGIN = 2, FUN = sd)
+
+
 
 pixels <- nrow(subset(growD, Year==1985))
 ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
@@ -260,11 +268,17 @@ p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "T
 p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[1,2],dim(climD)[1],2)
 p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[1,3],dim(climD)[1],2)
 X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-X_sim = scale(X_sim, center = TRUE, scale = TRUE)
+
+# Now scale based on perturbed or regular data, depending on scenario
+X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- exp(mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,]) + 
-    sum(betas*Xtmp)
+  tmp.mu <- exp(mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,] + 
+    sum(betas*Xtmp))
   tmp.mu <- tmp.mu + eta
   ex.mat[t,] <- rnbinom(ncol(ex.mat), mu=tmp.mu, size = mean_params[mean_params$Parameter=="phi","..1"])
 }
@@ -278,11 +292,16 @@ p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "T
 p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[2,2],dim(climD)[1],2)
 p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[2,3],dim(climD)[1],2)
 X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-X_sim = scale(X_sim, center = TRUE, scale = TRUE)
+# Now scale based on perturbed or regular data, depending on scenario
+X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- exp(mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,]) + 
-    sum(betas*Xtmp)
+  tmp.mu <- exp(mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,] + 
+    sum(betas*Xtmp))
   tmp.mu <- tmp.mu + eta
   ex.mat[t,] <- rnbinom(ncol(ex.mat), mu=tmp.mu, size = mean_params[mean_params$Parameter=="phi","..1"])
 }
@@ -296,11 +315,16 @@ p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "T
 p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[3,2],dim(climD)[1],2)
 p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[3,3],dim(climD)[1],2)
 X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-X_sim = scale(X_sim, center = TRUE, scale = TRUE)
+# Now scale based on perturbed or regular data, depending on scenario
+X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- exp(mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,]) + 
-    sum(betas*Xtmp)
+  tmp.mu <- exp(mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,] + 
+    sum(betas*Xtmp))
   tmp.mu <- tmp.mu + eta
   ex.mat[t,] <- rnbinom(ncol(ex.mat), mu=tmp.mu, size = mean_params[mean_params$Parameter=="phi","..1"])
 }
@@ -317,11 +341,32 @@ all.sims <- data.frame(pixel=c(1:length(eq.pixels)),
                        RCP85=colMeans(rcp85))
 all4plot <- melt(all.sims, id.vars = "pixel")
 
-png("../results/climchange_small.png", width = 5, height=3, units = "in", res=200)
-ggplot(all4plot)+
+
+
+
+####
+####  Plot spatial projections for RCP scenarios
+####
+proj.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
+                         Lat=subset(growD, Year==1985)$Lat,
+                         RCP45=colMeans(rcp45),
+                         RCP60=colMeans(rcp60),
+                         RCP85=colMeans(rcp85))
+proj.equil2 <- melt(proj.equil, id.vars = c("Lon", "Lat"))
+
+png("../results/climchange_small.png", width = 6, height=4.5, units = "in", res=150)
+g1 <- ggplot(proj.equil2, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=value, fill=value))+
+  scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
+  facet_wrap("variable", ncol=3)+
+  tmp.theme+
+  theme(strip.background=element_rect(fill="white"))
+
+g2 <- ggplot(all4plot)+
   geom_line(stat="density", aes(x=value, y=..density.., col=variable), size=1)+
   scale_color_manual(values=c("dodgerblue","tan","coral","darkred"), name="Scenario") +
   xlab("Equilibrium Percent Cover")+
   ylab("Estimated Kernel Density")+
   theme_bw()
+gout <- grid.arrange(g1, g2, ncol=1, nrow=2)
 dev.off()

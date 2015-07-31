@@ -4,3 +4,6 @@
 *.pdf
 *.tex
 *.png
+*.RData
+*.rdb
+*.rdx
