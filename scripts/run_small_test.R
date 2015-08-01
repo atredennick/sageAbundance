@@ -370,3 +370,58 @@ g2 <- ggplot(all4plot)+
   theme_bw()
 gout <- grid.arrange(g1, g2, ncol=1, nrow=2)
 dev.off()
+
+
+
+###################################################
+###################################################
+###################################################
+####
+####  Run population model with parameter uncertainty
+####
+time.steps <- 100
+pixels <- nrow(subset(growD, Year==1985))
+clim_sim <- climD[climD$year %in% unique(growD$Year),]
+X_sim = clim_sim[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+X_sim = scale(X_sim, center = TRUE, scale = TRUE)
+
+alphasd <- outs[grep("alpha", outs$Parameter),]
+climeffs <- c("beta[1]", "beta[2]", "beta[3]", "beta[4]", "beta[5]")
+nchains <- 3
+niters <- length(unique(outs$Iteration))
+totsims <- nchains*niters
+ex.arr <- array(NA, dim=c(totsims, time.steps, pixels))
+ex.arr[,1,] <- 1
+pb <- txtProgressBar(min=1, max=totsims, char="+", style=3, width=65)
+counter <- 1
+for(i in 1:nchains){
+  for(j in 1:niters){
+    chains <- i
+    iter <- j
+    int_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="int_mu")[,"value"])
+    beta_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="beta_mu")[,"value"])
+    betas <- subset(outs, Chain==chain & Iteration==iter & Parameter%in%climeffs)[,"value"]
+    alphas <- subset(alphasd, Chain==chain & Iteration==iter)[,"value"]
+    sizeparam <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="phi")[,"value"])
+    eta <- K%*%as.numeric(unlist(alphas))
+    for(t in 2:time.steps){
+      Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
+      tmp.mu <- exp(int_mu + beta_mu*ex.arr[counter,t-1,]) + sum(betas*Xtmp)
+      tmp.mu <- tmp.mu + eta
+      ex.arr[counter,t,] <- rnbinom(pixels, mu=tmp.mu, size = sizeparam)
+    }
+    counter <- counter+1
+    setTxtProgressBar(pb, counter)
+  }
+}
+
+y <- hist(growD$Cover, freq=FALSE, breaks=80)
+yhat <- hist(ex.arr, freq=FALSE)
+hist_ydata <- data.frame(x = y$breaks, y=c(y$density,0))
+hist_yhatdata <- data.frame(x = yhat$breaks, y=c(yhat$density,0))
+ggplot()+
+  geom_step(data=hist_ydata, aes(x=x, y=y), size=1.5)+
+  geom_step(data=hist_yhatdata, aes(x=x, y=y), col="darkorange", size=1)+
+  xlab("Cover (%)")+
+  ylab("Density")+
+  theme_bw()
