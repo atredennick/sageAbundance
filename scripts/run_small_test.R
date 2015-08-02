@@ -220,6 +220,47 @@ g2 <- ggplot(sp.equil)+
 gout <- grid.arrange(g1, g2, ncol=1, nrow=2)
 dev.off()
 
+
+####
+####  Predict each year
+####
+mean_params <- ddply(outs, .(Parameter), summarise,
+                     mean(value))
+alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
+betas <- mean_params[grep("beta", mean_params$Parameter),"..1"][2:6]
+eta <- K%*%alphas
+time.steps <- length(unique(growD$Year))
+yearid <- unique(growD$Year)
+pixels <- nrow(subset(growD, Year==1985))
+ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
+clim_sim <- climD[climD$year %in% unique(growD$Year),]
+X_sim = clim_sim[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+X_sim = scale(X_sim, center = TRUE, scale = TRUE)
+for(t in 1:time.steps){
+  Xtmp <- X_sim[t,]
+  lagcover <- growD[which(growD$Year==yearid[t]),"CoverLag"]
+  tmp.mu <- exp(mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*lagcover) + 
+    sum(betas*Xtmp)
+  tmp.mu <- tmp.mu + eta
+  ex.mat[t,] <- rnbinom(ncol(ex.mat), mu=tmp.mu, size = mean_params[mean_params$Parameter=="phi","..1"])
+}
+
+obs.cover <- growD[,c("Year","Cover","ID")]
+pred.cover <- melt(ex.mat)
+plot(obs.cover$Cover, pred.cover$value, xlim=c(0,20), ylim=c(0,20))
+abline(0,1, col="red")
+
+y <- hist(growD$Cover, freq=FALSE, breaks=80)
+yhat <- hist(pred.cover$value, freq=FALSE, breaks=80)
+hist_ydata <- data.frame(x = y$breaks, y=c(y$density,0))
+hist_yhatdata <- data.frame(x = yhat$breaks, y=c(yhat$density,0))
+ggplot()+
+  geom_step(data=hist_ydata, aes(x=x, y=y), size=1.5)+
+  geom_step(data=hist_yhatdata, aes(x=x, y=y), col="darkorange", size=1)+
+  xlab("Cover (%)")+
+  ylab("Density")+
+  theme_bw()
+
 ####
 ####  Plot estimated coefficient densities
 ####
