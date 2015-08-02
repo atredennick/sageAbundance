@@ -396,7 +396,7 @@ pb <- txtProgressBar(min=1, max=totsims, char="+", style=3, width=65)
 counter <- 1
 for(i in 1:nchains){
   for(j in 1:niters){
-    chains <- i
+    chain <- i
     iter <- j
     int_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="int_mu")[,"value"])
     beta_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="beta_mu")[,"value"])
@@ -430,4 +430,204 @@ ggplot()+
 ####
 ####  RCP 4.5; parameter vary
 ####
+projC<-data.frame("scenario"=c("rcp45","rcp60","rcp85"),
+                  "deltaPpt"=c(1.0894,1.0864,1.110),
+                  "deltaTspr"=c(2.975,3.134,4.786))
+p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+clim_avg <- apply(X = p.climD, MARGIN = 2, FUN = mean)
+clim_sd <- apply(X = p.climD, MARGIN = 2, FUN = sd)
+p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[1,2],dim(climD)[1],2)
+p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[1,3],dim(climD)[1],2)
+X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 
+# Now scale based on perturbed or regular data, depending on scenario
+X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
+
+alphasd <- outs[grep("alpha", outs$Parameter),]
+climeffs <- c("beta[1]", "beta[2]", "beta[3]", "beta[4]", "beta[5]")
+nchains <- 3
+niters <- length(unique(outs$Iteration))
+totsims <- nchains*niters
+pixels <- nrow(subset(growD, Year==1985))
+ex.arr <- array(NA, dim=c(totsims, time.steps, pixels))
+ex.arr[,1,] <- 1
+pb <- txtProgressBar(min=1, max=totsims, char="+", style=3, width=65)
+counter <- 1
+for(i in 1:nchains){
+  for(j in 1:niters){
+    chain <- i
+    iter <- j
+    int_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="int_mu")[,"value"])
+    beta_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="beta_mu")[,"value"])
+    betas <- subset(outs, Chain==chain & Iteration==iter & Parameter%in%climeffs)[,"value"]
+    betas <- as.numeric(unlist(betas))
+    alphas <- subset(alphasd, Chain==chain & Iteration==iter)[,"value"]
+    sizeparam <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="phi")[,"value"])
+    eta <- K%*%as.numeric(unlist(alphas))
+    for(t in 2:time.steps){
+      Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
+      tmp.mu <- exp(int_mu + beta_mu*ex.arr[counter,t-1,]) + sum(betas*Xtmp)
+      tmp.mu <- tmp.mu + eta
+      ex.arr[counter,t,] <- rnbinom(pixels, mu=tmp.mu, size = sizeparam)
+    }
+    counter <- counter+1
+    setTxtProgressBar(pb, counter)
+  }
+}
+rcp45 <- ex.arr
+rcp45a <- alply(rcp45,1)
+
+
+####
+####  RCP 6.0; parameter vary
+####
+projC<-data.frame("scenario"=c("rcp45","rcp60","rcp85"),
+                  "deltaPpt"=c(1.0894,1.0864,1.110),
+                  "deltaTspr"=c(2.975,3.134,4.786))
+p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+clim_avg <- apply(X = p.climD, MARGIN = 2, FUN = mean)
+clim_sd <- apply(X = p.climD, MARGIN = 2, FUN = sd)
+p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[2,2],dim(climD)[1],2)
+p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[2,3],dim(climD)[1],2)
+X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+
+# Now scale based on perturbed or regular data, depending on scenario
+X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
+
+alphasd <- outs[grep("alpha", outs$Parameter),]
+climeffs <- c("beta[1]", "beta[2]", "beta[3]", "beta[4]", "beta[5]")
+nchains <- 3
+niters <- length(unique(outs$Iteration))
+totsims <- nchains*niters
+pixels <- nrow(subset(growD, Year==1985))
+ex.arr <- array(NA, dim=c(totsims, time.steps, pixels))
+ex.arr[,1,] <- 1
+pb <- txtProgressBar(min=1, max=totsims, char="+", style=3, width=65)
+counter <- 1
+for(i in 1:nchains){
+  for(j in 1:niters){
+    chain <- i
+    iter <- j
+    int_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="int_mu")[,"value"])
+    beta_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="beta_mu")[,"value"])
+    betas <- subset(outs, Chain==chain & Iteration==iter & Parameter%in%climeffs)[,"value"]
+    betas <- as.numeric(unlist(betas))
+    alphas <- subset(alphasd, Chain==chain & Iteration==iter)[,"value"]
+    sizeparam <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="phi")[,"value"])
+    eta <- K%*%as.numeric(unlist(alphas))
+    for(t in 2:time.steps){
+      Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
+      tmp.mu <- exp(int_mu + beta_mu*ex.arr[counter,t-1,]) + sum(betas*Xtmp)
+      tmp.mu <- tmp.mu + eta
+      ex.arr[counter,t,] <- rnbinom(pixels, mu=tmp.mu, size = sizeparam)
+    }
+    counter <- counter+1
+    setTxtProgressBar(pb, counter)
+  }
+}
+rcp60 <- ex.arr
+rcp60a <- alply(rcp60,1)
+
+####
+####  RCP 8.5; parameter vary
+####
+projC<-data.frame("scenario"=c("rcp45","rcp60","rcp85"),
+                  "deltaPpt"=c(1.0894,1.0864,1.110),
+                  "deltaTspr"=c(2.975,3.134,4.786))
+p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+clim_avg <- apply(X = p.climD, MARGIN = 2, FUN = mean)
+clim_sd <- apply(X = p.climD, MARGIN = 2, FUN = sd)
+p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[3,2],dim(climD)[1],2)
+p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[3,3],dim(climD)[1],2)
+X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+
+# Now scale based on perturbed or regular data, depending on scenario
+X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
+
+alphasd <- outs[grep("alpha", outs$Parameter),]
+climeffs <- c("beta[1]", "beta[2]", "beta[3]", "beta[4]", "beta[5]")
+nchains <- 3
+niters <- length(unique(outs$Iteration))
+totsims <- nchains*niters
+pixels <- nrow(subset(growD, Year==1985))
+ex.arr <- array(NA, dim=c(totsims, time.steps, pixels))
+ex.arr[,1,] <- 1
+pb <- txtProgressBar(min=1, max=totsims, char="+", style=3, width=65)
+counter <- 1
+for(i in 1:nchains){
+  for(j in 1:niters){
+    chain <- i
+    iter <- j
+    int_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="int_mu")[,"value"])
+    beta_mu <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="beta_mu")[,"value"])
+    betas <- subset(outs, Chain==chain & Iteration==iter & Parameter%in%climeffs)[,"value"]
+    betas <- as.numeric(unlist(betas))
+    alphas <- subset(alphasd, Chain==chain & Iteration==iter)[,"value"]
+    sizeparam <- as.numeric(subset(outs, Chain==chain & Iteration==iter & Parameter=="phi")[,"value"])
+    eta <- K%*%as.numeric(unlist(alphas))
+    for(t in 2:time.steps){
+      Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
+      tmp.mu <- exp(int_mu + beta_mu*ex.arr[counter,t-1,]) + sum(betas*Xtmp)
+      tmp.mu <- tmp.mu + eta
+      ex.arr[counter,t,] <- rnbinom(pixels, mu=tmp.mu, size = sizeparam)
+    }
+    counter <- counter+1
+    setTxtProgressBar(pb, counter)
+  }
+}
+rcp85 <- ex.arr
+rcp85a <- alply(rcp85,1)
+
+
+####
+####  Spatial plot of forecast diffs; cover only for >0.6 prob of change
+####
+calcdiffs <- function(ypred.list, yobs, limit=TRUE, limit.val=0.6){
+  if(dim(ypred.list[[1]])[2] != length(yobs)) stop("dimension mismatch between ypred and yobs")
+  n <- length(ypred.list)
+  tmpdiff <- matrix(ncol=dim(ypred.list[[1]])[2], nrow=n)
+  for(i in 1:n){
+    tmpdiff[i,] <- colMeans(ypred.list[[i]]) - yobs
+  }
+  
+  if(limit==TRUE){
+    out <- numeric(dim(tmpdiff)[2])
+    for(i in 1:length(out)){
+      tmp <- abs(ecdf(tmpdiff[,i])(0) - (1-ecdf(tmpdiff[,i])(0)))
+      if(tmp > limit.val) out[i] <- mean(tmpdiff[,i])
+      if(tmp <= limit.val) out[i] <- 0
+    }# end pixel loop
+  }# end limit if/then
+  return(out)
+}# end function
+
+rcp45.diffs <- calcdiffs(rcp45a, yobs = obs.equil$cover, limit = TRUE, limit.val = 0.95)
+rcp60.diffs <- calcdiffs(rcp60a, yobs = obs.equil$cover, limit = TRUE, limit.val = 0.95)
+rcp85.diffs <- calcdiffs(rcp85a, yobs = obs.equil$cover, limit = TRUE, limit.val = 0.95)
+proj.diff <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
+                        Lat=subset(growD, Year==1985)$Lat,
+                        RCP45=rcp45.diffs,
+                        RCP60=rcp60.diffs,
+                        RCP85=rcp85.diffs)
+proj.diff2 <- melt(proj.diff, id.vars = c("Lon", "Lat"))
+proj.diff2[which(proj.diff2[,"value"]< (-10)), "value"] <- NA
+
+myPalette2 <- colorRampPalette(rev(brewer.pal(11, "RdBu")))
+ggplot(proj.diff2, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=value, fill=value))+
+  scale_fill_gradientn(colours=myPalette2(200), name="Cover\nDifference (%)")+
+  facet_wrap("variable", ncol=3)+
+  tmp.theme+
+  theme(strip.background=element_rect(fill="white"))
