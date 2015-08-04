@@ -447,7 +447,7 @@ for(i in 1:nchains){
     eta <- K%*%as.numeric(unlist(alphas))
     for(t in 2:time.steps){
       Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-      tmp.mu <- exp(int_mu + beta_mu*ex.arr[counter,t-1,]) + sum(betas*Xtmp)
+      tmp.mu <- exp(int_mu + beta_mu*ex.arr[counter,t-1,] + sum(betas*Xtmp))
       tmp.mu <- tmp.mu + eta
       ex.arr[counter,t,] <- rnbinom(pixels, mu=tmp.mu, size = sizeparam)
     }
@@ -460,12 +460,14 @@ y <- hist(growD$Cover, freq=FALSE, breaks=80)
 yhat <- hist(ex.arr, freq=FALSE)
 hist_ydata <- data.frame(x = y$breaks, y=c(y$density,0))
 hist_yhatdata <- data.frame(x = yhat$breaks, y=c(yhat$density,0))
+pdf("~/Desktop/test_hist.pdf", width = 4, height = 4)
 ggplot()+
   geom_step(data=hist_ydata, aes(x=x, y=y), size=1.5)+
   geom_step(data=hist_yhatdata, aes(x=x, y=y), col="darkorange", size=1)+
   xlab("Cover (%)")+
   ylab("Density")+
   theme_bw()
+dev.off()
 
 
 ####

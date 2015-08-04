@@ -51,77 +51,81 @@ opts_chunk$set(dev='pdf')
 \end{centering}
 
 \renewcommand*{\thefootnote}{\arabic{footnote}}
+\setcounter{footnote}{0}
 
 Abstract
 --------
-Global environmental changes, like climate change, tend to play out at the landscape and regional scales.
-Thus, it is reasonable that attempts to forecast the impacts of such change do so at similar spatial scales.
-For plant species, this has meant relying primarily on a single tool, species distribution models, that contain little information on population dynamics and states.
-Plant population models have proven exceedingly useful for projecting population dynamics and states under altered climate regimes, but most models are parameterized using local scale data from, generally, 1 $\text{m}^{2}$ plots.
-These models, even if highly predictive, cannot capture the full spatial variability in population responses to climate and thus are difficult to extrapolate from the micro to meso scale.
-Here we build on density-structured population modeling approaches and describe a population model based on remote sensing pixels -- a `pixel-based' population model.
-At its core the model is simply an individual-based population model where, instead of individuals, we focus on pixels as super individuals.
-To demonstrate the approach, we model the rate of transitions among discrete percent cover classes using a 27 year remotely sensed time series of sagebrush (\emph{Artemesia} spp.) cover in southwestern Wyoming.
-We use climate covariates in vital rate regressions so that we can forecast future population states under projected climate change.
-The pixel-based population model successfully recovers the the mean and spread of the observed data when we use observed climate covariates. 
+Population modeling inference has traditionally been limited to small scale observational studies.
+Yet, global environmental changes, like climate change, tend to play out at the landscape and regional scales, creating a mismatch between current tools and current problems.
+New technology is allowing for data products on massive scales covering entire ecosystems and teams are post-processing these data products to turn them into useful ecological information.
+For example, plant ecologists now have access to species-specific estimates of plant percent cover through time at spatial extents ranging from landscapes to continents.
+The real strength to be gained using this new form of ecological information will be to move beyond simple descriptive summaries of the data, and couple them with sophisticated model-based statistical approaches that can accommodate more realistic ecological mechanisms.
+A major hurdle in properly analyzing these types of data is in building and fitting statistical models that have valid assumptions.
+Rigorously accounting for spatial autocorrelation has been a crux in former analyses at large scales, but we can now fit appropriate models using modern, computationally efficient model reparameterizations and dimension reduction techniques.
 
+Here we advance recent work on spatiotemporal modeling of animal abundance by applying those methods to remotely-sensed estimates of plant percent cover at the landscape scale.
+We use a 27 year time series of sagebrush (*Artemesia* spp.) percent cover over a $5\times5$ km landscape in southwestern Wyoming to fit a spatiotemporal population model that includes climate covariates.
+We then use the model to forecast future population states (percent cover) under projected climate scenarios.
+Our analysis suggests sagebrush will increase in cover at this high elevation site, primarily driven by a positive response to spring temperature.
+However, gains in cover are not homogeneous in space; we forecast some areas will increase in cover while others will decrease.
+Such spatially explicit estimates of increases/decreases in plant abundance have, until now, been elusive.
+The spatiotemporal model we describe can be applied to any spatially explicit time series of plant cover.
+As such datasets become increasingly available and precise, we expect the methods we use here to become an appealing alternative to species distribution models that lack population dynamics and, generally, estimates of species abundance.
 
 *Key words: population model, climate change, forecasting, spatiotemporal model, remote sensing, sagebrush*, Artemesia, *dimension reduction* 
 
 Introduction
 -------------
-Forecasting the impacts of climate change on plant populations and communities is a central challenge of modern ecology.
-The challenge lies in faithfully representing population dynamics at spatial and temporal scales relevant to policy and management decisions.
-However, almost every study of plant population dynamics relies on demographic observations recorded at the meter to sub-meter scale.
-Local-scale demographic data make building population projection models an easy task (Ellner et al., 2006; Rees et al., 2009; Adler et al., 2012), but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions.
+Forecasting the impacts of climate change on plant populations and communities is a central challenge of modern ecology [@Clark2001; @Petchey2015].
+The challenge lies in faithfully representing population dynamics at spatial and temporal scales relevant to policy and management decisions [@Queenborough2011, Tredennick and Adler in review].
+However, almost every study of plant population dynamics relies on demographic observations recorded at the meter to sub-meter scale [@Salguero-Gomez2015].
+Local-scale demographic data make building population projection models an easy task [@Ellner2006; @Rees2009; @Adler2012], but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions [@Freckleton2011; @Queenborough2011].
 Also, given the costliness (in time and money) of collecting detailed demographic data, it is unlikely that “enough” local-scale data can be collected to accurately project large-scale population dynamics. 
 
-The fundamental limitation of local-scale data is that they are insufficient for estimating the full extent of variation in model parameters possible at larger spatial and temporal extents (Freckleton et al., 2011; Queenborough et al., 2011).
-It is possible to estimate the variance of population model parameters related to spatial and temporal variability, but the observations used to estimate parameter uncertainty tend to be clustered in space or time.
-Thus, extrapolating beyond the spatial or temporal resolution of the data used to parameterize models can lead to biased and wrong forecasts of future population states. 
+Alternatives to local-scale demographic data are rapidly becoming available.
+Forest Inventory and Analysis (FIA) data have been successfully used to fit sophisticated species distribution models (SDMs) that predict occurance and abundance at large spatial extents [@Clark2014].
+However, all SDMs rely on correlations in space, which have been shown to perform poorly relative to models based on responses to changes in climate over time [@Clark2011].
+Likewise, distributed demographic data, like FIA data, are not continuous in space.
+So creating continuous prediction surfaces requires extrapolating predictions to areas not covered by the data.
 
-Alternatively, large-scale trends in populations are easily detected using widely available monitoring data, but such data are rarely used to project future population states. 
-Given the tradeoffs between the spatial-scale of data and the inference that can be drawn from the data, we suggest combining the best features of local-scale population modeling and large-scale monitoring data.
-Specifically, we propose a new approach for modeling population dynamics at large spatial extents based on the theory and mechanics of individual-based models (IBMs) as applied to remotely-sensed time series data.
-
-The approach we describe in this paper flows naturally from recent work on density-structured population models.
-Density-structured models rely on modeling the transitions of a population among discrete states rather than the traditional approach of modeling the transitions of individuals.
-Relatively few ecologists have taken up the density-structured mantle first proposed by Taylor, C. M. et al. (2004), but recently Freckleton et al. (2011) and Queenborough et al. (2011) have higlighted the potential value the approach.
 
 Materials and Methods
 ---------------------
-### Data: Remotely-sensed time series
-To demonstrate our pixel-based modeling approach we use a subset of a remotely-sensed time series of sagebrush (\emph{Artemisia} spp.) shrub percent cover in Wyoming (Homer et al., 2012) (Figure 1).
-Sagebrush percent cover was estimated using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1,780 field observations of sagebrush cover distributed across Wyoming.
+### Data
+#### Remotely-sensed time series
+To demonstrate our pixel-based modeling approach we use a subset of a remotely-sensed time series of sagebrush (\emph{Artemisia} spp.) shrub percent cover in Wyoming [@Homer2012] (Figure 1).
+Sagebrush percent cover was estimated using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1 780 field observations of sagebrush cover distributed across Wyoming.
 The regression tree model was further validated using another 500 field observations. For Wyoming sagebrush, the model achieved an $R^{2}$ = 0.65.
 To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images. This resulted in an annual time series of sagebrush cover at 30 m resolution from 1984 to 2011.
 In this dataset, values represent the percentage of a 30 $\times$ 30 m pixel covered by sagebrush.
-For our purposes we use two 5 $\times$ 5 km subsets (study areas 1 and 2), totaling 27,948 pixels each.
-Thus, each full dataset contains 754,596 observations (27 years $\times$ 27,948 pixels).
+For our purposes we use two 5 $\times$ 5 km subsets (study areas 1 and 2), totaling 27 948 pixels each.
+Thus, each full dataset contains 754 596 observations (27 years $\times$ 27 948 pixels).
 
-### Data: Climate covariates
+#### Climate covariates
 Our approach is based on modeling how changes in plant populations relate to climate variables.
-We narrowed our focus to climate covariates we know are important for sagebrush and that could be easily calculated from general circulation model projections. The four climate variables in our population model are: (1) year \emph{t} fall through summer precipitation, (2) year \emph{t}-1 fall through summer precipitation, (3) year \emph{t} average spring temperature, and (4) year \emph{t}-1 average spring temperature (Table [tab:Definition-of-climate]).
-Climate data to parameterize vital rate regressions (`observed' climate) came from the PRISM climate database. Climate data were extracted for the centroid our study area.
+We narrowed our focus to climate covariates we know are important for sagebrush and that could be easily calculated from general circulation model projections.
+The four climate variables in our population model are: (1) year \emph{t} fall through summer precipitation, (2) year \emph{t}-1 fall through summer precipitation, (3) year \emph{t} average spring temperature, and (4) year \emph{t}-1 average spring temperature (Table #).
+We downloaded daily historic weather data from the parameter-elevation regressions on independent slopes model (PRISM) data set (*available online*)[^link].
+The PRISM weather data is interpolated between coarse observation units and does capture some spatial variation.
+However, instead of further downscaling the 800 meter resolution weather data to match our 30 meter resolution percent cover data, we chose to simply extract weather data for the centroid of our study area.
+We calcualted the four climate variables outline above from the PRISM data for the time period of our remotely sensed data (1984 to 2011).
 
-Climate data used to inform model projections of future sagebrush
-cover came from average outputs of all models used in the most recent
-IPCC report, the Coupled Model Intercomparison Project 5 (CMIP5; http://cmip-pcmdi.llnl.gov/cmip5/).
-We downloaded model estimates of historic climate (1950-2000) and
-projected climate (2050-2100) for the centroid of our study area.
-We wanted to keep the temporal variability from observed climate consistent,
-so our aim was to adjust observed climate according to projected changes.
-For temperature we simply subtracted the average historic temperature
-from the average projected temperature. For precipitation we calculated
-the proportional change: we subtracted average projected precipitation
-from average historic precipitation, and then divided by average historic
-precipitation. We did this for three ``Representative Concentration
-Pathways'': RCP 4.5, RCP 6.0, and RCP 8.5. RCPs are described here,
-http://tntcat.iiasa.ac.at/RcpDb/.
-Basically they correspond to stabilization of radiative forcing before
-2100, after 2100, and increasing greenhouse gas emissions, respectively.
-We implemented projected temperature and precipitation changes in
-the model by perturbing observed annual values by the values in Table #.
+[^link]: http://www.prism.oregonstate.edu/
+
+To forecast future population states, we required future projections of climate for our study area.
+We downloaded the most recent climate projections used by the Intergovernmental Panel on Climate Change (IPCC), the Coupled Model Intercomparison Project 5 (CMIP5; *available online*)[^link2].
+The CMIP5 provides projections from a suite of global circulations models.
+For our purposes, we averaged all model projections for the centroid of our study area over the time period of 2050 to 2100.
+We did the same for the time period of 1950 to 2000 so we could calculate projected changes in climate.
+To keep the temporal variability from observed climate consistent, for climate change scenarios we adjusted observed climate according to projected changes.
+For temperature we subtracted the average historic (1950-2000) temperature from the average projected (2050-2100) temperature. 
+For precipitation we calculated the proportional change: we subtracted average projected (2050-2100) precipitation from average historic (1950-2000) precipitation, and then divided by average historic (1950-2000) precipitation. 
+We did this for three ``Representative Concentration Pathways'': RCP 4.5, RCP 6.0, and RCP 8.5 (*described online*)[^link3].
+The three RCPs correspond to stabilization of radiative forcing before 2100, after 2100, and increasing greenhouse gas emissions, respectively.
+We implemented projected temperature and precipitation changes in the model by perturbing observed annual values by the values in Table #.
+
+[^link2]: http://cmip-pcmdi.llnl.gov/cmip5/
+[^link3]: http://tntcat.iiasa.ac.at/RcpDb/
 
 \begin{table}[h]
 \protect\caption{\label{tab:Changes-in-climate}Changes in climate variables from CMIP5
@@ -153,6 +157,8 @@ where $\mu_{i,t}$ is the expected population growth
 \end{align}
 
 Our model of population growth includes a temporal effect of cover in the previous year ($y_{i,t-1}$), climate effects ($\textbf{x}_t$), and a spatial random effect ($\eta$) for each pixel *i*.
+Climate effects were standardized [$(x_{i}-\bar{x}) / \sigma(x)$] to speed up convergence during the model fitting stage (see below).
+
 Fitting the model with a spatial random effect ($\eta$) is computationally demanding when a large number of observations are considered.
 This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations (Wikle 2010).
 To overcome these computational constraints, we employed a dimension reduction strategy to reduce the number of parameters that need to be estimated to account for spatial variation.
@@ -192,13 +198,15 @@ The Bayesian posterior distribution can be expressed as
 [\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2, \zeta | \textbf{y}] \propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \boldsymbol{\beta}, \boldsymbol{\gamma},\boldsymbol{\alpha}, \zeta] \right) \prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2][\beta_{0}][\beta_{1}][\gamma][\zeta][\sigma_{\eta}^2].
 \end{align}
 
-### Model estimation and model projections
+### Computing
+####Fitting the model
 We fit the model in R [@R2013] using the 'No-U-Turn' MCMC sampler in Stan [@stan2014] and the RStan package [@rstan2014].
 We obtained posterior distributions of all model parmaters from three MCMC chains comprised of 1 000 iterations each, after discarding an initial 1 000 iterations as burn in.
 Such short MCMC chains may seem unusual to those more familiar with other MCMC samplers (e.g., JAGS or WinBUGS).
 However, the Stan sampler is extremely efficient, meaning that compared to other samplers fewer iterations are required to achieve convergence.
 We assessed convergence visually and ensured all scale reduction factors were less than 1.01 [@Gelman1992; @Gelman2007]. 
 
+####Simulating the model
 Using the posterior estimates of model parameters, we were able to simulate a matrix of pixels equal to the size of the study area.
 To do so, we initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series.
 We ran the simulation for 2 500 time steps and then compared the output to the observed time series to see if the model could reproduce the observed cover.
