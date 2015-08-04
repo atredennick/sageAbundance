@@ -5,7 +5,7 @@ header-includes:
    - \linenumbers
    - \usepackage{setspace}
    - \doublespacing
-bibliography: ~/Dropbox/Bibliography/MicroMeso.bib
+bibliography: ~/Dropbox/Bibliography/SageAbundance.bib
 csl: components/ecology.csl
 
 ## rmarkdown render options
@@ -35,9 +35,9 @@ opts_chunk$set(dev='pdf')
 \renewcommand*{\thefootnote}{\fnsymbol{footnote}}
 
 \begin{centering}
-\textbf{\large{Remote-sensing based population models for projecting climate change impacts on plant populations at large spatial extents: a test case with sagebrush (\emph{Artemisia}) species}}
+\textbf{\large{A spatiotemporal modeling framework for forecasting climate change impacts on plant populations over large spatial extents}}
 
-\textsc{\small{Andrew T. Tredennick\footnote{E-mail: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4,5}, Cameron L. Aldridge\textsuperscript{5,6,7}, Colin G. Homer, David T. Iles\textsuperscript{1}, Andrew Kleinhesselink\textsuperscript{1}, Eric LaMalfa\textsuperscript{1}, Rebecca Mann\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
+\textsc{\small{Andrew T. Tredennick\footnote{E-mail: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4,5}, Cameron L. Aldridge\textsuperscript{5,6,7}, Colin G. Homer\textsuperscript{8}, David T. Iles\textsuperscript{1}, Andrew Kleinhesselink\textsuperscript{1}, Eric LaMalfa\textsuperscript{1}, Rebecca Mann\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
 
 \textit{\small{\textsuperscript{1}Department of Wildland Resources and the Ecology Center, 5230 Old Main Hill, Utah State University, Logan, Utah 84322-5230 USA}} \\*
 \textit{\small{\textsuperscript{2}U.S. Geological Survey, Colorado Cooperative Fish and Wildlife Research Unit}} \\*
@@ -66,7 +66,7 @@ We use climate covariates in vital rate regressions so that we can forecast futu
 The pixel-based population model successfully recovers the the mean and spread of the observed data when we use observed climate covariates. 
 
 
-*Key words: population model, climate change, forecasting, remote sensing, sagebrush*, Artemesia 
+*Key words: population model, climate change, forecasting, spatiotemporal model, remote sensing, sagebrush*, Artemesia, *dimension reduction* 
 
 Introduction
 -------------
@@ -139,63 +139,69 @@ RCP 8.5 & 4.79\textdegree & 11.0\% &  & 4.90\textdegree & 8.81\%\tabularnewline
 \end{table}
 
 ### Additive spatio-temporal model for sagebrush cover
-We use a descriptive model for sagebrush cover that includes additive spatial and temporal effects (Conn et al. 2014).
-Since the spatial and temporal effects are additive, we are not considering space-time interactions.
-We model observed integer percent cover (*y*) in cell *i* at time *t* as conditionally negative binomial:
+We use a descriptive model for sagebrush cover that includes additive spatial and temporal effects (Conn et al. 2015).
+We model observed integer percent cover (*y*) in cell *i* at time *t* as conditionally negative binomial
 
 \begin{align}
-y_{i,t} \sim \text{NegBinom}(\mu_{i,t}, \zeta)
+y_{i,t} \sim \text{NegBinom}(\mu_{i,t}, \zeta),
 \end{align}
 
-where $\mu_{i,t}$ is the determinstic expected population growth:
+where $\mu_{i,t}$ is the expected population growth
 
 \begin{align}
-\text{log}(\mu_{i,t}) &= \underbrace{\beta_{0} + \beta_{1}y_{i,t-1}}_\text{temporal} + \underbrace{\textbf{x}_{t}'\boldsymbol{\gamma}}_\text{climate} + \underbrace{\eta_{i}}_\text{spatial}
+\text{log}(\mu_{i,t}) &= \underbrace{\beta_{0} + \beta_{1}y_{i,t-1}}_\text{temporal} + \underbrace{\textbf{x}_{t}'\boldsymbol{\gamma}}_\text{climate} + \underbrace{\eta_{i}}_\text{spatial}.
 \end{align}
 
 Our model of population growth includes a temporal effect of cover in the previous year ($y_{i,t-1}$), climate effects ($\textbf{x}_t$), and a spatial random effect ($\eta$) for each pixel *i*.
-Fitting the spatial random effect ($\eta$) is computationally demanding when the observations come from 10s of 1,000s locations.
-The dimensionality is just too large.
-To overcome these computational constraints we employed a dimension reduction strategy to reduce the number of parameters that need to be estimated to account for spatial variation.
-A common strategy is to express high dimensional effects, like $\boldsymbol{\eta}$, as the product of an expansion matrix, \textbf{K}, and a smaller parameter vector, $\boldsymbol{\alpha}$.
+Fitting the model with a spatial random effect ($\eta$) is computationally demanding when a large number of observations are considered.
+This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations (Wikle 2010).
+To overcome these computational constraints, we employed a dimension reduction strategy to reduce the number of parameters that need to be estimated to account for spatial variation.
+Reducing the number of effective spatial random effect parameters speeds up estimation by reducing the size of the covariance matrices that need to be inverted at each MCMC iteration.
+Fitting models that appropriately account for spatial autocorrelation over large spatial extents would be virtually impossible without these modern techniques.
+We follow a common dimension reduction strategy, and express the high dimensional spatial random effect, $\boldsymbol{\eta}$, as the product of an expansion matrix, \textbf{K}, and a smaller parameter vector, $\boldsymbol{\alpha}$ [@Hooten2007a; @Conn2015].
 We can then define the spatial effect as
 
 \begin{align}
-\boldsymbol{\eta} &= \textbf{K}\boldsymbol{\alpha} \\
-\alpha_{j} &\sim \text{Normal}(0,\sigma_{\eta}^2)
+\boldsymbol{\eta} &= \textbf{K}\boldsymbol{\alpha}, \\
+\alpha_{j} &\sim \text{Normal}(0,\sigma_{\eta}^2).
 \end{align}
 
 In this case, $\boldsymbol{\alpha}$ is a $m \times 1$ vector of reduced spatial random effects, and \textbf{K} is a $S \times m$ matrix that maps the reduced effects to the full \emph{S}-dimensional space, where \emph{S} is the total number of observed locations.
-Thus, we are able to reduce the effective number of parameters from ${S} \rightarrow m$.
+Thus, we are able to reduce the effective number of parameters from ${S}$ to $m$.
 
-Obviously, the last remaining obstacle is to parameterize \textbf{K}.
-Here we use kernel convolution to interpolate the spatial random effect between \emph{m} "knots" that are nonrandomly distributed across the space of our study area.
+The last remaining obstacle is to parameterize \textbf{K}.
+Here we use kernel convolution [@Barry1996; @Higdon1998] to interpolate the spatial random effect between \emph{m} "knots" that are nonrandomly distributed across the space of our study area.
 This means we are modeling spatial random effects at the knot level, and we use \textbf{K} to interpolate those effects between knots.
 We use an exponential kernel density to define the distance-decay function around the knots (\textbf{w}), such that the entries of \textbf{K} are
 
 \begin{align}
-K_{s,m} &= w_{s,m} / \sum_{s} w_{s,m}, \text{where} \\
-w_{s,m} &= (2 \pi \sigma)^{-1} \text{exp}(\frac{-d_{s,m}}{2 \sigma})
+K_{s,m} &= w_{s,m} / \sum_{s} w_{s,m}
+\end{align}
+where
+\begin{align}
+w_{s,m} &= (2 \pi \sigma)^{-1} \text{exp}\left(\frac{-d_{s,m}}{2 \sigma}\right).
 \end{align}
 
 where $d_{s,m}$ is the Euclidean distance between the centroid of sample cell \emph{s} and the location of knot \emph{m}, and $\sigma$ is the kernel bandwidth.
-It is possible through exhaustive model selection and fitting to determine the optimal form of the kernel and to estimate optimal values for $\sigma$.
-However, given the relative largeness of our dataset and computational limitations, we decided to to create kernels around 271 knots (Figure 2) whose nearest neighbor distances are approximately equal to the range of spatial dependence in residuals from a simple GLM fit without climate covariates and the spatial random effect (Appendix A).
+It is possible through exhaustive model selection and fitting to determine the optimal form of the kernel and to estimate optimal values for $\sigma$ [@Higdon2002; @Hooten2014].
+However, given the relative largeness of our dataset and computational limitations, we defined kernels around 271 knots (Figure 2) whose nearest neighbor distances are approximately equal to the range of spatial dependence in residuals from a simple GLM fit without climate covariates and the spatial random effect (Appendix A).
 
-The full model can be expressed as:
+The Bayesian posterior distribution can be expressed as
 
 \begin{align}
-[\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2, \zeta] \propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \boldsymbol{\beta}, \boldsymbol{\gamma},\boldsymbol{\alpha}, \zeta] \right) \prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2][\beta_{0}][\beta_{1}][\gamma][\sigma^2][\sigma_{\eta}^2]
+[\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2, \zeta | \textbf{y}] \propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \boldsymbol{\beta}, \boldsymbol{\gamma},\boldsymbol{\alpha}, \zeta] \right) \prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2][\beta_{0}][\beta_{1}][\gamma][\zeta][\sigma_{\eta}^2].
 \end{align}
 
 ### Model estimation and model projections
-We fit the model using the 'No-U-Turn' MCMC sampler in Stan.
-We obtained posterior distributions of all model parmaters from 1,000 MCMC iterations after discarding an initial 1,000 iterations as burn in.
-We assessed convergence visually and ensured all scale reduction factors were less than 1.01 (Gelman citation). 
+We fit the model in R [@R2013] using the 'No-U-Turn' MCMC sampler in Stan [@stan2014] and the RStan package [@rstan2014].
+We obtained posterior distributions of all model parmaters from three MCMC chains comprised of 1 000 iterations each, after discarding an initial 1 000 iterations as burn in.
+Such short MCMC chains may seem unusual to those more familiar with other MCMC samplers (e.g., JAGS or WinBUGS).
+However, the Stan sampler is extremely efficient, meaning that compared to other samplers fewer iterations are required to achieve convergence.
+We assessed convergence visually and ensured all scale reduction factors were less than 1.01 [@Gelman1992; @Gelman2007]. 
 
-With the posterior estimates of model parameters in hand, we were able to simulate a matrix of pixels equal to the size of the study area.
+Using the posterior estimates of model parameters, we were able to simulate a matrix of pixels equal to the size of the study area.
 To do so, we initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series.
-We ran the simulation for 2,500 time steps and then compared the output to the observed time series to see if the model could reproduce the observed cover.
+We ran the simulation for 2 500 time steps and then compared the output to the observed time series to see if the model could reproduce the observed cover.
 We then ran simulations where the projected climate changes in Table 1 were applied to the observed climate time series.
 
 Results
@@ -213,7 +219,7 @@ Discussion
 
 Figures
 -------
-```{r figure_1,dependson="plot-options", fig.cap="Location of the study area in southwester Wyoming and a snapshot of the percent cover data in 1984 for each site (a and b). Green shading on the map shows projected distribution of sagebrush from Kuchler (19xx). Latitude and longitude are in decimal degrees.", fig.height=6, eval=TRUE}
+```{r figure_1,dependson="plot-options", fig.cap="Location of the study area in southwester Wyoming and a snapshot of the percent cover data in 1984 for each site (a and b). Green shading on the map shows projected distribution of sagebrush from Kuchler (19xx). Latitude and longitude are in decimal degrees.", fig.height=6, eval=FALSE}
 library(png)
 library(grid)
 img <- readPNG("components/figure/StudyAreasMap_1and2.png")
@@ -221,30 +227,35 @@ grid.raster(img)
 ```
 
 
-```{r figure_2,dependson="plot-options", fig.cap="Average percent cover or each grid cell of the study area with knots used for spatial convolution in dimension reduction.", fig.height=6, eval=TRUE}
+```{r figure_2,dependson="plot-options", fig.cap="Average percent cover or each grid cell of the study area with knots used for spatial convolution in dimension reduction.", fig.height=6, eval=FALSE}
 library(png)
 library(grid)
 img <- readPNG("components/figure/SAGE_Grid_wKnots.png")
 grid.raster(img)
 ```
 
-```{r figure_3,dependson="plot-options", fig.cap="Observed and predicted cover, averaged over years for each pixel. This histogram shows the distribution of observed cover and then density curve shows the distribution of predicted cover from the model.", fig.height=6, eval=TRUE}
+```{r figure_3,dependson="plot-options", fig.cap="Observed and predicted cover, averaged over years for each pixel. This histogram shows the distribution of observed cover and then density curve shows the distribution of predicted cover from the model.", fig.height=6, eval=FALSE}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_spatial_small.png")
 grid.raster(img)
 ```
 
-```{r figure_4,dependson="plot-options", fig.cap="Posterior distributions of climate covariates.", fig.height=6, eval=TRUE}
+```{r figure_4,dependson="plot-options", fig.cap="Posterior distributions of climate covariates.", fig.height=6, eval=FALSE}
 library(png)
 library(grid)
 img <- readPNG("../results/climeff_dens_small.png")
 grid.raster(img)
 ```
 
-```{r figure_5,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels show the projections in space, averaged over time for each pixel. Lower panel shows distributions of cover under each scenario", fig.height=6, eval=TRUE}
+```{r figure_5,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels show the projections in space, averaged over time for each pixel. Lower panel shows distributions of cover under each scenario.", fig.height=6, eval=FALSE}
 library(png)
 library(grid)
 img <- readPNG("../results/climchange_small.png")
 grid.raster(img)
 ```
+
+\pagebreak{}
+
+References
+----------
