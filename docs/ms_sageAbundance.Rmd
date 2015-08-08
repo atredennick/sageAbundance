@@ -150,14 +150,15 @@ We model observed integer percent cover (*y*) in cell *i* at time *t* as conditi
 y_{i,t} \sim \text{NegBinom}(\mu_{i,t}, \zeta),
 \end{align}
 
-where $\mu_{i,t}$ is the expected population growth
+where $\mu_{i,t}$ is the expected percent cover of pixel *i* in year *t*
 
 \begin{align}
 \text{log}(\mu_{i,t}) &= \underbrace{\beta_{0} + \beta_{1}y_{i,t-1}}_\text{temporal} + \underbrace{\textbf{x}_{t}'\boldsymbol{\gamma}}_\text{climate} + \underbrace{\eta_{i}}_\text{spatial}.
 \end{align}
 
-Our model of population growth includes a temporal effect of cover in the previous year ($y_{i,t-1}$), climate effects ($\textbf{x}_t$), and a spatial random effect ($\eta$) for each pixel *i*.
+Our model of percent cover change includes a temporal effect of cover in the previous year ($y_{i,t-1}$), climate effects ($\textbf{x}_t$), and a spatial random effect ($\eta$) for each pixel *i*.
 Climate effects were standardized [$(x_{i}-\bar{x}) / \sigma(x)$] to speed up convergence during the model fitting stage (see below).
+We chose a negative binomial likelihood because integer percent cover is a form of count data, and the negative binomial distribution allows for slightly more dispersion than the poisson.
 
 Fitting the model with a spatial random effect ($\eta$) is computationally demanding when a large number of observations are considered.
 This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations (Wikle 2010).
@@ -203,12 +204,12 @@ The Bayesian posterior distribution can be expressed as
 We fit the model in R [@R2013] using the 'No-U-Turn' MCMC sampler in Stan [@stan2014] and the RStan package [@rstan2014].
 We obtained posterior distributions of all model parmaters from three MCMC chains comprised of 1 000 iterations each, after discarding an initial 1 000 iterations as burn in.
 Such short MCMC chains may seem unusual to those more familiar with other MCMC samplers (e.g., JAGS or WinBUGS).
-However, the Stan sampler is extremely efficient, meaning that compared to other samplers fewer iterations are required to achieve convergence.
+However, the Stan sampler is extremely efficient, meaning that, compared to other samplers, fewer iterations are required to achieve convergence.
 We assessed convergence visually and ensured all scale reduction factors were less than 1.01 [@Gelman1992; @Gelman2007]. 
 
 ####Simulating the model
-Using the posterior estimates of model parameters, we were able to simulate a matrix of pixels equal to the size of the study area.
-To do so, we initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series.
+Using the posterior distribution of model parameters, we simulate a matrix of pixels equal to the size of the study area (XX XXX pixels or matrix elements).
+We initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series.
 We ran the simulation for 2 500 time steps and then compared the output to the observed time series to see if the model could reproduce the observed cover.
 We then ran simulations where the projected climate changes in Table 1 were applied to the observed climate time series.
 
