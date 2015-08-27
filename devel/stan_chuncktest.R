@@ -54,25 +54,37 @@ pars <- c("alpha", "beta", "sigma")
 # Compile the model
 mcmc_config <- stan(model_code=model_string, data=datalist, pars=pars, chains=0)
 mcmc1 <- stan(fit=mcmc_config, data=datalist, pars=pars, chains=1, iter = 200, warmup = 100)
+long <- ggs(mcmc1, inc_warmup = TRUE)
 traceplot(mcmc1)
-long <- ggs(mcmc1)
-lastones <- subset(long, Iteration==100)
+lastones <- subset(long, Iteration==200)
+lastmcmc <- mcmc1
+saveRDS(long,"iterchunk1_chain1.RDS")
 
-newinits <- list(list(alpha=as.numeric(lastones[which(lastones$Parameter=="alpha"),"value"]),
-                 beta=as.numeric(lastones[which(lastones$Parameter=="beta"),"value"]),
-                 sigma=as.numeric(lastones[which(lastones$Parameter=="sigma"),"value"])))
-mcmc2 <- stan(fit = mcmc1, data = datalist, pars = pars, chains = 1, iter=200, warmup=100, init = newinits)
-traceplot(mcmc2)
-long2 <- ggs(mcmc2, inc_warmup = TRUE)
-firstones <- subset(long2, Iteration==1)
+for(i in 2:10){
+  newinits <- list(list(alpha=as.numeric(lastones[which(lastones$Parameter=="alpha"),"value"]),
+                        beta=as.numeric(lastones[which(lastones$Parameter=="beta"),"value"]),
+                        sigma=as.numeric(lastones[which(lastones$Parameter=="sigma"),"value"])))
+  mcmc <- stan(fit = lastmcmc, data = datalist, pars = pars, chains = 1, 
+               iter=200, warmup=100, init = newinits)
+  long <- ggs(mcmc, inc_warmup = TRUE)
+  lastones <- subset(long, Iteration==200)
+  lastmcmc <- mcmc
+  saveRDS(long, paste0("iterchunk",i,"_chain1.RDS"))
+}
 
-firstones
-lastones
 
 ####
-####  Combine MCMC chains and plot
+####  Read in all iteration chunks and plot long chain
 ####
-long2$Iteration <- long2$Iteration+100
-long_mcmc <- rbind(long, long2)
-ggs_traceplot(long_mcmc)
+longchain <- readRDS("iterchunk1_chain1.RDS")
+for(i in 2:10){
+  longchain <- rbind(longchain, readRDS(paste0("iterchunk",i,"_chain1.RDS")))
+}
+par(mfrow=c(3,2))
+plot(c(1:2000),unlist(longchain[which(longchain$Parameter=="alpha"),"value"]), type="l")
+plot(density(unlist(longchain[which(longchain$Parameter=="alpha"),"value"])))
+plot(c(1:2000),unlist(longchain[which(longchain$Parameter=="beta"),"value"]), type="l")
+plot(density(unlist(longchain[which(longchain$Parameter=="beta"),"value"])))
+plot(c(1:2000),unlist(longchain[which(longchain$Parameter=="sigma"),"value"]), type="l")
+plot(density(unlist(longchain[which(longchain$Parameter=="sigma"),"value"])))
 
