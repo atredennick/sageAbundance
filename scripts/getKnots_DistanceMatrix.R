@@ -145,7 +145,7 @@ K=((2*pi*sigma)^-1)*exp(-Knot.cell.distances/(2*sigma))
 # K=dnorm(Knot.cell.distances,0,sigma)
 K=K/apply(K,1,'sum')
 K.data=list(K=K,Q.knot=Q.knot)
-# save(K.data,file="Knot_cell_distances.Rdata")
+save(K.data,file="Knot_cell_distances.Rdata")
 
 #plot Conn's K
 # load("/Users/atredenn/Desktop/STabundance-0.91/STabundance/data/Knot_cell_distances.rda")
