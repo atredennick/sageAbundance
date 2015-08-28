@@ -112,6 +112,8 @@ pars <- c("int_mu", "beta_mu",  "alpha", "beta", "phi")
 # Compile the model
 mcmc_samples <- stan(model_code=model_string, data=datalist, init = list(inits[[1]]),
                      pars=pars, chains=0)
+test <- stan(fit=mcmc_samples, data=datalist, pars=pars,
+             chains=1, iter=200, warmup=100, init=list(inits[[1]])))
 
 # Fit model in parallel
 rng_seed <- 12345
@@ -119,7 +121,7 @@ sflist <-
   mclapply(1:3, mc.cores=3,
            function(i) stan(fit=mcmc_samples, data=datalist, pars=pars,
                             seed=rng_seed, chains=1, chain_id=i, refresh=-1,
-                            iter=2000, warmup=1000, init=list(inits[[i]]), thin=5))
+                            iter=200, warmup=100, init=list(inits[[i]])))
 fit <- sflist2stanfit(sflist)
 outs <- ggs(fit)
 # ggs_traceplot(outs, "alpha")
