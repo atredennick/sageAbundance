@@ -10,9 +10,7 @@ library(ggmcmc)
 ####
 datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
 fullD <- read.csv(paste0(datapath,"wy_sagecover_subset_noNA.csv"))
-
-# Merge in climate data 
-fullD <- merge(rawD,climD,by.x="Year", by.y="year",all.x=T)
+which(is.na(fullD$Cover))
 
 # Get data structure right
 growD <- subset(fullD, Year>1984) # get rid of NA lagcover years
@@ -21,22 +19,8 @@ growD$Cover <- round(growD$Cover,0) # round for count-like data
 growD$CoverLag <- round(growD$CoverLag,0) # round for count-like data
 
 # Load knot data
-load("../results/Knot_cell_distances.Rdata")
+load("../results/Knot_cell_distances_subset.Rdata")
 K <- K.data$K
-
-# Remove NA values
-rms <- which(is.na(growD$Cover) == TRUE)
-rmsK <- which(is.na(subset(growD, Year==1985)["Cover"])==TRUE)
-K <- K[-rmsK,]
-growD <- growD[-rms, ]
-# growD[rms, "Cover"] <- 0
-# growD[rms, "CoverLag"] <- 0
-
-# Set up new, continuous cell IDs
-num_ids <- length(unique(growD$ID))
-num_reps <- nrow(growD)/num_ids
-new_ids <- rep(c(1:num_ids), num_reps)
-growD$newID <- new_ids
 
 ####
 ####  Write the STAN model
@@ -90,9 +74,15 @@ model{
 ####
 y = growD$Cover
 lag = growD$CoverLag
-# K = K.data$K
+K = K.data$K
+
+# Set up new, continuous cell IDs
+num_ids <- length(unique(growD$ID))
+num_reps <- nrow(growD)/num_ids
+new_ids <- rep(c(1:num_ids), num_reps)
+growD$newID <- new_ids
+
 cellid = growD$newID
-# cellid = growD$ID
 X = growD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 X = scale(X, center = TRUE, scale = TRUE)
 

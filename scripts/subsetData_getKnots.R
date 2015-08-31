@@ -137,10 +137,9 @@ Q.knot=-Knot.Adj
 diag(Q.knot)=apply(Knot.Adj,2,'sum')
 Q.knot=Matrix(Q.knot)
 
-w=((2*pi*sigma)^-1)*exp(-Knot.cell.distances/(2*sigma))
+w=exp(-Knot.cell.distances/sigma) #exponential covariance structure
 plot(Knot.cell.distances[,1], w[,1])
-abline(v = 500, col="red")
-# K=dnorm(Knot.cell.distances,0,sigma)
+abline(v = test, col="red")
 K=w/apply(w,1,'sum')
 K.data=list(K=K,Q.knot=Q.knot)
 save(K.data,file="Knot_cell_distances_subset.Rdata")
