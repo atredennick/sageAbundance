@@ -105,7 +105,7 @@ x.max=max(Coords[,1])
 y.min=min(Coords[,2])
 y.max=max(Coords[,2])
 
-splits <- 8
+splits <- 10
 X=x.min+(x.max-x.min)/splits*c(0:splits)
 Y=y.min+(y.max-y.min)/splits*c(splits:0)
 XY=expand.grid(x=X,y=Y)
@@ -138,8 +138,11 @@ diag(Q.knot)=apply(Knot.Adj,2,'sum')
 Q.knot=Matrix(Q.knot)
 
 w=exp(-Knot.cell.distances/sigma) #exponential covariance structure
-plot(Knot.cell.distances[,1], w[,1])
-abline(v = test, col="red")
+
+plot(Knot.cell.distances[,1], w[,1], xlab="Euclidean Distance (meters)", ylab="Covariance")
+abline(v = test, col="red", lwd=2)
+text(1900 , 0.8, "Distance btwn knots", col="red")
+
 K=w/apply(w,1,'sum')
 K.data=list(K=K,Q.knot=Q.knot)
 save(K.data,file="Knot_cell_distances_subset.Rdata")

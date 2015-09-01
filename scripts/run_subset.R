@@ -107,7 +107,7 @@ mcmc_config <- stan(model_code=model_string, data=datalist,
                     pars=pars, chains=0)
 
 test <- stan(fit=mcmc_config, data=datalist, pars=pars, chains=1,
-             iter=100, warmup=50, init=list(inits[[2]]))
+             iter=100, warmup=50, init=list(inits[[1]]))
 traceplot(test)
 # Run parallel chains
 # rng_seed <- 123
