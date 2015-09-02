@@ -145,7 +145,7 @@ text(1900 , 0.8, "Distance btwn knots", col="red")
 
 K=w/apply(w,1,'sum')
 K.data=list(K=K,Q.knot=Q.knot)
-save(K.data,file="Knot_cell_distances_subset.Rdata")
+save(K.data,file="../results/Knot_cell_distances_subset.Rdata")
 
 
 ####
