@@ -1,26 +1,49 @@
 ##  Script to run GLMM fit on subset of sagebrush data
+##  Uses STAN to fit the model
+##
+##  Author:      Andrew Tredennick
+##  Email:       atredenn@gmail.com
+##  Last Update: 9-2-2015
 
-library(sageAbundance)
+
+####
+####  Set some file paths, etc.
+####
+datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
+knotpath <- "../results/"
+
+####
+####  Load required libraries
+####
 library(rstan)
 library(ggmcmc)
-# library(parallel)
+
+
+####
+####  Set chain ID from command line prompt
+####
+args <- commandArgs(trailingOnly = F)
+myargument <- args[length(args)]
+myargument <- sub("-","",myargument)
+chain_id <- as.numeric(myargument)
+chain_id <- 1
 
 ####
 ####  Get data
 ####
-datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
 fullD <- read.csv(paste0(datapath,"wy_sagecover_subset_noNA.csv"))
-which(is.na(fullD$Cover))
+if(length(which(is.na(fullD$Cover))) > 0) stop("data contains NA values")
 
 # Get data structure right
 growD <- subset(fullD, Year>1984) # get rid of NA lagcover years
-# growD <- subset(growD, Year<1994) # subset just 10 years
 growD$Cover <- round(growD$Cover,0) # round for count-like data
 growD$CoverLag <- round(growD$CoverLag,0) # round for count-like data
 
 # Load knot data
-load("../results/Knot_cell_distances_subset.Rdata")
+load(paste0(knotpath,"Knot_cell_distances_subset.Rdata"))
 K <- K.data$K
+
+
 
 ####
 ####  Write the STAN model
@@ -69,6 +92,8 @@ model{
 }
 "
 
+
+
 ####
 ####  Send data to STAN function for fitting
 ####
@@ -100,24 +125,34 @@ inits[[3]] <- list(int_mu = 1.5, beta_mu = 0.02, beta = rep(0.2, ncol(X)),
 datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
                  cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K),
                  X=X, ncovs=ncol(X))
-pars <- c("int_mu", "beta_mu",  "alpha", "beta", "phi")
+pars <- c("int_mu", "beta_mu",  "alpha", "beta", "phi", "sig_a")
   
 # Compile the model
 mcmc_config <- stan(model_code=model_string, data=datalist,
                     pars=pars, chains=0)
+mcmc1 <- stan(fit=mcmc_config, data=datalist, pars=pars, chains=1, 
+              iter = 20, warmup = 10, init=list(inits[[chain_id]]))
+long <- ggs(mcmc1, inc_warmup = TRUE)
+lastones <- subset(long, Iteration==20)
+lastmcmc <- mcmc1
+saveRDS(long, paste0("iterchunk1_chain", chain_id, ".RDS"))
 
-test <- stan(fit=mcmc_config, data=datalist, pars=pars, chains=1,
-             iter=100, warmup=50, init=list(inits[[1]]))
-traceplot(test)
-# Run parallel chains
-# rng_seed <- 123
-# sflist <-
-#   mclapply(1:3, mc.cores=3,
-#             function(i) stan(fit=mcmc_samples, data=datalist, pars=pars,
-#                             seed=rng_seed, chains=1, chain_id=i, refresh=-1,
-#                             iter=2000, warmup=1000, init=list(inits[[i]])))
-# fit <- sflist2stanfit(sflist)
-# long <- ggs(fit)
-# saveRDS(mcmc, "stanmcmc_sage.RDS")
-# 
-# 
+for(i in 2:10){
+  betatmp=lastones[grep("beta", lastones$Parameter),]
+  beta=as.numeric(unlist(betatmp[which(betatmp$Parameter!="beta_mu"),"value"]))
+  newinits <- list(list(int_mu=as.numeric(lastones[which(lastones$Parameter=="int_mu"),"value"]),
+                        beta_mu=as.numeric(lastones[which(lastones$Parameter=="beta_mu"),"value"]),
+                        beta=beta,
+                        alpha=as.numeric(unlist(lastones[grep("alpha", lastones$Parameter),"value"])),
+                        sig_a=as.numeric(lastones[which(lastones$Parameter=="sig_a"),"value"]),
+                        phi=as.numeric(lastones[which(lastones$Parameter=="phi"),"value"])))
+  mcmc <- stan(fit = lastmcmc, data = datalist, pars = pars, chains = 1, 
+               iter=20, warmup=10, init = newinits)
+  long <- ggs(mcmc, inc_warmup = TRUE)
+  lastones <- subset(long, Iteration==20)
+  lastmcmc <- mcmc
+  saveRDS(long, paste0("iterchunk",i,"_chain", chain_id, ".RDS"))
+}
+
+
+
