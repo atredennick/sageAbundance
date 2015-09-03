@@ -46,6 +46,22 @@ model{
 "
 
 ####
+####  Function to extract STAN mcmc
+####
+get_mcmc <- function(S){
+  long <- NULL
+  sdf <- as.data.frame(S@sim$samples[[1]])
+  sdf$Iteration <- 1:dim(sdf)[1]
+  s <- gather(sdf, Parameter, value, -Iteration) %>%
+    mutate(Chain = 1) %>%
+    dplyr::select(Iteration, Chain, Parameter, value)
+  long <- rbind_list(long, s)
+  return(long)
+}
+
+
+
+####
 ####  Fit STAN model in chunks of 100 iterations
 ####
 datalist <- list(y=y, x=x, nobs=length(y))
@@ -54,8 +70,7 @@ pars <- c("alpha", "beta", "sigma")
 # Compile the model
 mcmc_config <- stan(model_code=model_string, data=datalist, pars=pars, chains=0)
 mcmc1 <- stan(fit=mcmc_config, data=datalist, pars=pars, chains=1, iter = 200, warmup = 100)
-long <- ggs(mcmc1, inc_warmup = TRUE)
-traceplot(mcmc1)
+long <- get_mcmc(mcmc1)
 lastones <- subset(long, Iteration==200)
 lastmcmc <- mcmc1
 saveRDS(long,"iterchunk1_chain1.RDS")
@@ -66,7 +81,7 @@ for(i in 2:10){
                         sigma=as.numeric(lastones[which(lastones$Parameter=="sigma"),"value"])))
   mcmc <- stan(fit = lastmcmc, data = datalist, pars = pars, chains = 1, 
                iter=200, warmup=100, init = newinits)
-  long <- ggs(mcmc, inc_warmup = TRUE)
+  long <- get_mcmc(mcmc)
   lastones <- subset(long, Iteration==200)
   lastmcmc <- mcmc
   saveRDS(long, paste0("iterchunk",i,"_chain1.RDS"))
