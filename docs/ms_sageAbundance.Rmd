@@ -63,7 +63,7 @@ The real strength to be gained using this new form of ecological information wil
 A major hurdle in properly analyzing these types of data is in building and fitting statistical models that have valid assumptions.
 Rigorously accounting for spatial autocorrelation has been a crux in former analyses at large scales, but we can now fit appropriate models using modern, computationally efficient model reparameterizations and dimension reduction techniques.
 
-Here we advance recent work on spatiotemporal modeling of animal abundance by applying those methods to remotely-sensed estimates of plant percent cover at the landscape scale.
+Here we advance spatiotemporal modeling of plant populations by applying recent developments in the modeling of animal abundances to remotely-sensed estimates of plant percent cover at the landscape scale.
 We use a 27 year time series of sagebrush (*Artemesia* spp.) percent cover over a $5\times5$ km landscape in southwestern Wyoming to fit a spatiotemporal population model that includes climate covariates.
 We then use the model to forecast future population states (percent cover) under projected climate scenarios.
 Our analysis suggests sagebrush will increase in cover at this high elevation site, primarily driven by a positive response to spring temperature.
@@ -186,7 +186,7 @@ K_{s,m} &= w_{s,m} / \sum_{s} w_{s,m}
 \end{align}
 where
 \begin{align}
-w_{s,m} &= (2 \pi \sigma)^{-1} \text{exp}\left(\frac{-d_{s,m}}{2 \sigma}\right).
+w_{s,m} &= \text{exp}\left(\frac{-d_{s,m}}{\sigma}\right).
 \end{align}
 
 where $d_{s,m}$ is the Euclidean distance between the centroid of sample cell \emph{s} and the location of knot \emph{m}, and $\sigma$ is the kernel bandwidth.
@@ -205,7 +205,7 @@ We fit the model in R [@R2013] using the 'No-U-Turn' MCMC sampler in Stan [@stan
 We obtained posterior distributions of all model parmaters from three MCMC chains comprised of 1 000 iterations each, after discarding an initial 1 000 iterations as burn in.
 Such short MCMC chains may seem unusual to those more familiar with other MCMC samplers (e.g., JAGS or WinBUGS).
 However, the Stan sampler is extremely efficient, meaning that, compared to other samplers, fewer iterations are required to achieve convergence.
-We assessed convergence visually and ensured all scale reduction factors were less than 1.01 [@Gelman1992; @Gelman2007]. 
+We assessed convergence visually and made sure all scale reduction factors were less than 1.01 [@Gelman1992; @Gelman2007]. 
 
 ####Simulating the model
 Using the posterior distribution of model parameters, we simulate a matrix of pixels equal to the size of the study area (XX XXX pixels or matrix elements).
