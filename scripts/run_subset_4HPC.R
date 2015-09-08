@@ -16,7 +16,7 @@ knotpath <- ""
 ####  Load required libraries
 ####
 library(rstan)
-library(ggmcmc)
+library(reshape2)
 
 
 ####
