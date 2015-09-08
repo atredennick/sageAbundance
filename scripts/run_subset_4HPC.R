@@ -100,10 +100,9 @@ get_mcmc <- function(S){
   long <- NULL
   sdf <- as.data.frame(S@sim$samples[[1]])
   sdf$Iteration <- 1:dim(sdf)[1]
-  s <- gather(sdf, Parameter, value, -Iteration) %>%
-    mutate(Chain = 1) %>%
-    dplyr::select(Iteration, Chain, Parameter, value)
-  long <- rbind_list(long, s)
+  s <- melt(sdf, id.vars = "Iteration")
+  colnames(s) <- c("Iteration", "Parameter", "value")
+  long <- rbind(long, s)
   return(long)
 }
 
