@@ -16,7 +16,7 @@ knotpath <- "../results/"
 ####  Load required libraries
 ####
 library(rstan)
-library(ggmcmc)
+library(reshape2)
 
 
 ####
@@ -26,7 +26,7 @@ args <- commandArgs(trailingOnly = F)
 myargument <- args[length(args)]
 myargument <- sub("-","",myargument)
 chain_id <- as.numeric(myargument)
-
+chain_id <- 1
 
 ####
 ####  Get data
@@ -100,12 +100,12 @@ get_mcmc <- function(S){
   long <- NULL
   sdf <- as.data.frame(S@sim$samples[[1]])
   sdf$Iteration <- 1:dim(sdf)[1]
-  s <- gather(sdf, Parameter, value, -Iteration) %>%
-    mutate(Chain = 1) %>%
-    dplyr::select(Iteration, Chain, Parameter, value)
-  long <- rbind_list(long, s)
+  s <- melt(sdf, id.vars = "Iteration")
+  colnames(s) <- c("Iteration", "Parameter", "value")
+  long <- rbind(long, s)
   return(long)
 }
+
 
 
 ####
@@ -145,9 +145,9 @@ pars <- c("int_mu", "beta_mu",  "alpha", "beta", "phi", "sig_a")
 mcmc_config <- stan(model_code=model_string, data=datalist,
                     pars=pars, chains=0)
 mcmc1 <- stan(fit=mcmc_config, data=datalist, pars=pars, chains=1, 
-              iter = 200, warmup = 100, init=list(inits[[chain_id]]))
+              iter = 20, warmup = 10, init=list(inits[[chain_id]]))
 long <- get_mcmc(mcmc1)
-lastones <- subset(long, Iteration==200)
+lastones <- subset(long, Iteration==20)
 lastmcmc <- mcmc1
 saveRDS(long, paste0("iterchunk1_chain", chain_id, ".RDS"))
 
