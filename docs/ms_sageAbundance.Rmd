@@ -37,16 +37,16 @@ opts_chunk$set(dev='pdf')
 \begin{centering}
 \textbf{\large{A spatiotemporal modeling framework for forecasting climate change impacts on plant populations over large spatial extents}}
 
-\textsc{\small{Andrew T. Tredennick\footnote{E-mail: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4,5}, Cameron L. Aldridge\textsuperscript{5,6,7}, Colin G. Homer\textsuperscript{8}, David T. Iles\textsuperscript{1}, Andrew Kleinhesselink\textsuperscript{1}, Eric LaMalfa\textsuperscript{1}, Rebecca Mann\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
+\textsc{\small{Andrew T. Tredennick\footnote{Corresponding author: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4,5}, Cameron L. Aldridge\textsuperscript{5,6,7}, Colin G. Homer\textsuperscript{8}, David T. Iles\textsuperscript{1}, Andrew Kleinhesselink\textsuperscript{1}, Eric LaMalfa\textsuperscript{1}, Rebecca Mann\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
 
-\textit{\small{\textsuperscript{1}Department of Wildland Resources and the Ecology Center, 5230 Old Main Hill, Utah State University, Logan, Utah 84322-5230 USA}} \\*
-\textit{\small{\textsuperscript{2}U.S. Geological Survey, Colorado Cooperative Fish and Wildlife Research Unit}} \\*
-\textit{\small{\textsuperscript{3}Department of Fish, Wildlife, and Conservation Biology, Colorado State University}} \\*
-\textit{\small{\textsuperscript{4}Department of Statistics, Colorado State University}} \\*
-\textit{\small{\textsuperscript{5}Graduate Degree Program in Ecology, Colorado State University, Fort Collins, CO}} \\*
-\textit{\small{\textsuperscript{6}Department of Ecosystem Science and Sustainability and Natural Resource Ecology Laboratory, Colorado State University}} \\*
-\textit{\small{\textsuperscript{7}U.S. Geological Survey, Fort Collins Science Center}} \\*
-\textit{\small{\textsuperscript{8}U.S. Geological Survey (USGS) Earth Resources Observation and Science (EROS) Center, Sioux Falls, SD}}
+\textit{\small{\textsuperscript{1}Department of Wildland Resources and the Ecology Center, 5230 Old Main Hill, Utah State University, Logan, Utah 84322 USA}} \\*
+\textit{\small{\textsuperscript{2}U.S. Geological Survey, Colorado Cooperative Fish and Wildlife Research Unit, Colorado State University, Fort Collins, CO 80523 USA}} \\*
+\textit{\small{\textsuperscript{3}Department of Fish, Wildlife, and Conservation Biology, Colorado State University, Fort Collins, CO 80523 USA}} \\*
+\textit{\small{\textsuperscript{4}Department of Statistics, Colorado State University, Fort Collins, CO 80523 USA}} \\*
+\textit{\small{\textsuperscript{5}Graduate Degree Program in Ecology, Colorado State University, Fort Collins, CO 80523 USA}} \\*
+\textit{\small{\textsuperscript{6}Department of Ecosystem Science and Sustainability and Natural Resource Ecology Laboratory, Colorado State University, Fort Collins, CO 80523 USA}} \\*
+\textit{\small{\textsuperscript{7}U.S. Geological Survey, Fort Collins Science Center, Fort Collins, CO 80526 USA}} \\*
+\textit{\small{\textsuperscript{8}U.S. Geological Survey (USGS) Earth Resources Observation and Science (EROS) Center, Sioux Falls, SD 57198 USA}}
 
 \end{centering}
 
@@ -144,10 +144,10 @@ RCP 8.5 & 4.79\textdegree & 11.0\% &  & 4.90\textdegree & 8.81\%\tabularnewline
 
 ### Additive spatio-temporal model for sagebrush cover
 We use a descriptive model for sagebrush cover that includes additive spatial and temporal effects (Conn et al. 2015).
-We model observed integer percent cover (*y*) in cell *i* at time *t* as conditionally negative binomial
+We model observed integer percent cover (*y*) in cell *i* at time *t* as conditionally Poisson
 
 \begin{align}
-y_{i,t} \sim \text{NegBinom}(\mu_{i,t}, \zeta),
+y_{i,t} \sim \text{Poisson}(\mu_{i,t}),
 \end{align}
 
 where $\mu_{i,t}$ is the expected percent cover of pixel *i* in year *t*
@@ -158,7 +158,8 @@ where $\mu_{i,t}$ is the expected percent cover of pixel *i* in year *t*
 
 Our model of percent cover change includes a temporal effect of cover in the previous year ($y_{i,t-1}$), climate effects ($\textbf{x}_t$), and a spatial random effect ($\eta$) for each pixel *i*.
 Climate effects were standardized [$(x_{i}-\bar{x}) / \sigma(x)$] to speed up convergence during the model fitting stage (see below).
-We chose a negative binomial likelihood because integer percent cover is a form of count data, and the negative binomial distribution allows for slightly more dispersion than the poisson.
+We chose to use a Poisson likelihood because integer percent cover values can be considered a form of count data.
+We also evaluated a negative binomial model, but found little evidence for overdispersion beyond what our model was already accomodating via the spatial random effects ($\boldsymbol{\eta}$).
 
 Fitting the model with a spatial random effect ($\eta$) is computationally demanding when a large number of observations are considered.
 This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations (Wikle 2010).
@@ -196,7 +197,7 @@ However, given the relative largeness of our dataset and computational limitatio
 The Bayesian posterior distribution can be expressed as
 
 \begin{align}
-[\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2, \zeta | \textbf{y}] \propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \boldsymbol{\beta}, \boldsymbol{\gamma},\boldsymbol{\alpha}, \zeta] \right) \prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2][\beta_{0}][\beta_{1}][\gamma][\zeta][\sigma_{\eta}^2].
+[\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2 | \textbf{y}] \propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \boldsymbol{\beta}, \boldsymbol{\gamma},\boldsymbol{\alpha}] \right) \prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2][\beta_{0}][\beta_{1}][\boldsymbol{\gamma}][\sigma_{\eta}^2].
 \end{align}
 
 ### Computing
