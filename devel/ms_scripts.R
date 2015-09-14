@@ -32,9 +32,15 @@ growD <- subset(fullD, Year>1984) # get rid of NA lagcover years
 growD$Cover <- round(growD$Cover,0) # round for count-like data
 growD$CoverLag <- round(growD$CoverLag,0) # round for count-like data
 
+climD <- read.csv(paste(datapath,
+                        "/studyarea1/climate/DAYMET/FormattedClimate_WY_SA1.csv",
+                        sep=""))
 
 tmp.theme=theme(axis.ticks = element_blank(), axis.text = element_blank(),
                 strip.text=element_text(face="bold"),
+                axis.title=element_text(size=16),text=element_text(size=16),
+                legend.text=element_text(size=16))
+tmp.theme2=theme(strip.text=element_text(face="bold"),
                 axis.title=element_text(size=16),text=element_text(size=16),
                 legend.text=element_text(size=16))
 
@@ -70,33 +76,56 @@ oneyear$eta <- eta
 etaPalette <- colorRampPalette(rev(brewer.pal(11, "RdBu")))
 spfield_plot <- ggplot(oneyear, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=eta, fill=eta))+
-  scale_fill_gradientn(limits=c(-0.55, 0.55), colours=etaPalette(100))+
+  scale_fill_gradientn(limits=c(-0.55, 0.55), colours=etaPalette(100), name=expression(eta))+
   coord_equal()+
   tmp.theme+
   theme(strip.background=element_rect(fill="white"))+
-  ggtitle(bquote("Spatial field ("*eta*")"))
+  ggtitle(bquote("Posterior spatial field ("*eta*")"))
 
 avg_cover <- ddply(growD, .(Lon, Lat), summarise,
                    Cover = mean(Cover))
+avg_cover$scaled_cov <- scale(avg_cover$Cover, center = TRUE, scale = TRUE)
 avgcover_plot <- ggplot(avg_cover, aes(x=Lon, y=Lat))+
-  geom_raster(aes(z=Cover, fill=Cover))+
-  scale_fill_gradientn(colours=myPalette(100))+
+  geom_raster(aes(z=scaled_cov, fill=scaled_cov))+
+  scale_fill_gradientn(limits=c(-3, 3), colours=etaPalette(100), name="Cover \ndeviation")+
   coord_equal()+
   tmp.theme+
+  theme(strip.background=element_rect(fill="white"))+
+  ggtitle("Deviation from mean percent cover")
+
+eta_avgcover_plot <- grid.arrange(avgcover_plot, spfield_plot, nrow=2)
+
+
+
+####
+####  Plot climate covariate posterior densities
+####
+clim_vars <- c("beta.1.", "beta.2.", "beta.3.", "beta.4.", "beta.5.")
+clim_names <- c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")
+clim_posts <- subset(outs, Parameter %in% clim_vars)
+cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", 
+               "#CC79A7", "#0072B2", "#D55E00", "#CC79A7")
+ggplot(clim_posts, aes(x=value, color=Parameter))+
+  geom_vline(aes(xintercept=0), linetype=2)+
+  geom_line(stat="density", size=1.5)+
+  scale_color_manual(labels=clim_names, values=cbPalette, name="Covariate")+
+  ylab("Posterior density")+
+  xlab("Standardized coefficient value")+
+  tmp.theme2+
   theme(strip.background=element_rect(fill="white"))
 
-eta_avgcover_plot <- grid.arrange(spfield_plot, avgcover_plot, nrow=2)
+
 
 
 ####
 ####  Run population simulation
 ####
 mean_params <- ddply(outs, .(Parameter), summarise,
-                     mean(value))
-alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
-betas <- mean_params[grep("beta", mean_params$Parameter),"..1"][2:6]
+                     value = mean(value))
+alphas <- mean_params[grep("alpha", mean_params$Parameter),"value"]
+betas <- mean_params[grep("beta", mean_params$Parameter),"value"][2:6]
 eta <- K%*%alphas
-time.steps <- 1000
+time.steps <- 100
 pixels <- nrow(subset(growD, Year==1985))
 ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
 ex.mat[1,] <- 1
@@ -105,16 +134,19 @@ X_sim = clim_sim[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 X_sim = scale(X_sim, center = TRUE, scale = TRUE)
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- exp(mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,]) + 
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","value"] + mean_params[mean_params$Parameter=="beta_mu","value"]*ex.mat[t-1,] + 
     sum(betas*Xtmp)
-  tmp.mu <- tmp.mu + eta
-  ex.mat[t,] <- rnbinom(ncol(ex.mat), mu=tmp.mu, size = mean_params[mean_params$Parameter=="phi","..1"])
+  tmp.mu <- exp(tmp.mu + eta)
+#   print(max(tmp.mu))
+  tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
+  tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
+  ex.mat[t,] <- tmp.out
 }
 
-# matplot(c(1:time.steps), ex.mat, type="l", col="grey")
+matplot(c(1:time.steps), ex.mat, type="l", col="grey")
 # hist(y, freq = FALSE)
-# lines(density(ex.mat, adjust = 4), col="red", lwd=2)
-# mean(y)
+plot(density(ex.mat, adjust = 4), col="red", lwd=2)
+abline(v = mean(growD$Cover))
 # mean(ex.mat)
 
 
@@ -124,7 +156,7 @@ for(t in 2:time.steps){
 obs.equil <- ddply(growD, .(Lon, Lat), summarise,
                    cover = mean(Cover))
 obs.equil <- obs.equil[with(obs.equil, order(-Lat, Lon)), ]
-obs.equil[which(obs.equil[,"cover"]>10), "cover"] <- NA
+# obs.equil[which(obs.equil[,"cover"]>10), "cover"] <- NA
 eq.pixels <- colMeans(ex.mat)
 sp.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
                        Lat=subset(growD, Year==1985)$Lat,
