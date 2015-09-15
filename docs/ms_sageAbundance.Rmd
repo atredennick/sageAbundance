@@ -64,10 +64,10 @@ A major hurdle in properly analyzing these types of data is in building and fitt
 Rigorously accounting for spatial autocorrelation has been a crux in former analyses at large scales, but we can now fit appropriate models using modern, computationally efficient model reparameterizations and dimension reduction techniques.
 
 Here we advance spatiotemporal modeling of plant populations by applying recent developments in the modeling of animal abundances to remotely-sensed estimates of plant percent cover at the landscape scale.
-We use a 27 year time series of sagebrush (*Artemesia* spp.) percent cover over a $5\times5$ km landscape in southwestern Wyoming to fit a spatiotemporal population model that includes climate covariates.
+We use a 27 year time series of sagebrush (*Artemesia* spp.) percent cover over a $5\times2.5$ km landscape in southwestern Wyoming to fit a spatiotemporal population model that includes climate covariates.
 We then use the model to forecast future population states (percent cover) under projected climate scenarios.
 Our analysis suggests sagebrush will increase in cover at this high elevation site, primarily driven by a positive response to spring temperature.
-However, gains in cover are not homogeneous in space; we forecast some areas will increase in cover while others will decrease.
+However, gains in cover are not homogeneous in space.
 Such spatially explicit estimates of increases/decreases in plant abundance have, until now, been elusive.
 The spatiotemporal model we describe can be applied to any spatially explicit time series of plant cover.
 As such datasets become increasingly available and precise, we expect the methods we use here to become an appealing alternative to species distribution models that lack population dynamics and, generally, estimates of species abundance.
@@ -80,7 +80,7 @@ Forecasting the impacts of climate change on plant populations and communities i
 The challenge lies in faithfully representing population dynamics at spatial and temporal scales relevant to policy and management decisions [@Queenborough2011, Tredennick and Adler in review].
 However, almost every study of plant population dynamics relies on demographic observations recorded at the meter to sub-meter scale [@Salguero-Gomez2015].
 Local-scale demographic data make building population projection models an easy task [@Ellner2006; @Rees2009; @Adler2012], but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions [@Freckleton2011; @Queenborough2011].
-Also, given the costliness (in time and money) of collecting detailed demographic data, it is unlikely that “enough” local-scale data can be collected to accurately project large-scale population dynamics. 
+
 
 Alternatives to local-scale demographic data are rapidly becoming available.
 Forest Inventory and Analysis (FIA) data have been successfully used to fit sophisticated species distribution models (SDMs) that predict occurance and abundance at large spatial extents [@Clark2014].
@@ -93,22 +93,23 @@ Materials and Methods
 ---------------------
 ### Data
 #### Remotely-sensed time series
-To demonstrate our pixel-based modeling approach we use a subset of a remotely-sensed time series of sagebrush (\emph{Artemisia} spp.) shrub percent cover in Wyoming [@Homer2012] (Figure 1).
-Sagebrush percent cover was estimated using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1 780 field observations of sagebrush cover distributed across Wyoming.
+To demonstrate our pixel-based modeling approach we use a subset of a remotely-sensed time series of sagebrush (\emph{Artemisia} spp.) shrub percent cover in Wyoming [@Homer2012].
+Sagebrush percent cover was estimated using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1,780 field observations of sagebrush cover distributed across Wyoming.
 The regression tree model was further validated using another 500 field observations. For Wyoming sagebrush, the model achieved an $R^{2}$ = 0.65.
-To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images. This resulted in an annual time series of sagebrush cover at 30 m resolution from 1984 to 2011.
-In this dataset, values represent the percentage of a 30 $\times$ 30 m pixel covered by sagebrush.
-For our purposes we use two 5 $\times$ 5 km subsets (study areas 1 and 2), totaling 27 948 pixels each.
-Thus, each full dataset contains 754 596 observations (27 years $\times$ 27 948 pixels).
+To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images. 
+This resulted in an annual time series of sagebrush cover at 30 meter resolution from 1984 to 2011 (Figure 1).
+In this dataset, values represent the percentage of a 30 $\times$ 30 meter pixel covered by sagebrush.
+For our purposes we use a 5,070 $\times$ 2,430 meter subset totaling 13,689 30 $\times$ 30 meter pixels each year.
+Thus, the full dataset contains 369,603 observations (27 years $\times$ 13,689 pixels).
 
 #### Climate covariates
 Our approach is based on modeling how changes in plant populations relate to climate variables.
 We narrowed our focus to climate covariates we know are important for sagebrush and that could be easily calculated from general circulation model projections.
-The four climate variables in our population model are: (1) year \emph{t} fall through summer precipitation, (2) year \emph{t}-1 fall through summer precipitation, (3) year \emph{t} average spring temperature, and (4) year \emph{t}-1 average spring temperature (Table #).
+The four climate variables in our population model are: (1) year \emph{t} fall through summer precipitation, (2) year \emph{t}-1 fall through summer precipitation, (3) year \emph{t} average spring temperature, and (4) year \emph{t}-1 average spring temperature.
 We downloaded daily historic weather data from the parameter-elevation regressions on independent slopes model (PRISM) data set (*available online*)[^link].
 The PRISM weather data is interpolated between coarse observation units and does capture some spatial variation.
 However, instead of further downscaling the 800 meter resolution weather data to match our 30 meter resolution percent cover data, we chose to simply extract weather data for the centroid of our study area.
-We calcualted the four climate variables outline above from the PRISM data for the time period of our remotely sensed data (1984 to 2011).
+We calculated the four climate variables outline above from the PRISM data for the time period of our remotely sensed data (1984 to 2011).
 
 [^link]: http://www.prism.oregonstate.edu/
 
@@ -122,28 +123,13 @@ For temperature we subtracted the average historic (1950-2000) temperature from 
 For precipitation we calculated the proportional change: we subtracted average projected (2050-2100) precipitation from average historic (1950-2000) precipitation, and then divided by average historic (1950-2000) precipitation. 
 We did this for three ``Representative Concentration Pathways'': RCP 4.5, RCP 6.0, and RCP 8.5 (*described online*)[^link3].
 The three RCPs correspond to stabilization of radiative forcing before 2100, after 2100, and increasing greenhouse gas emissions, respectively.
-We implemented projected temperature and precipitation changes in the model by perturbing observed annual values by the values in Table #.
+We implemented projected temperature and precipitation changes in the model by perturbing observed annual values by the values in Table 1.
 
 [^link2]: http://cmip-pcmdi.llnl.gov/cmip5/
 [^link3]: http://tntcat.iiasa.ac.at/RcpDb/
 
-\begin{table}[h]
-\protect\caption{\label{tab:Changes-in-climate}Changes in climate variables from CMIP5
-average projections.}
-\begin{tabular}{llllll}
-\hline
- & \multicolumn{2}{c}{Study Area 1} &  & \multicolumn{2}{c}{Study Area 2}\tabularnewline 
-Emissions Scenario & $\Delta$ temperature & $\Delta$ precipitation &  & $\Delta$ temperature & $\Delta$ precipitation\tabularnewline
-\hline
-RCP 4.5 & 2.98\textdegree & 8.94\% &  & 3.04\textdegree & 7.42\%\tabularnewline
-RCP 6.0 & 3.13\textdegree & 8.64\% &  & 3.23\textdegree & 6.72\%\tabularnewline
-RCP 8.5 & 4.79\textdegree & 11.0\% &  & 4.90\textdegree & 8.81\%\tabularnewline
-\hline
-\end{tabular}
-\end{table}
-
 ### Additive spatio-temporal model for sagebrush cover
-We use a descriptive model for sagebrush cover that includes additive spatial and temporal effects (Conn et al. 2015).
+We use a descriptive model for sagebrush cover that includes additive spatial and temporal effects [@Conn2015].
 We model observed integer percent cover (*y*) in cell *i* at time *t* as conditionally Poisson
 
 \begin{align}
@@ -162,7 +148,7 @@ We chose to use a Poisson likelihood because integer percent cover values can be
 We also evaluated a negative binomial model, but found little evidence for overdispersion beyond what our model was already accomodating via the spatial random effects ($\boldsymbol{\eta}$).
 
 Fitting the model with a spatial random effect ($\eta$) is computationally demanding when a large number of observations are considered.
-This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations (Wikle 2010).
+This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations [@Wikle2010].
 To overcome these computational constraints, we employed a dimension reduction strategy to reduce the number of parameters that need to be estimated to account for spatial variation.
 Reducing the number of effective spatial random effect parameters speeds up estimation by reducing the size of the covariance matrices that need to be inverted at each MCMC iteration.
 Fitting models that appropriately account for spatial autocorrelation over large spatial extents would be virtually impossible without these modern techniques.
@@ -209,27 +195,77 @@ However, the Stan sampler is extremely efficient, meaning that, compared to othe
 We assessed convergence visually and made sure all scale reduction factors were less than 1.01 [@Gelman1992; @Gelman2007]. 
 
 ####Simulating the model
-Using the posterior distribution of model parameters, we simulate a matrix of pixels equal to the size of the study area (XX XXX pixels or matrix elements).
+Using the posterior distribution of model parameters, we simulate a matrix of pixels equal to the size of the study area (13,689 pixels or matrix elements).
 We initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series.
-We ran the simulation for 2 500 time steps and then compared the output to the observed time series to see if the model could reproduce the observed cover.
+We ran the simulation for 2,500 time steps and then compared the output to the observed time series to see if the model could reproduce the observed cover.
 We then ran simulations where the projected climate changes in Table 1 were applied to the observed climate time series.
 
 Results
 -------
-Our pixel-based population model was able to reproduce observed percent cover (Figure 3).
-Three of five climate covariates were strong predictors of cover change (Figure 4).
-In particular, mean spring temperature and precipitation at time *t*-2 had strong positive effects on population growth, only slightly offset by a negative effect of precipitation at time  *t*-1.
-The positive effects of precipitation and temperature resulted in projected increases of cover for all climate change scenarios (Figure 5) since precipitation and temperature are both predicted to increase (Table 1).
+All climate covariates were statistically important predictors of sagebrush cover change, but their values, on a standardized scale, were small (Figure 2).
+Temperature and precipitation covariates tended to have a positive effect on sagebrush cover change, but *ppt1* had a negative effect (Figure 2).
+The mean posterior estimate for the spatial random effect, $\boldsymbol{\eta}$, captured the overall spatial structure of the observed data (Figure 3).
+This indicates our choice of knot placement and dimension reduction strategy was adequate for describing permanent spatial variation in the data.
+
+When we simulated the pixel-based population model based on observed climate it was able to reproduce average observed percent cover (Figures 4 and 5).
+As expected based on the overall positive effects of temperature on sagebrush cover change (Figure 2), our model predicts increases in sagebrush cover under each climate change scenario (Figure 6).
+In general, increases in percent cover tend to occur in areas with above-average percent cover (red areas in Figure 6A "CURRENT").
+Indeed, density curves of projected cover under the climate change scenarios (Figure 7) show that low cover pixel are generally retained (all curves overlap at low cover), while high cover pixels are added (increased right skew in climate change curves; Figure 7).
 
 Discussion
 -----------
+Landscape scale population models for plant species have been elusive.
+Yet, the need to forecast population responses to climate change over large spatial extents is clear, as demonstrated by the wide application of species distribution models [see @Clark2014].
+Here we introduced a new statistical approach to modeling plant populations that overcame two major hurdles for spatially-explicit population models.
+First, we used species-specific remote sensing data as a response variable.
+Thus, we had at our disposal spatially-continuous estimates of sagebrush abundance over a large spatial extent, meaning we could fit a model at the same spatial resolution and extent. 
+In so doing we overcame a major limitation of most population models that are fit using detailed data from a single location.
+Second, borrowing from the vast literature on spatiotemporal modeling of animal abundance [@Conn2015], we employed a dimension reduction strategy to rigorously account for spatial autocorrelation (Figure 3).
 
+The major advantage of our approach is that, once fit, the model can be used to project future changes in population abundance (here, percent cover) in space (Figure 6). 
+However, several *a priori* modeling decisions determined the spatial extent and resolution of our results. 
+We decided to work at the native spatial resolution of the remote sensing data ($30\times30$ meters). 
+This constrained the extent that we could reasonably model because we needed to place the knots for the spatial ranom effect close enough together to detect the underlying spatial structure. 
+As more and more knots are used, computation time increases substantially [@Wikle2010].
+Had we decided to aggregate the original data to a coarser resolution, we would have been able to model a larger spatial extent using the same number of knots, and therefore computation time.
+
+Our decision on spatial extent and resolution also impacted our incorporation of climate covariates.
+We decided against further downscaling PRISM data to match the spatial resolution of the sagebrush data.
+This means that in each year, all pixels share the same climate covariates.
+In other words, climate only varied through time and not over space.
+This is a of course a limitation of our study, and helps to explain why climate coefficients were so certain (Figure 3).
+In the future we plan to work at a lower spatial resolution but a larger spatial extent so that we can use spatially-explicit climate covariates that match the resolution of the percent cover data.
+
+These decisions ultimately affect our results, in positive and negative ways, but also show the flexibility of the approach we developed.
+The underlying model we described and its subsequent use for projecting population changes remains unchanged in the face of individual choices regarding spatial extent and resolution.
+Likewise, the approach can be used for any spatially-explicit time series of species-specific estimates of plant cover or density.
+As such datasets become more available, we anticipate the approach we developed here to complement studies using species distribution models and local-scale demographic population models.
+
+
+\pagebreak{}
+
+Tables
+------
+\begin{table}[h]
+\protect\caption{\label{tab:Changes-in-climate}Changes in climate variables from CMIP5
+average projections.}
+\begin{tabular}{llllll}
+\hline
+ & \multicolumn{2}{c}{Study Area 1} &  & \multicolumn{2}{c}{Study Area 2}\tabularnewline 
+Emissions Scenario & $\Delta$ temperature & $\Delta$ precipitation &  & $\Delta$ temperature & $\Delta$ precipitation\tabularnewline
+\hline
+RCP 4.5 & 2.98\textdegree & 8.94\% &  & 3.04\textdegree & 7.42\%\tabularnewline
+RCP 6.0 & 3.13\textdegree & 8.64\% &  & 3.23\textdegree & 6.72\%\tabularnewline
+RCP 8.5 & 4.79\textdegree & 11.0\% &  & 4.90\textdegree & 8.81\%\tabularnewline
+\hline
+\end{tabular}
+\end{table}
 
 \pagebreak{}
 
 Figures
 -------
-```{r figure_1,dependson="plot-options", fig.cap="Location of the study area in southwester Wyoming and a snapshot of the percent cover data in 1984 for each site (a and b). Green shading on the map shows projected distribution of sagebrush from Kuchler (19xx). Latitude and longitude are in decimal degrees.", fig.height=6, eval=FALSE}
+```{r figure_1_alt,dependson="plot-options", fig.cap="Location of the study area in southwester Wyoming and a snapshot of the percent cover data in 1984 for each site (a and b). Green shading on the map shows projected distribution of sagebrush from Kuchler (19xx). Latitude and longitude are in decimal degrees.", fig.height=6, eval=FALSE}
 library(png)
 library(grid)
 img <- readPNG("components/figure/StudyAreasMap_1and2.png")
@@ -237,31 +273,53 @@ grid.raster(img)
 ```
 
 
-```{r figure_2,dependson="plot-options", fig.cap="Average percent cover or each grid cell of the study area with knots used for spatial convolution in dimension reduction.", fig.height=6, eval=FALSE}
+```{r figure_1,dependson="plot-options", fig.cap="Percent cover in space and time for our study area in southwestern Wyoming.", eval=TRUE}
 library(png)
 library(grid)
-img <- readPNG("components/figure/SAGE_Grid_wKnots.png")
+img <- readPNG("../results/all_years_percCover.png")
 grid.raster(img)
 ```
 
-```{r figure_3,dependson="plot-options", fig.cap="Observed and predicted cover, averaged over years for each pixel. This histogram shows the distribution of observed cover and then density curve shows the distribution of predicted cover from the model.", fig.height=6, eval=FALSE}
+```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the model using standardized covariate values. All covariates are statistically important since their distributions do not overlap zero. However, the effects are relatively small.", fig.height=4, eval=TRUE}
 library(png)
 library(grid)
-img <- readPNG("../results/obs_pred_spatial_small.png")
+img <- readPNG("../results/post_climate_covariates.png")
 grid.raster(img)
 ```
 
-```{r figure_4,dependson="plot-options", fig.cap="Posterior distributions of climate covariates.", fig.height=6, eval=FALSE}
+
+```{r figure_3,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=TRUE}
 library(png)
 library(grid)
-img <- readPNG("../results/climeff_dens_small.png")
+img <- readPNG("../results/spatialfield.png")
 grid.raster(img)
 ```
 
-```{r figure_5,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels show the projections in space, averaged over time for each pixel. Lower panel shows distributions of cover under each scenario.", fig.height=6, eval=FALSE}
+```{r figure_4,dependson="plot-options", fig.cap="Projected equilibrium cover from simulations using observed climate (top panel) and average observed percent cover (bottom panel).", eval=TRUE}
 library(png)
 library(grid)
-img <- readPNG("../results/climchange_small.png")
+img <- readPNG("../results/obs_pred_spatial_subset.png")
+grid.raster(img)
+```
+
+```{r figure_5,dependson="plot-options", fig.cap="Histograms of projected equilibrium cover from simulations using observed climate (orange) and average observed percent cover (black).", eval=TRUE}
+library(png)
+library(grid)
+img <- readPNG("../results/obs_pred_hist.png")
+grid.raster(img)
+```
+
+```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels shows equilibrium cover based on simulations using observed cliamte. Subsequent paneld show equilibrium cover based on perturbed climate for each RCP scenario.", eval=TRUE}
+library(png)
+library(grid)
+img <- readPNG("../results/clim_change_mean_spatial.png")
+grid.raster(img)
+```
+
+```{r figure_7,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time.", eval=TRUE, fig.height=8}
+library(png)
+library(grid)
+img <- readPNG("../results/clim_change_densities.png")
 grid.raster(img)
 ```
 

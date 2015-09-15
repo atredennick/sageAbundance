@@ -21,8 +21,6 @@ library(gridExtra)
 library(RColorBrewer)
 
 
-time.steps <- 500
-
 
 ####
 ####  Get data
@@ -128,6 +126,8 @@ dev.off()
 ####
 ####  Run population simulation
 ####
+time.steps <- 600
+burn.in <- 100
 mean_params <- ddply(outs, .(Parameter), summarise,
                      value = mean(value))
 alphas <- mean_params[grep("alpha", mean_params$Parameter),"value"]
@@ -164,7 +164,7 @@ obs.equil <- ddply(growD, .(Lon, Lat), summarise,
                    cover = mean(Cover))
 obs.equil <- obs.equil[with(obs.equil, order(-Lat, Lon)), ]
 # obs.equil[which(obs.equil[,"cover"]>10), "cover"] <- NA
-eq.pixels <- colMeans(ex.mat)
+eq.pixels <- colMeans(ex.mat[(burn.in+1):time.steps,])
 sp.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
                        Lat=subset(growD, Year==1985)$Lat,
                        pred.cover=eq.pixels,
@@ -253,7 +253,8 @@ mean_params <- ddply(outs, .(Parameter), summarise,
 alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
 betas <- mean_params[grep("beta", mean_params$Parameter),"..1"][2:6]
 eta <- K%*%alphas
-time.steps <- 500
+time.steps <- 600
+burn.in <- 100
 
 p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 clim_avg <- apply(X = p.climD, MARGIN = 2, FUN = mean)
@@ -285,7 +286,7 @@ for(t in 2:time.steps){
   tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
   ex.mat[t,] <- tmp.out
 }
-rcp45 <- ex.mat
+rcp45 <- ex.mat[(burn.in+1):time.steps, ]
 
 
 pixels <- nrow(subset(growD, Year==1985))
@@ -311,7 +312,7 @@ for(t in 2:time.steps){
   tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
   ex.mat[t,] <- tmp.out
 }
-rcp60 <- ex.mat
+rcp60 <- ex.mat[(burn.in+1):time.steps, ]
 
 
 pixels <- nrow(subset(growD, Year==1985))
@@ -337,7 +338,7 @@ for(t in 2:time.steps){
   tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
   ex.mat[t,] <- tmp.out
 }
-rcp85 <- ex.mat
+rcp85 <- ex.mat[(burn.in+1):time.steps, ]
 
 
 ####
