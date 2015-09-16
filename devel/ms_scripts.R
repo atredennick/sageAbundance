@@ -373,7 +373,7 @@ ggplot(proj.equil2, aes(x=Lon, y=Lat))+
   coord_equal()+
   tmp.theme+
   theme(strip.background=element_rect(fill="white"))
-ggsave("../results/clim_change_mean_spatial.png", height=8, width=4, dpi=200)
+ggsave("../results/clim_change_mean_spatial.png", height=8, width=4)
 
 ggplot(all4plot)+
   geom_line(stat="density", aes(x=value, y=..density.., col=variable), size=1)+

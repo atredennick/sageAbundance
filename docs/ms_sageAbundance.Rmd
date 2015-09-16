@@ -96,7 +96,28 @@ New technologies are now providing information on not just the predictor side of
 Species-specific estimates of plant abundance, usually recorded as percent cover or density, offer new opportunities to model and forecast populations at spatial extents that far exceed those possible using traditional population models.
 But, with new opportunities, come new challenges.
 In particular, spatially-continuous response variables require accounting of spatial autocorrelation to arrive at statistically rigorous model fits (Wikle and Hooten refs.).
-Fortunately, recent advances in the spatiotemporal modeling of animal abundances offer a scaffold for similar work on plant species.
+Fortunately, advances in the spatiotemporal modeling of animal abundances offer a scaffold for similar work on plant species.
+
+Spatiotemporal models of animal abundance seek to relate the number of observed counts at location *s* and time *t* ($C_{s,t}$) to a latent process $\mu_{s,t}$ through a probability mass function, a link function relating predictors to the mean response, a set of covarites __X__, and parameters $\boldsymbol{\theta}$. 
+A typical formulation takes the form
+
+\begin{align}
+[\textbf{C}] &= \text{Poisson}(\boldsymbol{\mu}) \\
+\boldsymbol{\mu} &= \text{exp}(\boldsymbol{\theta}\textbf{X})
+\end{align}
+
+which states that observed counts are Poisson distributed with a log-link function on the latent abundance intensity ($\boldsymbol{\mu}$), which is itself a function of covariates and estimated parameters. 
+The covariates include spatial and temporal autocorrelation effects and any number of additional measured environmental effects. 
+In a population modeling sense, the temporal effect can be defined as the effect of population abundance at time *t-1*.
+More difficult is the definition of the spatial random effects in models that include a large number of locations, such as remote sensing data.
+Here too, advances have been made on strategies for dimension reduction that allow for fitting a reduced parameter set that can be expanded to express high-dimensional random effects [@Wikle2010].
+
+Here we develop a statistical approach for modeling plant populations over large spatial extents based on the above framework,.
+Our approach leverages a unique remotely-sensed time series of *Artemesia* species (sagbrush) to fit a spatiotemporal model of plant population dynamics at the landscape scale.
+We use advanced dimension reduction techniques borrowed from the animal modeling literature [@Conn2015] to rigorously account for spatial autocorrelation and to produce spatially-explicit estimates of sagebrush percent cover.
+We then use the model to forecast the impacts of climate change on sagebrush percent cover.
+The modeling framework we propose can be applied to any spatially-explicit time series of plant cover or density, but we are most excited about its application in cases where remotely-sensed estimates exist.
+In those cases, we think our approach is particularly well-suited for combining the information of population models (e.g., population status) and the spatial extent of species distribution models.
 
 Materials and Methods
 ---------------------
@@ -204,10 +225,20 @@ However, the Stan sampler is extremely efficient, meaning that, compared to othe
 We assessed convergence visually and made sure all scale reduction factors were less than 1.01 [@Gelman1992; @Gelman2007]. 
 
 ####Simulating the model
-Using the posterior distribution of model parameters, we simulate a matrix of pixels equal to the size of the study area (13,689 pixels or matrix elements).
-We initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series.
-We ran the simulation for 2,500 time steps and then compared the output to the observed time series to see if the model could reproduce the observed cover.
-We then ran simulations where the projected climate changes in Table 1 were applied to the observed climate time series.
+We performed three sets of simulations: (1) to compare observed and simulated equilibrium cover, (2) to compare observed and simulated year- and location-specific cover, and (3) to forecast future equilibrium population states under projected climate change. 
+Using the posterior distribution of model parameters, we simulated a matrix of pixels equal to the size of the study area (13,689 pixels or matrix elements).
+For simulations (1) and (3) we initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series (for 1) or a pertubed climate time series (for 3).
+We ran equilibrium simulations (1 and 3) for 600 time steps and then compared the output, after discarding and initial 100 time steps.
+For simulation (2), we initialized each pixel with its actual value for time *t* and cell *s* and projected the model forward one time step.
+
+One problem with our statistical approach that treats integer cover as counts, is that the Poisson distribution supports values greater than 100, a value that percent plant cover cannot exceed in reality.
+Thus, when simulating the fitted model it is entirely possible to predict values of cover greater than 100%.
+Likewise, once a pixel reaches such a great value, the exponential function $\text{exp}(\beta_{1} y_{i,t-1})$ (Eq. #) results in runaway growth and eventually all pixels go to unrealistic values of percent cover.
+We therefore imposed a rule in our simulations that if predicted cover from a pixel exceeded 100%, it's value was set to the mean value of all pixels at that timestep.
+Our main purpose for simulating the model is to assess percent cover at equilibrium, so our focus is not on year-to-year dynamics that are affected by this rule.
+The rule simply ensures that percent cover cannot go over 100% while maintaining any mean changes in percent cover since pixels exceeding 100% are set to the mean matrix value.
+Admittedly, such a rule is not ideal, but we have chosen practicality over idealism in this case.
+
 
 Results
 -------
@@ -250,6 +281,10 @@ The underlying model we described and its subsequent use for projecting populati
 Likewise, the approach can be used for any spatially-explicit time series of species-specific estimates of plant cover or density.
 As such datasets become more available, we anticipate the approach we developed here to complement studies using species distribution models and local-scale demographic population models.
 
+
+Acknowledgments
+---------------
+This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-XXXXXX). ATT was supported by a NSF Postdoctoral Research Fellowship in Biology (DBI-XXXXX) and AK was supported by a NSF Graduate Research Fellowship (DEB-XXXXXX). We are grateful to Mary LASTNAME at USGS EROS for exctracting the dataset used in this paper.
 
 \pagebreak{}
 
@@ -318,7 +353,7 @@ img <- readPNG("../results/obs_pred_hist.png")
 grid.raster(img)
 ```
 
-```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels shows equilibrium cover based on simulations using observed cliamte. Subsequent paneld show equilibrium cover based on perturbed climate for each RCP scenario.", eval=TRUE}
+```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels shows equilibrium cover based on simulations using observed cliamte. Subsequent paneld show equilibrium cover based on perturbed climate for each RCP scenario.", eval=TRUE, fig.height=8}
 library(png)
 library(grid)
 img <- readPNG("../results/clim_change_mean_spatial.png")
