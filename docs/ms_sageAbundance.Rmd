@@ -18,6 +18,11 @@ geometry: margin=1in
 
 ---
 
+```{r figures_source, include=FALSE, eval=FALSE}
+## Source this for updated figures
+source("../devel/ms_scripts.R")
+```
+
 ```{r caching, include=FALSE}
 library("methods")
 library("knitr")
@@ -78,16 +83,20 @@ Introduction
 -------------
 Forecasting the impacts of climate change on plant populations and communities is a central challenge of modern ecology [@Clark2001; @Petchey2015].
 The challenge lies in faithfully representing population dynamics at spatial and temporal scales relevant to policy and management decisions [@Queenborough2011, Tredennick and Adler in review].
-However, almost every study of plant population dynamics relies on demographic observations recorded at the meter to sub-meter scale [@Salguero-Gomez2015].
+Inference from population models has been limited to small spatial extents because the data required is difficult to collect across wide species ranges.
+Indeed, almost every study of plant population dynamics relies on demographic observations recorded at the meter to sub-meter scale [see, e.g., @Salguero-Gomez2015].
 Local-scale demographic data make building population projection models an easy task [@Ellner2006; @Rees2009; @Adler2012], but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions [@Freckleton2011; @Queenborough2011].
 
+The fact that population models typically face spatial constraints may explain the proliferation of studies using species distribution models (SDMs) to infer future states of populations under climate change (CITATIONS).
+SDMs are extremely useful tools, but they tend to lack information on population dynamics and states beyond probability of presence.
+This means that SDMs provide little information on the future states of populations in the core of their range -- in areas where a species currently exists and is expected to persist in the future.
+One of the major advantages of SDMs is their use of remotely sensed covariates that allow for extrapolation across broad spatial extents.
+New technologies are now providing information on not just the predictor side of the equation, but also the response side.
 
-Alternatives to local-scale demographic data are rapidly becoming available.
-Forest Inventory and Analysis (FIA) data have been successfully used to fit sophisticated species distribution models (SDMs) that predict occurance and abundance at large spatial extents [@Clark2014].
-However, all SDMs rely on correlations in space, which have been shown to perform poorly relative to models based on responses to changes in climate over time [@Clark2011].
-Likewise, distributed demographic data, like FIA data, are not continuous in space.
-So creating continuous prediction surfaces requires extrapolating predictions to areas not covered by the data.
-
+Species-specific estimates of plant abundance, usually recorded as percent cover or density, offer new opportunities to model and forecast populations at spatial extents that far exceed those possible using traditional population models.
+But, with new opportunities, come new challenges.
+In particular, spatially-continuous response variables require accounting of spatial autocorrelation to arrive at statistically rigorous model fits (Wikle and Hooten refs.).
+Fortunately, recent advances in the spatiotemporal modeling of animal abundances offer a scaffold for similar work on plant species.
 
 Materials and Methods
 ---------------------
