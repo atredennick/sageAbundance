@@ -98,21 +98,24 @@ But, with new opportunities, come new challenges.
 In particular, spatially-continuous response variables require accounting of spatial autocorrelation to arrive at statistically rigorous model fits (Wikle and Hooten refs.).
 Fortunately, advances in the spatiotemporal modeling of animal abundances offer a scaffold for similar work on plant species.
 
-Spatiotemporal models of animal abundance seek to relate the number of observed counts at location *s* and time *t* ($C_{s,t}$) to a latent process $\mu_{s,t}$ through a probability mass function, a link function relating predictors to the mean response, a set of covarites __X__, and parameters $\boldsymbol{\theta}$. 
+Spatiotemporal models of animal abundance seek to relate the number of observed counts at location *s* and time *t* ($C_{s,t}$) to a latent process $\mu_{s,t}$ through a probability mass function, a link function relating predictors to the mean response, a set of covarites __X__ and associated parameters $\boldsymbol{\theta}$, and a spatial random effect $\boldsymbol{\eta}$. 
 A typical formulation takes the form
 
 \begin{align}
 [\textbf{C}] &= \text{Poisson}(\boldsymbol{\mu}) \\
-\boldsymbol{\mu} &= \text{exp}(\boldsymbol{\theta}\textbf{X})
+\boldsymbol{\mu} &= \text{exp}(\boldsymbol{\theta}\textbf{X} + \boldsymbol{\eta})
 \end{align}
 
 which states that observed counts are Poisson distributed with a log-link function on the latent abundance intensity ($\boldsymbol{\mu}$), which is itself a function of covariates and estimated parameters. 
-The covariates include spatial and temporal autocorrelation effects and any number of additional measured environmental effects. 
-In a population modeling sense, the temporal effect can be defined as the effect of population abundance at time *t-1*.
-More difficult is the definition of the spatial random effects in models that include a large number of locations, such as remote sensing data.
-Here too, advances have been made on strategies for dimension reduction that allow for fitting a reduced parameter set that can be expanded to express high-dimensional random effects [@Wikle2010].
+The exact formulation of the latent process model (Eq. 2) can take many forms, including, for example, those motivated by classic density-dependent growth [@Ross2015] or by resource-selection processes [@Conn2015].
+However, all models like Eq. 2 share the need to estimate the spatial random effect ($\boldsymbol{\eta}$).
+In some cases this is as straightforward as fitting a random effect for each sampling unit.
+But when the number of sampling units is large (1000s), fitting these effects becomes computationally untenable.
+Fortunately, modern model reparameterizations and dimension reduction techniques allow for estimation of spatial random effects by mapping a reduced parameter set (which are estimated in the mode) to the full spatial extent under consideration with an interpolation matrix [@Wikle2010; @Conn2015].
+The general model outlined by Eqs 1-2, and the associated computational strategies for fitting them, have recieved wide usage in the animal abundance literature [@Fink2010; @Conn2015; @Ross2015], but have yet to be applied to the modeling of plant populations.
+This is most likely because the methods are relatively new and because, until now, estimates of plant abundance over large spatial extents have been rare. 
 
-Here we develop a statistical approach for modeling plant populations over large spatial extents based on the above framework,.
+Here we develop a statistical approach for modeling plant populations over large spatial extents based on the above framework and a process model motivated by Gompertz density-dependent growth.
 Our approach leverages a unique remotely-sensed time series of *Artemesia* species (sagbrush) to fit a spatiotemporal model of plant population dynamics at the landscape scale.
 We use advanced dimension reduction techniques borrowed from the animal modeling literature [@Conn2015] to rigorously account for spatial autocorrelation and to produce spatially-explicit estimates of sagebrush percent cover.
 We then use the model to forecast the impacts of climate change on sagebrush percent cover.
@@ -317,14 +320,14 @@ grid.raster(img)
 ```
 
 
-```{r figure_1,dependson="plot-options", fig.cap="Percent cover in space and time for our study area in southwestern Wyoming.", eval=TRUE}
+```{r figure_1,dependson="plot-options", fig.cap="Percent cover in space and time for our study area in southwestern Wyoming.", eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/all_years_percCover.png")
 grid.raster(img)
 ```
 
-```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the model using standardized covariate values. All covariates are statistically important since their distributions do not overlap zero. However, the effects are relatively small.", fig.height=4, eval=TRUE}
+```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the model using standardized covariate values. All covariates are statistically important since their distributions do not overlap zero. However, the effects are relatively small.", fig.height=4, eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/post_climate_covariates.png")
@@ -332,35 +335,35 @@ grid.raster(img)
 ```
 
 
-```{r figure_3,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=TRUE}
+```{r figure_3,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/spatialfield.png")
 grid.raster(img)
 ```
 
-```{r figure_4,dependson="plot-options", fig.cap="Projected equilibrium cover from simulations using observed climate (top panel) and average observed percent cover (bottom panel).", eval=TRUE}
+```{r figure_4,dependson="plot-options", fig.cap="Projected equilibrium cover from simulations using observed climate (top panel) and average observed percent cover (bottom panel).", eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_spatial_subset.png")
 grid.raster(img)
 ```
 
-```{r figure_5,dependson="plot-options", fig.cap="Histograms of projected equilibrium cover from simulations using observed climate (orange) and average observed percent cover (black).", eval=TRUE}
+```{r figure_5,dependson="plot-options", fig.cap="Histograms of projected equilibrium cover from simulations using observed climate (orange) and average observed percent cover (black).", eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_hist.png")
 grid.raster(img)
 ```
 
-```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels shows equilibrium cover based on simulations using observed cliamte. Subsequent paneld show equilibrium cover based on perturbed climate for each RCP scenario.", eval=TRUE, fig.height=8}
+```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels shows equilibrium cover based on simulations using observed cliamte. Subsequent paneld show equilibrium cover based on perturbed climate for each RCP scenario.", eval=F, fig.height=8}
 library(png)
 library(grid)
 img <- readPNG("../results/clim_change_mean_spatial.png")
 grid.raster(img)
 ```
 
-```{r figure_7,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time.", eval=TRUE, fig.height=8}
+```{r figure_7,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time.", eval=F, fig.height=8}
 library(png)
 library(grid)
 img <- readPNG("../results/clim_change_densities.png")

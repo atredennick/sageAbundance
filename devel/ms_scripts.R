@@ -172,17 +172,54 @@ sp.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon,
 colnames(sp.equil)[3:4] <- c("Predicted", "Observed") 
 sp.equil2 <- melt(sp.equil, id.vars = c("Lon", "Lat"))
 
+##  Calculate prediction bias and precision
+wide_equil <- dcast(sp.equil2, Lon+Lat~variable, value.var = "value")
+wide_equil$bias <- with(wide_equil, Predicted-Observed)
 
+pred.var <- apply(ex.mat, 2, var)
+sp.predvar <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
+                       Lat=subset(growD, Year==1985)$Lat,
+                       pred.prec=1/pred.var)
 
-png("../results/obs_pred_spatial_subset.png", width = 5, height=5, units = "in", res=200)
-g1 <- ggplot(sp.equil2, aes(x=Lon, y=Lat))+
+tmp.theme3=theme(axis.ticks = element_blank(), axis.text = element_blank(),
+                strip.text=element_text(face="bold"),
+                axis.title=element_text(size=12),text=element_text(size=12),
+                legend.text=element_text(size=10))
+
+png("../results/obs_pred_spatial_subset.png", width = 8, height=8, units = "in", res=100)
+g1 <- ggplot(subset(sp.equil2, variable=="Observed"), aes(x=Lon, y=Lat))+
   geom_raster(aes(z=value, fill=value))+
-  scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
-  facet_wrap("variable", nrow=2)+
+  scale_fill_gradientn(colours=myPalette(200), name="% Cover", limit=c(0,25))+
   coord_equal()+
-  tmp.theme+
-  theme(strip.background=element_rect(fill="white"))
-print(g1)
+  tmp.theme3+
+  theme(strip.background=element_rect(fill="white"))+
+  ggtitle("A) Observed cover")
+
+g2 <- ggplot(subset(sp.equil2, variable=="Predicted"), aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=value, fill=value))+
+  scale_fill_gradientn(colours=myPalette(200), name="% Cover", limit=c(0,25))+
+  coord_equal()+
+  tmp.theme3+
+  theme(strip.background=element_rect(fill="white"))+
+  ggtitle("B) Predicted cover")
+
+
+g3 <- ggplot(wide_equil, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=bias, fill=bias))+
+  scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
+  coord_equal()+
+  tmp.theme3+
+  theme(strip.background=element_rect(fill="white"))+
+  ggtitle("C) Prediction bias")
+
+g4 <- ggplot(sp.predvar, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=pred.prec, fill=pred.prec))+
+  scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
+  coord_equal()+
+  tmp.theme3+
+  theme(strip.background=element_rect(fill="white"))+
+  ggtitle("D) Prediction precision")
+
 # g2 <- ggplot(sp.equil)+
 #   geom_histogram(aes(x=Observed, y = ..density..), col="white", fill="grey45", binwidth=1)+
 #   geom_line(stat="density", aes(x=Predicted, y= ..density..), 
@@ -190,7 +227,7 @@ print(g1)
 #   xlab("Percent Cover")+
 #   ylab("Estimated Kernel Density")+
 #   theme_bw()
-# gout <- grid.arrange(g1, g2, ncol=2, nrow=1)
+gout <- grid.arrange(g1, g2, g3, g4, ncol=1, nrow=4)
 dev.off()
 
 
