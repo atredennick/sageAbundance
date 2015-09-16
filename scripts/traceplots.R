@@ -1,6 +1,15 @@
 ##  Script to read in MCMC results from the DoRC server
 ##  Creates traceplots and save MCMC output for inference (1000 iterations)
 
+#Poisson fit
+# filestart <- "POIS_iterchunk" 
+# traceplotfile <- "poissonSage_traceplots.pdf"
+# outmcmcfile <- "poissonSage_mcmc.RDS"
+
+#Negative binomial fit
+filestart <- "iterchunk" 
+traceplotfile <- "negbinomSage_traceplots.pdf"
+outmcmcfile <- "negbinomSage_mcmc.RDS"
 
 ####
 ####  Load libraries
@@ -11,21 +20,22 @@ library(scales)
 
 ####
 ####  Read in MCMC chunks from server
+####
 setwd("/Volumes/A02046115/sage/")
 maxiter <- 10
-longchain1 <- readRDS("POIS_iterchunk1_chain2.RDS")
+longchain1 <- readRDS(paste0(filestart, "1_chain2.RDS"))
 for(i in 2:maxiter){
-  longchain1 <- rbind(longchain1, readRDS(paste0("POIS_iterchunk",i,"_chain2.RDS")))
+  longchain1 <- rbind(longchain1, readRDS(paste0(filestart,i,"_chain2.RDS")))
 }
 
-longchain2 <- readRDS("POIS_iterchunk1_chain3.RDS")
+longchain2 <- readRDS(paste0(filestart, "1_chain3.RDS"))
 for(i in 2:maxiter){
-  longchain2 <- rbind(longchain2, readRDS(paste0("POIS_iterchunk",i,"_chain3.RDS")))
+  longchain2 <- rbind(longchain2, readRDS(paste0(filestart,i,"_chain3.RDS")))
 }
 
-longchain3 <- readRDS("POIS_iterchunk1_chain1.RDS")
+longchain3 <- readRDS(paste0(filestart, "1_chain1.RDS"))
 for(i in 2:maxiter){
-  longchain3 <- rbind(longchain3, readRDS(paste0("POIS_iterchunk",i,"_chain1.RDS")))
+  longchain3 <- rbind(longchain3, readRDS(paste0(filestart,i,"_chain1.RDS")))
 }
 
 
@@ -46,7 +56,7 @@ setwd("/Users/atredenn/Repos/sageAbundance/results/")
 
 all.params <- unique(longchain1$Parameter)
 
-pdf("poissonSage_traceplots.pdf", width = 8.5, height = 11)
+pdf(traceplotfile, width = 8.5, height = 11)
 par(mfrow=c(6,3))
 for(plot.param in all.params){
   plot(unlist(longchain1[which(longchain1$Parameter==plot.param),"value"])[iters], 
@@ -93,4 +103,4 @@ lc.save <- rbind(lc1, lc2, lc3)
 ####  Save the MCMC for inference
 ####
 setwd("/Users/atredenn/Repos/sageAbundance/results/")
-saveRDS(lc.save, "poissonSage_mcmc.RDS")
+saveRDS(lc.save, outmcmcfile)
