@@ -327,7 +327,7 @@ img <- readPNG("../results/all_years_percCover.png")
 grid.raster(img)
 ```
 
-```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the model using standardized covariate values. All covariates are statistically important since their distributions do not overlap zero. However, the effects are relatively small.", fig.height=4, eval=F}
+```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the model using standardized covariate values. All covariates are statistically important since their distributions do not overlap zero. However, the effects are relatively small.", fig.height=4, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/post_climate_covariates.png")
@@ -335,35 +335,35 @@ grid.raster(img)
 ```
 
 
-```{r figure_3,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=F}
+```{r figure_3,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/spatialfield.png")
 grid.raster(img)
 ```
 
-```{r figure_4,dependson="plot-options", fig.cap="Projected equilibrium cover from simulations using observed climate (top panel) and average observed percent cover (bottom panel).", eval=F}
+```{r figure_4,dependson="plot-options", fig.cap="Projected equilibrium cover from simulations using observed climate (top panel) and average observed percent cover (bottom panel).", fig.height=8, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_spatial_subset.png")
 grid.raster(img)
 ```
 
-```{r figure_5,dependson="plot-options", fig.cap="Histograms of projected equilibrium cover from simulations using observed climate (orange) and average observed percent cover (black).", eval=F}
+```{r figure_5,dependson="plot-options", fig.cap="Histograms of projected equilibrium cover from simulations using observed climate (orange) and average observed percent cover (black).", eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_hist.png")
 grid.raster(img)
 ```
 
-```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels shows equilibrium cover based on simulations using observed cliamte. Subsequent paneld show equilibrium cover based on perturbed climate for each RCP scenario.", eval=F, fig.height=8}
+```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under climate change scenarios. Top panels shows equilibrium cover based on simulations using observed cliamte. Subsequent paneld show equilibrium cover based on perturbed climate for each RCP scenario.", fig.height=8, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/clim_change_mean_spatial.png")
 grid.raster(img)
 ```
 
-```{r figure_7,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time.", eval=F, fig.height=8}
+```{r figure_7,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time.", fig.height=8, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/clim_change_densities.png")
