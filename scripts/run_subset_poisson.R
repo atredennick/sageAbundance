@@ -58,7 +58,7 @@ data{
   int<lower=0> dK1; // row dim for K
   int<lower=0> dK2; // column dim for K
   int y[nobs]; // observation vector
-  int lag[nobs]; // lag cover vector
+  vector[nobs] lag; // lag cover vector
   matrix[dK1,dK2] K; // spatial field matrix
   matrix[nobs,ncovs] X; // spatial field matrix
 }
@@ -68,7 +68,6 @@ parameters{
   real<lower=0.0001> sig_a;
   vector[nknots] alpha;
   vector[ncovs] beta;
-  //real<lower=0.0001> phi; // neg. binomial dispersion parameter
 }
 transformed parameters{
   vector[ncells] eta;
@@ -86,7 +85,6 @@ model{
   beta_mu ~ normal(0,10);
   beta ~ normal(0,10);
   sig_a ~ cauchy(0,5);
-  //phi ~ cauchy(0,5);
   // Likelihood
   y ~ poisson_log(mu);
 }
@@ -109,28 +107,46 @@ get_mcmc <- function(S){
 
 
 ####
+####  Subset data by removing pixels with 0s
+####
+"%w/o%" <- function(x, y) x[!x %in% y] # x without y
+
+# Remove pixels that have 0s in the time series
+zids <- growD[which(growD$Cover==0),"ID"]
+zids <- unique(c(zids, growD[which(growD$CoverLag==0),"ID"]))
+pixels_to_keep <- growD$ID %w/o%  zids
+modelD <- growD[which(growD$ID %in% pixels_to_keep),]
+
+# Take out those pixel rows from the K matrix
+K <- K.data$K
+K <- K[-zids,]
+
+# Check to make sure dimensions match
+if(dim(K)[1] != length(unique(modelD$ID))) stop("dimension mismatch between K and data")
+
+
+
+####
 ####  Send data to STAN function for fitting
 ####
-y = growD$Cover
-lag = growD$CoverLag
-K = K.data$K
-
 # Set up new, continuous cell IDs
-num_ids <- length(unique(growD$ID))
-num_reps <- nrow(growD)/num_ids
+num_ids <- length(unique(modelD$ID))
+num_reps <- nrow(modelD)/num_ids
 new_ids <- rep(c(1:num_ids), num_reps)
-growD$newID <- new_ids
+modelD$newID <- new_ids
 
-cellid = growD$newID
-X = growD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-X = scale(X, center = TRUE, scale = TRUE)
+y <- modelD$Cover
+lag <- log(modelD$CoverLag)
+cellid <- modelD$newID
+X <- modelD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+X <- scale(X, center = TRUE, scale = TRUE)
 
 inits <- list()
-inits[[1]] <- list(int_mu = 1, beta_mu = 0.05, beta = rep(0, ncol(X)),
+inits[[1]] <- list(int_mu = 1, beta_mu = 0.5, beta = rep(0, ncol(X)),
                    alpha = rep(0,ncol(K.data$K)), sig_a=0.05)
-inits[[2]] <- list(int_mu = 2, beta_mu = 0.01, beta = rep(0.5, ncol(X)),
+inits[[2]] <- list(int_mu = 2, beta_mu = 1, beta = rep(0.5, ncol(X)),
                    alpha = rep(0.5,ncol(K.data$K)), sig_a=0.005)
-inits[[3]] <- list(int_mu = 1.5, beta_mu = 0.02, beta = rep(0.2, ncol(X)),
+inits[[3]] <- list(int_mu = 1.5, beta_mu = 0.8, beta = rep(0.2, ncol(X)),
                    alpha = rep(0.25,ncol(K.data$K)), sig_a=0.025)
 
 datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
@@ -142,7 +158,7 @@ pars <- c("int_mu", "beta_mu",  "alpha", "beta", "sig_a")
 mcmc_config <- stan(model_code=model_string, data=datalist,
                     pars=pars, chains=0)
 mcmc1 <- stan(fit=mcmc_config, data=datalist, pars=pars, chains=1, 
-              iter = 20, warmup = 10, init=list(inits[[chain_id]]))
+              iter = 50, warmup = 25, init=list(inits[[chain_id]]))
 long <- get_mcmc(mcmc1)
 lastones <- subset(long, Iteration==20)
 lastmcmc <- mcmc1
