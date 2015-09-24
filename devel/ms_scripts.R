@@ -141,16 +141,16 @@ X_sim = clim_sim[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 X_sim = scale(X_sim, center = TRUE, scale = TRUE)
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","value"] + mean_params[mean_params$Parameter=="beta_mu","value"]*ex.mat[t-1,] + 
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","value"] + mean_params[mean_params$Parameter=="beta_mu","value"]*log(ex.mat[t-1,]) + 
     sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
 #   print(max(tmp.mu))
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-  tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
+#   tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
   ex.mat[t,] <- tmp.out
 }
 
-# matplot(c(1:time.steps), ex.mat, type="l", col="grey")
+matplot(c(1:time.steps), ex.mat, type="l", col="grey")
 # # hist(y, freq = FALSE)
 # plot(density(ex.mat, adjust = 4), col="red", lwd=2)
 # abline(v = mean(growD$Cover))

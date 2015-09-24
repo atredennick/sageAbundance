@@ -2,14 +2,14 @@
 ##  Creates traceplots and save MCMC output for inference (1000 iterations)
 
 #Poisson fit
-# filestart <- "POIS_iterchunk" 
-# traceplotfile <- "poissonSage_traceplots.pdf"
-# outmcmcfile <- "poissonSage_mcmc.RDS"
+filestart <- "POIS_iterchunk" 
+traceplotfile <- "poissonSage_traceplots.pdf"
+outmcmcfile <- "poissonSage_mcmc.RDS"
 
 #Negative binomial fit
-filestart <- "iterchunk" 
-traceplotfile <- "negbinomSage_traceplots.pdf"
-outmcmcfile <- "negbinomSage_mcmc.RDS"
+# filestart <- "iterchunk" 
+# traceplotfile <- "negbinomSage_traceplots.pdf"
+# outmcmcfile <- "negbinomSage_mcmc.RDS"
 
 ####
 ####  Load libraries

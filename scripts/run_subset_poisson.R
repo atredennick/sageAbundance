@@ -50,43 +50,49 @@ K <- K.data$K
 ####
 model_string <- "
 data{
-  int<lower=0> nobs; // number of observations
-  int<lower=0> ncovs; // number of climate covariates
-  int<lower=0> nknots; // number of interpolation knots
-  int<lower=0> ncells; // number of cells
-  int<lower=0> cellid[nobs]; // cell id
-  int<lower=0> dK1; // row dim for K
-  int<lower=0> dK2; // column dim for K
-  int y[nobs]; // observation vector
-  vector[nobs] lag; // lag cover vector
-  matrix[dK1,dK2] K; // spatial field matrix
-  matrix[nobs,ncovs] X; // spatial field matrix
+int<lower=0> nobs; // number of observations
+int<lower=0> nyrs; // number of years
+int<lower=0> ncovs; // number of climate covariates
+int<lower=0> nknots; // number of interpolation knots
+int<lower=0> ncells; // number of cells
+int<lower=0> cellid[nobs]; // cell id
+int<lower=0> yrid[nobs]; // year id
+int<lower=0> dK1; // row dim for K
+int<lower=0> dK2; // column dim for K
+int y[nobs]; // observation vector
+vector[nobs] lag; // lag cover vector
+matrix[dK1,dK2] K; // spatial field matrix
+matrix[nobs,ncovs] X; // spatial field matrix
 }
 parameters{
-  real int_mu;
-  real<lower=0> beta_mu;
-  real<lower=0.0001> sig_a;
-  vector[nknots] alpha;
-  vector[ncovs] beta;
+real int_mu;
+real<lower=0> beta_mu;
+real<lower=0.000001> sig_a;
+real<lower=0.000001> sig_yr;
+vector[nknots] alpha;
+vector[ncovs] beta;
+vector[nyrs] int_yr;
 }
 transformed parameters{
-  vector[ncells] eta;
-  vector[nobs] mu;
-  vector[nobs] climEffs;
-  eta <- K*alpha;
-  climEffs <- X*beta;
-  for(n in 1:nobs)
-    mu[n] <- int_mu + beta_mu*lag[n] + climEffs[n] + eta[cellid[n]];
+vector[ncells] eta;
+vector[nobs] mu;
+vector[nobs] climEffs;
+eta <- K*alpha;
+climEffs <- X*beta;
+for(n in 1:nobs)
+mu[n] <- int_yr[yrid[n]] + beta_mu*lag[n] + climEffs[n] + eta[cellid[n]];
 }
 model{
-  // Priors
-  alpha ~ normal(0,sig_a);
-  int_mu ~ normal(0,100);
-  beta_mu ~ normal(0,10);
-  beta ~ normal(0,10);
-  sig_a ~ cauchy(0,5);
-  // Likelihood
-  y ~ poisson_log(mu);
+// Priors
+alpha ~ normal(0,sig_a);
+sig_a ~ uniform(0,10);
+sig_yr ~ uniform(0,10);
+int_mu ~ normal(0,100);
+int_yr ~ normal(int_mu, sig_yr);
+beta_mu ~ normal(0,10);
+beta ~ normal(0,10);
+// Likelihood
+y ~ poisson_log(mu);
 }
 "
 
@@ -140,19 +146,24 @@ lag <- log(modelD$CoverLag)
 cellid <- modelD$newID
 X <- modelD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 X <- scale(X, center = TRUE, scale = TRUE)
+yrid <- as.numeric(as.factor(modelD$Year))
+nyrs <- length(unique(yrid))
 
 inits <- list()
 inits[[1]] <- list(int_mu = 1, beta_mu = 0.5, beta = rep(0, ncol(X)),
-                   alpha = rep(0,ncol(K.data$K)), sig_a=0.05)
+                   alpha = rep(0,ncol(K.data$K)), sig_a=0.05, sig_yr=0.02,
+                   int_yr = rep(0,nyrs))
 inits[[2]] <- list(int_mu = 2, beta_mu = 1, beta = rep(0.5, ncol(X)),
-                   alpha = rep(0.5,ncol(K.data$K)), sig_a=0.005)
+                   alpha = rep(0.5,ncol(K.data$K)), sig_a=0.005, sig_yr=0.1,
+                   int_yr = rep(-0.5,nyrs))
 inits[[3]] <- list(int_mu = 1.5, beta_mu = 0.8, beta = rep(0.2, ncol(X)),
-                   alpha = rep(0.25,ncol(K.data$K)), sig_a=0.025)
+                   alpha = rep(0.25,ncol(K.data$K)), sig_a=0.025, sig_yr=0.15,
+                   int_yr = rep(0.5,nyrs))
 
 datalist <- list(y=y, lag=lag, nobs=length(lag), ncells=length(unique(cellid)),
                  cellid=cellid, nknots=ncol(K), K=K, dK1=nrow(K), dK2=ncol(K),
-                 X=X, ncovs=ncol(X))
-pars <- c("int_mu", "beta_mu",  "alpha", "beta", "sig_a")
+                 X=X, ncovs=ncol(X), yrid=yrid, nyrs=nyrs)
+pars <- c("int_mu", "beta_mu",  "alpha", "beta", "sig_a", "sig_yr", "int_yr")
   
 # Compile the model
 mcmc_config <- stan(model_code=model_string, data=datalist,
@@ -160,7 +171,7 @@ mcmc_config <- stan(model_code=model_string, data=datalist,
 mcmc1 <- stan(fit=mcmc_config, data=datalist, pars=pars, chains=1, 
               iter = 50, warmup = 25, init=list(inits[[chain_id]]))
 long <- get_mcmc(mcmc1)
-lastones <- subset(long, Iteration==20)
+lastones <- subset(long, Iteration==50)
 lastmcmc <- mcmc1
 saveRDS(long, paste0("iterchunk1_chain", chain_id, ".RDS"))
 
@@ -171,7 +182,9 @@ for(i in 2:10){
                         beta_mu=as.numeric(lastones[which(lastones$Parameter=="beta_mu"),"value"]),
                         beta=beta,
                         alpha=as.numeric(unlist(lastones[grep("alpha", lastones$Parameter),"value"])),
-                        sig_a=as.numeric(lastones[which(lastones$Parameter=="sig_a"),"value"])))
+                        sig_a=as.numeric(lastones[which(lastones$Parameter=="sig_a"),"value"]),
+                        sig_yr=as.numeric(lastones[which(lastones$Parameter=="sig_yr"),"value"]),
+                        int_yr=as.numeric(unlist(lastones[grep("int_yr", lastones$Parameter), "value"]))))
   mcmc <- stan(fit = lastmcmc, data = datalist, pars = pars, chains = 1, 
                iter=20, warmup=10, init = newinits)
   long <- get_mcmc(mcmc)
