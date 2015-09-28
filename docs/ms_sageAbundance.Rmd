@@ -234,14 +234,6 @@ For simulations (1) and (3) we initialized all pixels with arbitrarily low cover
 We ran equilibrium simulations (1 and 3) for 600 time steps and then compared the output, after discarding and initial 100 time steps.
 For simulation (2), we initialized each pixel with its actual value for time *t* and cell *s* and projected the model forward one time step.
 
-One problem with our statistical approach that treats integer cover as counts, is that the Poisson distribution supports values greater than 100, a value that percent plant cover cannot exceed in reality.
-Thus, when simulating the fitted model it is entirely possible to predict values of cover greater than 100%.
-Likewise, once a pixel reaches such a great value, the exponential function $\text{exp}(\beta_{1} y_{i,t-1})$ (Eq. #) results in runaway growth and eventually all pixels go to unrealistic values of percent cover.
-We therefore imposed a rule in our simulations that if predicted cover from a pixel exceeded 100%, it's value was set to the mean value of all pixels at that timestep.
-Our main purpose for simulating the model is to assess percent cover at equilibrium, so our focus is not on year-to-year dynamics that are affected by this rule.
-The rule simply ensures that percent cover cannot go over 100% while maintaining any mean changes in percent cover since pixels exceeding 100% are set to the mean matrix value.
-Admittedly, such a rule is not ideal, but we have chosen practicality over idealism in this case.
-
 
 Results
 -------

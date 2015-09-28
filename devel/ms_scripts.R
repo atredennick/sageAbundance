@@ -62,7 +62,25 @@ dev.off()
 load(paste0(knotpath,"Knot_cell_distances_subset.Rdata"))
 K <- K.data$K
 
-outs <- readRDS("../results/poissonSage_mcmc.RDS")
+outs <- readRDS("../results/poissonSage_randYear_mcmc.RDS")
+
+####
+####  Subset data by removing pixels with 0s
+####
+# "%w/o%" <- function(x, y) x[!x %in% y] # x without y
+# # Remove pixels that have 0s in the time series
+# zids <- growD[which(growD$Cover==0),"ID"]
+# zids <- unique(c(zids, growD[which(growD$CoverLag==0),"ID"]))
+# pixels_to_keep <- growD$ID %w/o%  zids
+# growD <- growD[which(growD$ID %in% pixels_to_keep),]
+# 
+# # Take out those pixel rows from the K matrix
+# K <- K.data$K
+# K <- K[-zids,]
+# 
+# # Check to make sure dimensions match
+# if(dim(K)[1] != length(unique(growD$ID))) stop("dimension mismatch between K and data")
+
 
 ## Look at spatial field
 alpha <- outs[grep("alpha", outs$Parameter),]
@@ -108,17 +126,48 @@ dev.off()
 clim_vars <- c("beta.1.", "beta.2.", "beta.3.", "beta.4.", "beta.5.")
 clim_names <- c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")
 clim_posts <- subset(outs, Parameter %in% clim_vars)
+quants <- ddply(clim_posts, .(Parameter), summarise,
+              lower = quantile(value, .05),
+              upper = quantile(value, .95),
+              average = mean(value))
+quants <- quants[with(quants, order(-average)), ]
+quants$rank <- c(1:nrow(quants))
+quants$col <- NA
+
+for(i in 1:nrow(quants)){
+  if(sign(quants$lower[i]) == sign(quants$upper[i]) & quants$average[i] > 0 ){
+    quants$col[i] <- "pos"
+  }
+  if(sign(quants$lower[i]) == sign(quants$upper[i]) & quants$average[i] < 0 ){
+    quants$col[i] <- "neg"
+  }
+  
+  if(sign(quants$lower[i]) != sign(quants$upper[i]) ){
+    quants$col[i] <- "none"
+  }
+}
+
+clim_posts <- merge(clim_posts, quants, by="Parameter")
+
 cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", 
                "#CC79A7", "#0072B2", "#D55E00", "#CC79A7")
-png("../results/post_climate_covariates.png", height=5, width=8, units="in", res=100)
-ggplot(clim_posts, aes(x=value, color=Parameter))+
+my_labeller <- function(variable, value){
+  return(as.character(quants$Parameter))
+} 
+library(ggthemes)
+png("../results/post_climate_covariates.png", height=4, width=4, units="in", res=100)
+ggplot(clim_posts, aes(x=value, fill=col))+
   geom_vline(aes(xintercept=0), linetype=2)+
-  geom_line(stat="density", size=1.5)+
-  scale_color_manual(labels=clim_names, values=cbPalette, name="Covariate")+
+  geom_density(alpha=0.5,size=0.5, col=NA, adjust=4)+
+  scale_fill_manual(values=c("grey", "blue", "red"))+
   ylab("Posterior density")+
   xlab("Standardized coefficient value")+
+  facet_grid(rank~., labeller=my_labeller)+
+  scale_y_continuous(breaks=NULL)+
+  theme_few()+
   tmp.theme2+
-  theme(strip.background=element_rect(fill="white"))
+  theme(strip.background=element_rect(fill="white"))+
+  guides(fill=FALSE)
 dev.off()
 
 
@@ -135,7 +184,7 @@ betas <- mean_params[grep("beta", mean_params$Parameter),"value"][2:6]
 eta <- K%*%alphas
 pixels <- nrow(subset(growD, Year==1985))
 ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
-ex.mat[1,] <- 1
+ex.mat[1,] <- 10
 clim_sim <- climD[climD$year %in% unique(growD$Year),]
 X_sim = clim_sim[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 X_sim = scale(X_sim, center = TRUE, scale = TRUE)
@@ -176,10 +225,11 @@ sp.equil2 <- melt(sp.equil, id.vars = c("Lon", "Lat"))
 wide_equil <- dcast(sp.equil2, Lon+Lat~variable, value.var = "value")
 wide_equil$bias <- with(wide_equil, Predicted-Observed)
 
-pred.var <- apply(ex.mat, 2, var)
+ex2 <- ex.mat[(burn.in+1):time.steps,]
+pred.var <- apply(ex2, 2, sd)
 sp.predvar <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
                        Lat=subset(growD, Year==1985)$Lat,
-                       pred.prec=1/pred.var)
+                       pred.prec=pred.var)
 
 tmp.theme3=theme(axis.ticks = element_blank(), axis.text = element_blank(),
                 strip.text=element_text(face="bold"),
@@ -206,7 +256,7 @@ g2 <- ggplot(subset(sp.equil2, variable=="Predicted"), aes(x=Lon, y=Lat))+
 
 g3 <- ggplot(wide_equil, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=bias, fill=bias))+
-  scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
+  scale_fill_gradientn(colours=myPalette(200), name="% Cover", limits=c(-20, 20))+
   coord_equal()+
   tmp.theme3+
   theme(strip.background=element_rect(fill="white"))+
@@ -214,11 +264,11 @@ g3 <- ggplot(wide_equil, aes(x=Lon, y=Lat))+
 
 g4 <- ggplot(sp.predvar, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=pred.prec, fill=pred.prec))+
-  scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
+  scale_fill_gradientn(colours=myPalette(200), name=expression("% Cover"), limits=c(0,12))+
   coord_equal()+
   tmp.theme3+
   theme(strip.background=element_rect(fill="white"))+
-  ggtitle("D) Prediction precision")
+  ggtitle("D) Prediction std. dev.")
 
 # g2 <- ggplot(sp.equil)+
 #   geom_histogram(aes(x=Observed, y = ..density..), col="white", fill="grey45", binwidth=1)+
@@ -249,7 +299,7 @@ X_sim = scale(X_sim, center = TRUE, scale = TRUE)
 for(t in 1:time.steps){
   Xtmp <- X_sim[t,]
   lagcover <- growD[which(growD$Year==yearid[t]),"CoverLag"]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*lagcover + 
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*log(lagcover) + 
     sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
@@ -301,7 +351,7 @@ clim_sd <- apply(X = p.climD, MARGIN = 2, FUN = sd)
 
 pixels <- nrow(subset(growD, Year==1985))
 ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
-ex.mat[1,] <- 1
+ex.mat[1,] <- 10
 p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[1,2],dim(climD)[1],2)
 p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[1,3],dim(climD)[1],2)
@@ -315,7 +365,7 @@ X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["Tmea
 X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,] + 
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,]) + 
                   sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   #   print(max(tmp.mu))
@@ -328,7 +378,7 @@ rcp45 <- ex.mat[(burn.in+1):time.steps, ]
 
 pixels <- nrow(subset(growD, Year==1985))
 ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
-ex.mat[1,] <- 1
+ex.mat[1,] <- 10
 p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[2,2],dim(climD)[1],2)
 p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[2,3],dim(climD)[1],2)
@@ -341,7 +391,7 @@ X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["Tmea
 X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,] + 
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,]) + 
     sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   #   print(max(tmp.mu))
@@ -354,7 +404,7 @@ rcp60 <- ex.mat[(burn.in+1):time.steps, ]
 
 pixels <- nrow(subset(growD, Year==1985))
 ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
-ex.mat[1,] <- 1
+ex.mat[1,] <- 10
 p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[3,2],dim(climD)[1],2)
 p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[3,3],dim(climD)[1],2)
@@ -367,7 +417,7 @@ X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["Tmea
 X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,] + 
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,]) + 
     sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   #   print(max(tmp.mu))
@@ -413,8 +463,12 @@ ggplot(proj.equil2, aes(x=Lon, y=Lat))+
 ggsave("../results/clim_change_mean_spatial.png", height=8, width=4)
 
 ggplot(all4plot)+
-  geom_line(stat="density", aes(x=value, y=..density.., col=variable), size=1)+
+#   geom_line(stat="density", aes(x=value, y=..density.., fill=variable), size=1, alpha=0.5)+
+  geom_density(aes(x=value, y=..density.., fill=variable, alpha=variable, color=variable), size=1, adjust=2)+
+  scale_fill_manual(values=c("dodgerblue","tan","coral","darkred"), name="Scenario") +
   scale_color_manual(values=c("dodgerblue","tan","coral","darkred"), name="Scenario") +
+  scale_alpha_manual(values=c(1,0.75,0.5,0.5))+
+  guides(alpha=FALSE)+
   xlab("Equilibrium Percent Cover")+
   ylab("Estimated Kernel Density")
 ggsave("../results/clim_change_densities.png", height=4, width=5, dpi = 200)

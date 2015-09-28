@@ -3,8 +3,8 @@
 
 #Poisson fit
 filestart <- "POIS_iterchunk" 
-traceplotfile <- "poissonSage_traceplots.pdf"
-outmcmcfile <- "poissonSage_mcmc.RDS"
+traceplotfile <- "poissonSage_randYear_traceplots.pdf"
+outmcmcfile <- "poissonSage_randYear_mcmc.RDS"
 
 #Negative binomial fit
 # filestart <- "iterchunk" 
