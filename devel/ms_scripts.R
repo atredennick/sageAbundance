@@ -4,13 +4,15 @@
 rm(list=ls(all=TRUE))
 
 ####
-####  Set some file paths, etc.
+####  Set some file paths, etc. ------------------------------------------------
 ####
 datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
 knotpath <- "../results/"
 
+
+
 ####
-####  Load required libraries
+####  Load required libraries --------------------------------------------------
 ####
 library(rstan)
 library(reshape2)
@@ -23,7 +25,7 @@ library(RColorBrewer)
 
 
 ####
-####  Get data
+####  Get data -----------------------------------------------------------------
 ####
 fullD <- read.csv(paste0(datapath,"wy_sagecover_subset_noNA.csv"))
 if(length(which(is.na(fullD$Cover))) > 0) stop("data contains NA values")
@@ -37,6 +39,32 @@ climD <- read.csv(paste(datapath,
                         "/studyarea1/climate/DAYMET/FormattedClimate_WY_SA1.csv",
                         sep=""))
 
+
+
+####
+####  Load knot data and MCMC results ------------------------------------------
+####
+load(paste0(knotpath,"Knot_cell_distances_subset.Rdata"))
+K <- K.data$K
+outs <- readRDS("../results/poissonSage_randYear_mcmc.RDS")
+
+
+
+####
+####  Fit colonization logistic ------------------------------------------------
+####
+colD <- growD[which(growD$CoverLag == 0), ]
+colD$colonizes <- ifelse(colD$Cover==0, 0, 1)
+col.fit <- glm(colonizes ~ 1, data=colD, family = "binomial")
+col.intercept <- as.numeric(coef(col.fit))
+antilogit <- function(x) { exp(x) / (1 + exp(x) ) }
+avg.new.cover <- round(mean(colD[which(colD$Cover>0),"Cover"]),0)
+
+
+
+####
+####  Set up plotting themes ---------------------------------------------------
+####
 tmp.theme=theme(axis.ticks = element_blank(), axis.text = element_blank(),
                 strip.text=element_text(face="bold"),
                 axis.title=element_text(size=16),text=element_text(size=16),
@@ -46,9 +74,14 @@ tmp.theme2=theme(strip.text=element_text(face="bold"),
                 legend.text=element_text(size=16))
 
 myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")))
-#all years cover plot
 
-png("../results/all_years_percCover.png", width = 8.5, height = 5, units="in", res = 100)
+
+
+####
+####  Plot all years in space --------------------------------------------------
+####
+png("../results/all_years_percCover.png", width = 8.5, height = 5, 
+    units="in", res = 100)
 ggplot(growD, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=Cover, fill=Cover))+
   facet_wrap("Year")+
@@ -58,31 +91,11 @@ ggplot(growD, aes(x=Lon, y=Lat))+
   theme(strip.background=element_rect(fill="white"))
 dev.off()
 
-# Load knot data
-load(paste0(knotpath,"Knot_cell_distances_subset.Rdata"))
-K <- K.data$K
 
-outs <- readRDS("../results/poissonSage_randYear_mcmc.RDS")
 
 ####
-####  Subset data by removing pixels with 0s
+####  Plot spatial field and avg cover together --------------------------------
 ####
-# "%w/o%" <- function(x, y) x[!x %in% y] # x without y
-# # Remove pixels that have 0s in the time series
-# zids <- growD[which(growD$Cover==0),"ID"]
-# zids <- unique(c(zids, growD[which(growD$CoverLag==0),"ID"]))
-# pixels_to_keep <- growD$ID %w/o%  zids
-# growD <- growD[which(growD$ID %in% pixels_to_keep),]
-# 
-# # Take out those pixel rows from the K matrix
-# K <- K.data$K
-# K <- K[-zids,]
-# 
-# # Check to make sure dimensions match
-# if(dim(K)[1] != length(unique(growD$ID))) stop("dimension mismatch between K and data")
-
-
-## Look at spatial field
 alpha <- outs[grep("alpha", outs$Parameter),]
 alpha_means <- ddply(alpha, .(Parameter), summarise,
                      mean = mean(value))
@@ -90,16 +103,13 @@ eta <- K%*%alpha_means$mean
 oneyear <- subset(growD, Year==1985)
 oneyear$eta <- eta
 
-
-
-####
-####  Plot spatial field and avg cover together
-####
-png("../results/spatialfield.png", width = 8.5, height = 8.5, units="in", res = 100)
+png("../results/spatialfield.png", width = 8.5, height = 8.5, 
+    units="in", res = 100)
 etaPalette <- colorRampPalette(rev(brewer.pal(11, "RdBu")))
 spfield_plot <- ggplot(oneyear, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=eta, fill=eta))+
-  scale_fill_gradientn(limits=c(-0.55, 0.55), colours=etaPalette(100), name=expression(eta))+
+  scale_fill_gradientn(limits=c(-0.55, 0.55), colours=etaPalette(100), 
+                       name=expression(eta))+
   coord_equal()+
   tmp.theme+
   theme(strip.background=element_rect(fill="white"))+
@@ -110,7 +120,8 @@ avg_cover <- ddply(growD, .(Lon, Lat), summarise,
 avg_cover$scaled_cov <- scale(avg_cover$Cover, center = TRUE, scale = TRUE)
 avgcover_plot <- ggplot(avg_cover, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=scaled_cov, fill=scaled_cov))+
-  scale_fill_gradientn(limits=c(-3, 3), colours=etaPalette(100), name="Cover \ndeviation")+
+  scale_fill_gradientn(limits=c(-3, 3), colours=etaPalette(100), 
+                       name="Cover \ndeviation")+
   coord_equal()+
   tmp.theme+
   theme(strip.background=element_rect(fill="white"))+
@@ -121,7 +132,7 @@ dev.off()
 
 
 ####
-####  Plot climate covariate posterior densities
+####  Plot climate covariate posterior densities -------------------------------
 ####
 clim_vars <- c("beta.1.", "beta.2.", "beta.3.", "beta.4.", "beta.5.")
 clim_names <- c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")
@@ -130,6 +141,7 @@ quants <- ddply(clim_posts, .(Parameter), summarise,
               lower = quantile(value, .05),
               upper = quantile(value, .95),
               average = mean(value))
+quants$clim_names <- clim_names
 quants <- quants[with(quants, order(-average)), ]
 quants$rank <- c(1:nrow(quants))
 quants$col <- NA
@@ -152,7 +164,7 @@ clim_posts <- merge(clim_posts, quants, by="Parameter")
 cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", 
                "#CC79A7", "#0072B2", "#D55E00", "#CC79A7")
 my_labeller <- function(variable, value){
-  return(as.character(quants$Parameter))
+  return(as.character(quants$clim_names))
 } 
 library(ggthemes)
 png("../results/post_climate_covariates.png", height=4, width=4, units="in", res=100)
@@ -167,13 +179,14 @@ ggplot(clim_posts, aes(x=value, fill=col))+
   theme_few()+
   tmp.theme2+
   theme(strip.background=element_rect(fill="white"))+
+  theme(strip.text.y = element_text(size = 8, angle = 270))+
   guides(fill=FALSE)
 dev.off()
 
 
 
 ####
-####  Run population simulation
+####  Run equilibrium population simulation ------------------------------------
 ####
 time.steps <- 600
 burn.in <- 100
@@ -191,27 +204,28 @@ X_sim = scale(X_sim, center = TRUE, scale = TRUE)
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
   dens.dep <- mean_params[mean_params$Parameter=="beta_mu","value"]*log(ex.mat[t-1,])
-  dens.dep[which(dens.dep==-Inf)] <- 0
   tmp.mu <- mean_params[mean_params$Parameter=="int_mu","value"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
+  
+  #Colonization
+  zeros <- which(ex.mat[t-1,]==0)
+  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+  colonizer.cover <- colonizers*avg.new.cover
+  tmp.out[zeros] <- colonizer.cover
+  
   ex.mat[t,] <- tmp.out
 }
 
 # matplot(c(1:time.steps), ex.mat, type="l", col="grey")
-# # hist(y, freq = FALSE)
-# plot(density(ex.mat, adjust = 4), col="red", lwd=2)
-# abline(v = mean(growD$Cover))
-# mean(ex.mat)
 
 
 ####
-####  Plot spatial equilibrium
+####  Plot spatial equilibrium -------------------------------------------------
 ####
 obs.equil <- ddply(growD, .(Lon, Lat), summarise,
                    cover = mean(Cover))
 obs.equil <- obs.equil[with(obs.equil, order(-Lat, Lon)), ]
-# obs.equil[which(obs.equil[,"cover"]>10), "cover"] <- NA
 eq.pixels <- colMeans(ex.mat[(burn.in+1):time.steps,])
 sp.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
                        Lat=subset(growD, Year==1985)$Lat,
@@ -228,7 +242,7 @@ ex2 <- ex.mat[(burn.in+1):time.steps,]
 pred.var <- apply(ex2, 2, sd)
 sp.predvar <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
                        Lat=subset(growD, Year==1985)$Lat,
-                       pred.prec=pred.var)
+                       pred.prec=1/pred.var)
 
 tmp.theme3=theme(axis.ticks = element_blank(), axis.text = element_blank(),
                 strip.text=element_text(face="bold"),
@@ -263,25 +277,18 @@ g3 <- ggplot(wide_equil, aes(x=Lon, y=Lat))+
 
 g4 <- ggplot(sp.predvar, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=pred.prec, fill=pred.prec))+
-  scale_fill_gradientn(colours=myPalette(200), name=expression("% Cover"), limits=c(0,12))+
+  scale_fill_gradientn(colours=myPalette(200), name=expression("(% Cover)"^-2))+
   coord_equal()+
   tmp.theme3+
   theme(strip.background=element_rect(fill="white"))+
-  ggtitle("D) Prediction std. dev.")
+  ggtitle("D) Prediction precision")
 
-# g2 <- ggplot(sp.equil)+
-#   geom_histogram(aes(x=Observed, y = ..density..), col="white", fill="grey45", binwidth=1)+
-#   geom_line(stat="density", aes(x=Predicted, y= ..density..), 
-#             col="black", size=1.5, linetype=2)+
-#   xlab("Percent Cover")+
-#   ylab("Estimated Kernel Density")+
-#   theme_bw()
 gout <- grid.arrange(g1, g2, g3, g4, ncol=1, nrow=4)
 dev.off()
 
 
 ####
-####  Predict each year
+####  Predict each year --------------------------------------------------------
 ####
 mean_params <- ddply(outs, .(Parameter), summarise,
                      mean(value))
@@ -330,7 +337,7 @@ ggsave("../results/obs_pred_hist.png", width = 4, height = 4, units="in")
 
 
 ####
-####  Run climate simulations
+####  Run climate simulations --------------------------------------------------
 ####
 projC<-data.frame("scenario"=c("rcp45","rcp60","rcp85"),
                   "deltaPpt"=c(1.0894,1.0864,1.110),
@@ -370,6 +377,13 @@ for(t in 2:time.steps){
   tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
+  
+  #Colonization
+  zeros <- which(ex.mat[t-1,]==0)
+  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+  colonizer.cover <- colonizers*avg.new.cover
+  tmp.out[zeros] <- colonizer.cover
+  
   ex.mat[t,] <- tmp.out
 }
 rcp45 <- ex.mat[(burn.in+1):time.steps, ]
@@ -395,6 +409,13 @@ for(t in 2:time.steps){
   tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
+  
+  #Colonization
+  zeros <- which(ex.mat[t-1,]==0)
+  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+  colonizer.cover <- colonizers*avg.new.cover
+  tmp.out[zeros] <- colonizer.cover
+  
   ex.mat[t,] <- tmp.out
 }
 rcp60 <- ex.mat[(burn.in+1):time.steps, ]
@@ -420,6 +441,13 @@ for(t in 2:time.steps){
   tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
+  
+  #Colonization
+  zeros <- which(ex.mat[t-1,]==0)
+  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+  colonizer.cover <- colonizers*avg.new.cover
+  tmp.out[zeros] <- colonizer.cover
+  
   ex.mat[t,] <- tmp.out
 }
 rcp85 <- ex.mat[(burn.in+1):time.steps, ]
