@@ -184,22 +184,21 @@ betas <- mean_params[grep("beta", mean_params$Parameter),"value"][2:6]
 eta <- K%*%alphas
 pixels <- nrow(subset(growD, Year==1985))
 ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
-ex.mat[1,] <- 10
+ex.mat[1,] <- 1
 clim_sim <- climD[climD$year %in% unique(growD$Year),]
 X_sim = clim_sim[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 X_sim = scale(X_sim, center = TRUE, scale = TRUE)
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","value"] + mean_params[mean_params$Parameter=="beta_mu","value"]*log(ex.mat[t-1,]) + 
-    sum(betas*Xtmp)
+  dens.dep <- mean_params[mean_params$Parameter=="beta_mu","value"]*log(ex.mat[t-1,])
+  dens.dep[which(dens.dep==-Inf)] <- 0
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","value"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
-#   print(max(tmp.mu))
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-#   tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
   ex.mat[t,] <- tmp.out
 }
 
-matplot(c(1:time.steps), ex.mat, type="l", col="grey")
+# matplot(c(1:time.steps), ex.mat, type="l", col="grey")
 # # hist(y, freq = FALSE)
 # plot(density(ex.mat, adjust = 4), col="red", lwd=2)
 # abline(v = mean(growD$Cover))
@@ -299,8 +298,9 @@ X_sim = scale(X_sim, center = TRUE, scale = TRUE)
 for(t in 1:time.steps){
   Xtmp <- X_sim[t,]
   lagcover <- growD[which(growD$Year==yearid[t]),"CoverLag"]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*log(lagcover) + 
-    sum(betas*Xtmp)
+  dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(lagcover)
+  dens.dep[which(dens.dep==-Inf)] <- 0
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
   tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
@@ -365,12 +365,11 @@ X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["Tmea
 X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,]) + 
-                  sum(betas*Xtmp)
+  dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
+  dens.dep[which(dens.dep==-Inf)] <- 0
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
-  #   print(max(tmp.mu))
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-  tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
   ex.mat[t,] <- tmp.out
 }
 rcp45 <- ex.mat[(burn.in+1):time.steps, ]
@@ -391,12 +390,11 @@ X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["Tmea
 X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,]) + 
-    sum(betas*Xtmp)
+  dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
+  dens.dep[which(dens.dep==-Inf)] <- 0
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
-  #   print(max(tmp.mu))
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-  tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
   ex.mat[t,] <- tmp.out
 }
 rcp60 <- ex.mat[(burn.in+1):time.steps, ]
@@ -417,12 +415,11 @@ X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["Tmea
 X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
 for(t in 2:time.steps){
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,]) + 
-    sum(betas*Xtmp)
+  dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
+  dens.dep[which(dens.dep==-Inf)] <- 0
+  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
-  #   print(max(tmp.mu))
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-  tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
   ex.mat[t,] <- tmp.out
 }
 rcp85 <- ex.mat[(burn.in+1):time.steps, ]

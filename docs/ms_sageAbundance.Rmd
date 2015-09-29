@@ -12,7 +12,7 @@ csl: components/ecology.csl
 output:
   pdf_document:
     fig_caption: true
-    keep_tex: true
+    keep_tex: false
 fontsize: 12pt
 geometry: margin=1in
 
