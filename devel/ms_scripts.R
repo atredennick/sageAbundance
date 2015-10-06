@@ -504,14 +504,18 @@ ggsave("../results/clim_change_densities.png", height=4, width=5, dpi = 200)
 
 
 
+
+
+###########################################################
+###########################################################
+###########################################################
+####                                                   ####
+####  Run population model with parameter uncertainty  ####
+####                                                   ####
+###########################################################
+###########################################################
+###########################################################
 # 
-# 
-# ###################################################
-# ###################################################
-# ###################################################
-# ####
-# ####  Run population model with parameter uncertainty
-# ####
 # colnames(outs)[which(colnames(outs)=="chain")] <- "Chain"
 # 
 # time.steps <- 10
@@ -540,12 +544,17 @@ ggsave("../results/clim_change_densities.png", height=4, width=5, dpi = 200)
 #     eta <- K%*%as.numeric(unlist(alphas))
 #     for(t in 2:time.steps){
 #       Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-#       tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + mean_params[mean_params$Parameter=="beta_mu","..1"]*ex.mat[t-1,] + 
-#         sum(betas*Xtmp)
+#       dens.dep <- beta_mu*log(ex.arr[counter,t-1,])
+#       tmp.mu <- int_mu + dens.dep + sum(betas*Xtmp)
 #       tmp.mu <- exp(tmp.mu + eta)
-#       #   print(max(tmp.mu))
-#       tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-#       tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
+#       tmp.out <- rpois(ncol(ex.arr[counter,,]), lambda = tmp.mu)
+#       
+#       #Colonization
+#       zeros <- which(ex.arr[counter,t-1,]==0)
+#       colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+#       colonizer.cover <- colonizers*avg.new.cover
+#       tmp.out[zeros] <- colonizer.cover
+#       
 #       ex.arr[counter,t,] <- tmp.out
 #     }
 #     counter <- counter+1
