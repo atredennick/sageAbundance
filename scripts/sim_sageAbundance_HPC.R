@@ -37,7 +37,8 @@ library(plyr)
 ####
 ####  Set global simulation parameters -----------------------------------------
 ####
-time.steps <- 600
+totsims <- 100 # number of random parameter sets to simulate
+time.steps <- 500
 
 
 
@@ -51,7 +52,7 @@ myargument <- sub("-","",myargument)
 climate_id <- as.numeric(myargument)
 
 ##  For PC tests (comment out for HPC runs!!)
-# climate_id <- 1
+climate_id <- 1
 
 
 
@@ -64,9 +65,9 @@ datapath2 <- ""
 resultspath <- ""
 
 ##  For PC runs (comment out for HPC runs!!)
-# datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
-# datapath2 <- "../data/"
-# resultspath <- "../results/"
+datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
+datapath2 <- "../data/"
+resultspath <- "../results/"
 
 
 
@@ -159,11 +160,6 @@ alpha_data <- outs[grep("alpha", outs$Parameter),]
 # Make vector for extracting climate effect names in MCMC dataframe
 climeffs <- c("beta.1.", "beta.2.", "beta.3.", "beta.4.", "beta.5.")
 
-# Set number of chains and iterations
-nchains <- length(unique(outs$Chain))
-niters <- length(unique(outs$mcmc_iter))
-totsims <- nchains*niters
-
 # Get number of pixels to simulate
 pixels <- nrow(subset(growD, Year==1985))
 
@@ -171,46 +167,40 @@ pixels <- nrow(subset(growD, Year==1985))
 ex.arr <- array(NA, dim=c(totsims, time.steps, pixels))
 ex.arr[,1,] <- 1 # initialize all pixels at 1% cover
 
-
+# Get vectors for random parameter samples
+nchains <- length(unique(outs$Chain))
+niters <- length(unique(outs$mcmc_iter))
 
 ####
 ####  Main simulation loop -----------------------------------------------------
 ####
-counter <- 1 # for keeping track of full number of iterations
-for(i in 1:nchains){ # loop through chains
+for(i in 1:totsims){ # loop through chains
+  chain <- sample(nchains, 1) # sample random chain
+  iter <- sample(niters, 1) # sample random iteration within chain
+  int_mu <- as.numeric(subset(outs, Chain==chain & mcmc_iter==iter & Parameter=="int_mu")[,"value"])
+  beta_mu <- as.numeric(subset(outs, Chain==chain & mcmc_iter==iter & Parameter=="beta_mu")[,"value"])
+  betas <- subset(outs, Chain==chain & mcmc_iter==iter & Parameter%in%climeffs)[,"value"]
+  betas <- as.numeric(unlist(betas))
+  alphas <- subset(alpha_data, Chain==chain & mcmc_iter==iter)[,"value"]
+  eta <- K%*%as.numeric(unlist(alphas))
   
-  for(j in 1:niters){ # loop through iterations within chain
+  for(t in 2:time.steps){ # loop throug time steps for current parameter set
+    Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
+    dens.dep <- beta_mu*log(ex.arr[i,t-1,])
+    tmp.mu <- int_mu + dens.dep + sum(betas*Xtmp)
+    tmp.mu <- exp(tmp.mu + eta)
+    tmp.out <- rpois(pixels, lambda = tmp.mu)
     
-    chain <- i
-    iter <- j
-    int_mu <- as.numeric(subset(outs, Chain==chain & mcmc_iter==iter & Parameter=="int_mu")[,"value"])
-    beta_mu <- as.numeric(subset(outs, Chain==chain & mcmc_iter==iter & Parameter=="beta_mu")[,"value"])
-    betas <- subset(outs, Chain==chain & mcmc_iter==iter & Parameter%in%climeffs)[,"value"]
-    betas <- as.numeric(unlist(betas))
-    alphas <- subset(alpha_data, Chain==chain & mcmc_iter==iter)[,"value"]
-    eta <- K%*%as.numeric(unlist(alphas))
+    #Colonization
+    zeros <- which(ex.arr[i,t-1,]==0)
+    colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+    colonizer.cover <- colonizers*avg.new.cover
+    tmp.out[zeros] <- colonizer.cover
     
-    for(t in 2:time.steps){ # loop throug time steps for current parameter set
-      Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-      dens.dep <- beta_mu*log(ex.arr[counter,t-1,])
-      tmp.mu <- int_mu + dens.dep + sum(betas*Xtmp)
-      tmp.mu <- exp(tmp.mu + eta)
-      tmp.out <- rpois(pixels, lambda = tmp.mu)
-      
-      #Colonization
-      zeros <- which(ex.arr[counter,t-1,]==0)
-      colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
-      colonizer.cover <- colonizers*avg.new.cover
-      tmp.out[zeros] <- colonizer.cover
-      
-      ex.arr[counter,t,] <- tmp.out
-    } # next time step
-    
-  counter <- counter+1  
-  
-  } # next MCMC iteration
-  
-} # next MCMC chain
+    ex.arr[i,t,] <- tmp.out
+  } # next time step
+
+} # next random MCMC iteration
 
 
 
