@@ -304,12 +304,11 @@ Tables
 average projections.}
 \begin{tabular}{llllll}
 \hline
- & \multicolumn{2}{c}{Study Area 1} &  & \multicolumn{2}{c}{Study Area 2}\tabularnewline 
-Emissions Scenario & $\Delta$ temperature & $\Delta$ precipitation &  & $\Delta$ temperature & $\Delta$ precipitation\tabularnewline
+Emissions Scenario & Absolute change in temperature & Percentage change in precipitation\tabularnewline
 \hline
-RCP 4.5 & 2.98\textdegree & 8.94\% &  & 3.04\textdegree & 7.42\%\tabularnewline
-RCP 6.0 & 3.13\textdegree & 8.64\% &  & 3.23\textdegree & 6.72\%\tabularnewline
-RCP 8.5 & 4.79\textdegree & 11.0\% &  & 4.90\textdegree & 8.81\%\tabularnewline
+RCP 4.5 & 2.98\textdegree & 8.94\%\tabularnewline
+RCP 6.0 & 3.13\textdegree & 8.64\%\tabularnewline
+RCP 8.5 & 4.79\textdegree & 11.0\%\tabularnewline
 \hline
 \end{tabular}
 \end{table}
