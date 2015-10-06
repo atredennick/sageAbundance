@@ -52,7 +52,7 @@ myargument <- sub("-","",myargument)
 climate_id <- as.numeric(myargument)
 
 ##  For PC tests (comment out for HPC runs!!)
-climate_id <- 1
+# climate_id <- 1
 
 
 
@@ -65,9 +65,9 @@ datapath2 <- ""
 resultspath <- ""
 
 ##  For PC runs (comment out for HPC runs!!)
-datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
-datapath2 <- "../data/"
-resultspath <- "../results/"
+# datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
+# datapath2 <- "../data/"
+# resultspath <- "../results/"
 
 
 
