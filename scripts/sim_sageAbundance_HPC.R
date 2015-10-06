@@ -160,7 +160,7 @@ alpha_data <- outs[grep("alpha", outs$Parameter),]
 climeffs <- c("beta.1.", "beta.2.", "beta.3.", "beta.4.", "beta.5.")
 
 # Set number of chains and iterations
-nchains <- length(unique(outs$chain))
+nchains <- length(unique(outs$Chain))
 niters <- length(unique(outs$mcmc_iter))
 totsims <- nchains*niters
 
@@ -179,7 +179,8 @@ ex.arr[,1,] <- 1 # initialize all pixels at 1% cover
 counter <- 1 # for keeping track of full number of iterations
 for(i in 1:nchains){ # loop through chains
   
-  for(j in 1:niters){ # loop throug iterations within chain
+  for(j in 1:niters){ # loop through iterations within chain
+    
     chain <- i
     iter <- j
     int_mu <- as.numeric(subset(outs, Chain==chain & mcmc_iter==iter & Parameter=="int_mu")[,"value"])
@@ -194,7 +195,7 @@ for(i in 1:nchains){ # loop through chains
       dens.dep <- beta_mu*log(ex.arr[counter,t-1,])
       tmp.mu <- int_mu + dens.dep + sum(betas*Xtmp)
       tmp.mu <- exp(tmp.mu + eta)
-      tmp.out <- rpois(ncol(ex.arr[counter,,]), lambda = tmp.mu)
+      tmp.out <- rpois(pixels, lambda = tmp.mu)
       
       #Colonization
       zeros <- which(ex.arr[counter,t-1,]==0)
@@ -205,6 +206,8 @@ for(i in 1:nchains){ # loop through chains
       ex.arr[counter,t,] <- tmp.out
     } # next time step
     
+  counter <- counter+1  
+  
   } # next MCMC iteration
   
 } # next MCMC chain
