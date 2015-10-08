@@ -15,7 +15,7 @@ rm(list=ls())
 ####
 ####  Set some global simulation settings --------------------------------------
 ####
-parameter_reps <- 2
+parameter_reps <- 100
 clim_vars <- c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")
 
 
@@ -32,13 +32,15 @@ source("../R/clim_proj_format_funcs.R")
 
 
 ####
-####  Read in percent cover file, climate projections, MCMC output -------------
+####  Read in percent cover file, climate projections, MCMC output, K.data -----
 ####
 obs_data <- read.csv("../data/wy_sagecover_subset_noNA.csv")
 obs_data <- subset(obs_data, Year>1984) # subsets out NA CoverLag values
 temp_projs <- readRDS("../data/CMIP5_yearly_project_temperature.RDS")
 ppt_projs <- readRDS("../data/CMIP5_yearly_project_precipitation.RDS")
 mcmc_outs <- readRDS("../results/poissonSage_randYear_mcmc.RDS")
+load("../results/Knot_cell_distances_subset.Rdata")
+K <- K.data$K
 
 
 
@@ -99,20 +101,37 @@ for(do_model in all_models){
     climate_now["TmeanSpr2"] <- (climate_now["TmeanSpr2"] - obs_clim_means["TmeanSpr2"])/obs_clim_sds["TmeanSpr2"]
     
     # Create storage matrix for population
-    n_save <- array(dim = c(parameter_reps, num_sims, nrow(last_obs)))
+    n_save <- array(dim = c(num_sims+1, parameter_reps, nrow(last_obs)))
+    n_save[1,,] <- last_obs$Cover # set first record to last observation
     
-    for(t in 1:num_sims){
+    for(t in 2:num_sims){
       
-      weather <- climate_now[t, clim_vars]
+      weather <- climate_now[t-1, clim_vars] #t-1 since clim data starts in 2012
       
       for(i in 1:parameter_reps){
         randchain <- sample(1:nchains, 1)
         randiter <- sample(1:niters, 1)
         params_now <- subset(mcmc_outs, chain==randchain & mcmc_iter==randiter)
+        alphas <- params_now[grep("alpha", params_now$Parameter), "value"]
+        int_mu <- params_now[grep("int_mu", params_now$Parameter), "value"]
+        beta_mu <- params_now[grep("beta_mu", params_now$Parameter), "value"]
+        beta_clims <- params_now[grep("beta.", params_now$Parameter), "value"][2:6]
+        eta_now <-  K%*%as.numeric(unlist(alphas))
+        
+        n_save[t,i,] <- iterate_sage(N = n_save[t-1,i,], 
+                                     int = int_mu, 
+                                     beta.dens = beta_mu,
+                                     beta.clim = beta_clims,
+                                     eta = eta_now,
+                                     weather = weather)
         
       } # next parameter set
       
     } # next year (t)
+    
+    file <- paste0(do_model,"_", do_scenario, "_yearly_forecasts.RDS")
+    path <- "../results/yearlyforecasts/"
+    saveRDS(n_save, paste0(path,file))
     
   } # next scenario
   

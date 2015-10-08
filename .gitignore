@@ -1,5 +1,6 @@
 .Rproj.user
 .Rhistory
+/results/yearlyforecasts/
 *.pdf
 *.tex
 *.png
