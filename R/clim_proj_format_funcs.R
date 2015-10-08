@@ -1,15 +1,16 @@
-##  Function to create a climate dataframe from CMIP5 projections
-##  Takes long dataframe of temperature and precipitation with yearly
-##  values by model and scenario. Returns a data frame for a particular
-##  model and scenario.
-
 #' Produce a climate dataframe for sageAbundance simulations
 #' @param tdata subset of temperature dataframe for a single model and scenario
 #' @param pdata subset of precipitation dataframe for a single model and scenario
 #' @param years vector of desired years in output
 #' @return clim_data formatted climate dataframe for simulating population model
-#' @author Andrew Tredennick \email{atredenn@gmail.com}
+#' @author Andrew Tredennick
 format_climate <- function(tdata, pdata, years){
+  ### Load 'plyr', if not already loaded
+#   if("plyr" %in% rownames(installed.packages()) == FALSE){
+#     stop("you need to install the 'plyr' package")
+#   }
+  if("package:plyr" %in% search() == FALSE) library(plyr)
+  
   ### Add in 2 extra years to get lag precip != NA
   orig_years <- years                           # save original year vector
   years <- c(min(years)-2, min(years)-1, years) # add in 2 extra years

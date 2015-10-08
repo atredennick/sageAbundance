@@ -4,7 +4,7 @@
 \alias{model_nocovars}
 \title{Estimate model parameters in GLMM using rstan with no environmental covariates}
 \usage{
-model_nocovars(y, lag, K, cellid, iters = 2000, warmup = 1000,
+model_nocovars(y, lag, K, X, cellid, iters = 2000, warmup = 1000,
   nchains = 1, inits)
 }
 \arguments{
