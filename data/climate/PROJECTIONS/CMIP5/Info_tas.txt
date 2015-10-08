@@ -1,0 +1,7 @@
+Period: 1950Jan through 2098Dec
+Latitude bounds: (42.125, 42.25)
+Longitude bounds: (250.875, 251.0)
+
+Rows: [1788] time, days from 1950-1-1
+Cols: First two columns: (Year, Mo), then
+Cols: [234] projection, <scenario.model.run>

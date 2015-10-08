@@ -1,0 +1,226 @@
+################################################################################
+Downscaled Climate Projections Archive
+	Version 2.0
+	Date    08-May-2013
+
+Development Group: 
+U.S. Bureau of Reclamation Technical Service Center
+Santa Clara University,
+Lawrence Livermore National Laboratory,
+Climate Central,
+Climate Analytics Group,
+Scripps Institution of Oceanography,
+U.S. Army Corps of Engineers,
+U.S. Geological Survey
+
+I. 	Terms of Use
+
+These projections are being distributed to interested users for consideration
+in research and planning applications. Such applications may include any
+project carried out by an individual or organized by a university, a
+scientific institute, public agency, or private sector entity for research or
+planning purposes. Any decision to use these projections is at the interested
+user's discretion and subject to the Disclaimer provided below.
+
+II. 	Disclaimer
+
+These projections are being made available to provide immediate access for the
+convenience of interested persons. They are being made available by Archive
+Collaborators (i.e. Bureau of Reclamation, Climate Analytics Group, Climate
+Central, Lawrence Livermore National Laboratory, Santa Clara University,
+Scripps Institution of Oceanography, U.S. Army Corps of Engineers, and U.S.
+Geological Survey. Archive Collaborators believe the information to be correct
+representations of potential high-resolution climate/hydrologic variations and
+changes subject to the limitations of the CMIP3 and CMIP5 global climate
+simulations, and the downscaling methods and their limitations, as described
+elsewhere in this web site. However, human and mechanical errors remain
+possibilities. Therefore, Archive Collaborators do not guarantee the accuracy,
+completeness, timeliness, or correct sequencing of the information. Also,
+neither Archive Collaborators, nor any of the sources of the information shall
+be responsible for any errors or omissions, or for the use or results obtained
+from the use of this information.
+
+III. Acknowledgements and Citation of these Projections
+
+Whenever you publish research based on projections from this archive, please
+include two acknowledgements:
+
+1. First, acknowledge the superceding effort.
+   a. For CMIP3, the following is language suggested by the CMIP3 archive hosts at
+      PCMDI: "We acknowledge the modeling groups, the Program for Climate Model
+      Diagnosis and Intercomparison (PCMDI) and the WCRP's Working Group on Coupled
+      Modelling (WGCM) for their roles in making available the WCRP CMIP3
+      multi-model dataset. Support of this dataset is provided by the Office of
+      Science, U.S. Department of Energy." PCMDI also requests that in first making
+      reference to the projections from this archive, please first reference the
+      CMIP3 dataset by including the phrase "the World Climate Research Programme's
+      (WCRP's) Coupled Model Intercomparison Project phase 3 (CMIP3) multi-model
+      dataset". Subsequent references within the same publication might refer to the
+      CMIP3 data with terms such as "CMIP3 data", "the CMIP3 multi-model dataset",
+      "the CMIP3 archive", or the "CMIP3 dataset".
+
+   b. For CMIP5, , the model output should be referred to as "the CMIP5 multi-model
+      ensemble [archive/output/results/of simulations/dataset/ ...]". In
+      publications, you should include a table (referred to below as Table XX)
+      listing the models and institutions that provided model output used in your
+      study. In this table and as appropriate in figure legends, you should use the
+      CMIP5 “official” model names found in "CMIP5 Modeling Groups and their Terms
+      if Use" (pdf document, also in Word doc format). In addition, an
+      acknowledgment similar to the following should be included in your
+      publication:
+
+        “We acknowledge the World Climate Research Programme's Working Group on
+        Coupled Modelling, which is responsible for CMIP, and we thank the climate
+        modeling groups (listed in Table XX of this paper) for producing and making
+        available their model output. For CMIP the U.S. Department of Energy's Program
+        for Climate Model Diagnosis and Intercomparison provides coordinating support
+        and led development of software infrastructure in partnership with the Global
+        Organization for Earth System Science Portals.”
+
+    where, “Table XX” in your paper should list the models and modeling groups
+    that provided the data you used. In addition it may be appropriate to cite one
+    or more of the CMIP5 experiment design articles listed on the CMIP5 reference
+    page.
+
+2. Second, generally acknowledge this archive as "Downscaled CMIP3 and CMIP5
+Climate and Hydrology Projections" archive at
+http://gdo-dcp.ucllnl.org/downscaled_cmip_projections/. To reference specific
+information in the archive, you may also use the following references:
+
+    a. (for original reference to this website) Maurer, E. P., L. Brekke, T. Pruitt,
+        and P. B. Duffy (2007), 'Fine-resolution climate projections enhance regional
+        climate change impact studies', Eos Trans. AGU, 88(47), 504.
+    b. (for reference to all BCSD and BCCA downscaled content, including CMIP3 and
+        CMIP5), you can reference the technical memorandum
+        [http://gdo-dcp.ucllnl.org/downscaled_cmip_projections/techmemo/[FILENAME]].
+        using the following citation: [insert].
+
+    c. (for BCSD CMIP3 hydrologic projections) Reclamation, 2011. 'West-Wide Climate
+        Risk Assessments: Bias-Corrected and Spatially Downscaled Surface Water
+        Projections', Technical Memorandum No. 86-68210-2011-01, prepared by the U.S.
+        Department of the Interior, Bureau of Reclamation, Technical Services Center,
+        Denver, Colorado. 138pp.
+
+
+################################################################################
+
+================================================================================
+Requested products directory structure
+================================================================================
+ rgrd3    - 2 degree regridded cmip3 GCM projections
+ bc3      - 2 degree Bias-Corrected cmip3 GCM projections
+ bcsd3    - 1/8 degree bias-corrected & downscaled cmip3 GCM projections (monthly)
+ bcca3    - 1/8 degree bias-corrected & downscaled cmip3 GCM projections (daily)
+ hydro3   - 1/8 degree VIC hydrology projections based on cmip3 BCSD projections
+
+ rgrd5    - 1 degree regridded cmip5 GCM projections
+ bc5      - 1 degree Bias-Corrected cmip5 GCM projections
+ bcsd5    - 1/8 degree bias-corrected & downscaled cmip5 GCM projections (monthly)
+ bcca5    - 1/8 degree bias-corrected & downscaled cmip5 GCM projections (daily)
+ hydro5   - 1/8 degree VIC hydrology projections based on cmip5 BCSD projections
+
+ 1_8obs   - 1/8 degree observed (Maurer 2002) data
+ 1obs     - 1 degree regridded observed (Maurer 2002) data
+ 2obs     - 2 degree regridded observed (Maurer 2002) data
+
+
+================================================================================
+For NetCDF data requests (*.nc)
+================================================================================
+The netcdf header contains infomation about data attributes.
+
+Extracted Data Series files
+---------------------------
+Extraction_<variable(s)>.nc, where
+variable(s) = Prcp, Tavg, or TavgPrcp
+
+Statistics files
+----------------
+PeriodStats.nc
+SpatialStats.nc
+
+Projections Order key file (associated with run axis in the .nc file)
+---------------------------------------------------------------------
+Projections3.txt   - cmip3 projections
+Projections5.txt   - cmip5 projections
+
+
+================================================================================
+For ASCII comma-delimited (csv) data requests (*.csv)
+================================================================================
+
+Extracted Data Series files
+---------------------------
+<scenario.model.run>.<variable>.csv
+
+where,
+ Variables:
+ # BCSD archive - monthly data
+  Tavg - Average Surface Air Temperature (deg C)
+  Prcp - Average Precipitation Rate (mm/day)
+
+ # BCCA archive - daily data
+  pr - Precipitation Rate (mm/day)
+  tasmin - Minimum Surface Air Temperature (deg C)
+  tasmax - Maximum Surface Air Temperature (deg C)
+
+ # Hyrdology archive - monthly data
+  prcp       - Total monthly precipitation (mm)
+  tmax       - mean monthly maximum daily temperature (deg C)
+  tmin       - mean monthly minimum daily temperature (deg C)
+  wind       - mean monthly wind speed (m/s)
+  smc        - soil moisture content, state 1st day of month (mm)
+  swe        - snow water equivalent in snow pack, state 1st day of month (mm)
+  streamflow - surface runoff + baseflow (mm)
+  et         - actual ET (mm)
+  petnatveg  - natural vegetaion PET (mm)
+  petwater   - open water surface PET (mm)
+  pettall    - tall reference crop PET (mm)
+  petshort   - short reference crop PET (mm)
+
+
+# Row/Column information 
+ASCII table rows and columns depend on data request:
+-- time (rows) 		x run (columns)
+-- time (rows) 		x latitude (columns)
+-- time (rows) 		x longitude (columns)
+-- run (rows) 		x latitude (columns)
+-- run (rows) 		x longitude (columns)
+-- latitude (rows) 	x longitude (columns)
+ROWS_Tavg.txt - time, latitude, or longitude
+COLS_Tavg.txt - run, latitude, or longitude
+ROWS_Prcp.txt - time, latitude, or longitude
+COLS_Prcp.txt - run, latitude, or longitude
+
+
+Statistics files
+----------------
+<variable>_<statistic_type>_<statistic>.csv
+
+where,
+ variable:
+    same as Variable list above
+
+ statistic type = 
+  SpatialStat, or...
+  PeriodStat
+ statistic:
+  stdev - standard deviation
+  mean  - grid-cell-area-weighted mean
+
+
+File Metadata
+-------------
+Info_<statistic_type>.txt
+
+where,
+ statistic_type = PeriodStat or SpatialStat
+
+
+Row/Column information 
+----------------------
+ROWS_PeriodStat.txt - projection or latitude
+COLS_PeriodStat.txt - projection or longitude
+ROWS_SpatialStat.txt - time, days from 1950-1-1
+COLS_SpatialStat.txt - projection, <scenario.model.run>
+
