@@ -1,15 +1,34 @@
-# format Daymet data and calculate seasonal totals
+##  Script to format Daymet data and calculate seasonal totals
 
-## STUDY AREA 1 FILES ##
-# dFile <- "/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea1/climate/DAYMET/center_weather_data_SA1.csv"
-# outfile <- "/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea1/climate/DAYMET/FormattedClimate_WY_SA1.csv"
+##  Relies on data downloaded from the Daymet website:
+##  http://daymet.ornl.gov
 
-## STUDY AREA 2 FILES ##
-dFile <- "/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea2/climate/DAYMET/center_weather_data_SA2.csv"
-outfile <- "/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea2/climate/DAYMET/FormattedClimate_WY_SA2.csv"
+##  Authors:      Andrew Tredennick and Peter Adler
+##  Email:        atredenn@gmail.com
+##  Date created: 10-10-2013
 
+
+
+####
+####  Set filenames and paths --------------------------------------------------
+####
+dFile <- "../../data/climate/DAYMET/center_weather_data_SA1.csv"
+outfile <- "../../data/climate/DAYMET/FormattedClimate_WY_SA1.csv"
+  
+
+
+####
+####  Read in centroid climate data --------------------------------------------
+####
 D=read.csv(dFile)
 
+
+
+####
+####  Aggregate temperature and precip to seasonal values ----------------------
+####
+
+### Temperature
 D$tmean=rowMeans(D[,3:4])
 D=D[,c("year","yday","tmean","prcp..mm.day.")]
 names(D)[4]="prcp"
@@ -25,6 +44,7 @@ tmeanD1$year=tmeanD1$year+1
 names(tmeanD1)[2]="TmeanSpr1"
 tmeanD=merge(tmeanD,tmeanD1,all.x=T)
 
+### Precipitation
 pptD=aggregate(prcp~year+summer,data=D,FUN=sum)
 pptD=reshape(pptD,direction="wide",idvar=c("year"),timevar="summer")
 names(pptD)[2:3]=c("ppt2","pptSummer2")
@@ -38,6 +58,10 @@ tmp$pptLag=tmp$ppt2+tmp$pptSummer2
 tmp=tmp[,c("year","pptLag")]
 pptD=merge(pptD,tmp,all.x=T)
 
-climD=merge(pptD,tmeanD,all.x=T)
 
+
+####
+####  Merge temperature and precip dataframes; write file ----------------------
+####
+climD=merge(pptD,tmeanD,all.x=T)
 write.csv(climD,outfile,row.names=F)
