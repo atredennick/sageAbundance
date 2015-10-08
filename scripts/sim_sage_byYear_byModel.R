@@ -83,6 +83,7 @@ niters <- length(unique(mcmc_outs$mcmc_iter))
 ####
 ####  Begin looping: parameters within years within scenario within model ------
 ####
+count <- 1
 for(do_model in all_models){
   
   for(do_scenario in all_scenarios){
@@ -133,8 +134,11 @@ for(do_model in all_models){
     path <- "../results/yearlyforecasts/"
     saveRDS(n_save, paste0(path,file))
     
+    print(paste("Done with", do_model, do_scenario))
+    print(paste(count, "of", length(all_models)))
+    
   } # next scenario
-  
+  count <- count+1
 } # next model
 
 
