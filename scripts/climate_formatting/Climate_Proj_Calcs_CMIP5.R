@@ -1,16 +1,30 @@
-rm(list=ls()) #wipe workspace clean
-#require(plyr)
-require(reshape2)
-require(grid)
+## Script to average and aggregate all CMIP5 model projections
 
-## STUDY AREA 1 ##
-setwd("/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea1/climate/PROJECTIONS/CMIP5/")
+##  Relies on data downloaded from the CMIP5 website:
+##  http://cmip-pcmdi.llnl.gov/cmip5/
 
-## STUDY AREA 2 ##
-# setwd("/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea2/climate/PROJECTIONS/bcsd5/")
+##  Authors:      Andrew Tredennick and Peter Adler
+##  Email:        atredenn@gmail.com
+##  Date created: 10-10-2013
 
 
-# Precip---------------------------------------------------------
+
+### Clean the workspace and set working dir
+rm(list=ls()) 
+setwd("../../data/climate/PROJECTIONS/CMIP5/")
+
+
+####
+####  Load necessary libraries -------------------------------------------------
+####
+library(reshape2)
+library(grid)
+
+
+
+####
+####  Read in and formate precip projections -----------------------------------
+####
 ppt <- as.data.frame(read.csv("pr.csv", header=FALSE))
 tmp<-read.table("COLS_pr.txt")
 tmp<-as.character(tmp[,1])
@@ -33,7 +47,9 @@ pptMeans<-reshape(pptMeans[,c("period","season","scenario","ppt")],
               idvar=c("season","scenario"),timevar="period",direction="wide")
 pptMeans$change<-(pptMeans$ppt.future-pptMeans$ppt.past)/pptMeans$ppt.past
 
-# Temperature---------------------------------------------------------
+####
+####  Read in and formate temperature projections ------------------------------
+####
 Tavg <- as.data.frame(read.csv("tas.csv", header=FALSE))
 tmp<-read.table("COLS_tas.txt")
 tmp<-as.character(tmp[,1])
@@ -54,10 +70,11 @@ TavgMeans<-reshape(TavgMeans[,c("period","season","scenario","value")],
 TavgMeans$change<-TavgMeans$value.future-TavgMeans$value.past
 
 
-pptMeans
-TavgMeans
 
-write.csv(pptMeans, "/Users/atredenn/Repos/sageAbundance/data/precipitation_projections.csv")
-write.csv(TavgMeans, "/Users/atredenn/Repos/sageAbundance/data/temperature_projections.csv")
+####
+####  Write files for use in simulations ---------------------------------------
+####
+write.csv(pptMeans, "../../../precipitation_projections.csv")
+write.csv(TavgMeans, "../../../temperature_projections.csv")
 
 
