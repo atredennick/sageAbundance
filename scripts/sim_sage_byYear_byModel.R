@@ -15,7 +15,7 @@ rm(list=ls())
 ####
 ####  Set some global simulation settings --------------------------------------
 ####
-parameter_reps <- 2
+parameter_reps <- 50
 clim_vars <- c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")
 
 

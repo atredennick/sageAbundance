@@ -325,7 +325,7 @@ grid.raster(img)
 ```
 
 
-```{r figure_1,dependson="plot-options", fig.cap="Percent cover in space and time for our study area in southwestern Wyoming.", eval=T}
+```{r figure_1,dependson="plot-options", fig.cap="Percent cover in space and time for our study area in southwestern Wyoming.", eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/all_years_percCover.png")
@@ -340,7 +340,7 @@ grid.raster(img)
 ```
 
 
-```{r figure_3,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=T}
+```{r figure_3,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/spatialfield.png")
@@ -354,7 +354,7 @@ img <- readPNG("../results/obs_pred_spatial_subset.png")
 grid.raster(img)
 ```
 
-```{r figure_5,dependson="plot-options", fig.cap="Histograms of projected equilibrium cover from simulations using observed climate (orange) and average observed percent cover (black).", eval=T}
+```{r figure_5,dependson="plot-options", fig.cap="Histograms of projected equilibrium cover from simulations using observed climate (orange) and average observed percent cover (black).", eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_hist.png")
@@ -368,10 +368,17 @@ img <- readPNG("../results/clim_change_mean_spatial.png")
 grid.raster(img)
 ```
 
-```{r figure_7,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time.", eval=T}
+```{r figure_7,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time.", eval=F}
 library(png)
 library(grid)
 img <- readPNG("../results/clim_change_densities.png")
+grid.raster(img)
+```
+
+```{r figure_8,dependson="plot-options", fig.cap="Model forecasts under future climate for three IPCC emissions scenarios. Shaded regions show 90/% quantiles for simulations conducted using different sets of parameters from the MCMC output. Lines show mean trajectories.", eval=T}
+library(png)
+library(grid)
+img <- readPNG("../results/temporal_forecast.png")
 grid.raster(img)
 ```
 
