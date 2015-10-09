@@ -73,7 +73,7 @@ iterate_sage <- function(N, int, beta.dens, beta.clim, eta, weather){
 last_year <- max(obs_data$Year)
 last_obs <- subset(obs_data, Year == last_year)
 all_models <- unique(temp_projs$model)
-all_scenarios <- unique(temp_projs$scenario)
+all_scenarios <- c("rcp45", "rcp60", "rcp85")
 sim_years <- c((last_year+1):max(temp_projs$Year))
 num_sims <- length(sim_years)
 
