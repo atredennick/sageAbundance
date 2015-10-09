@@ -15,7 +15,7 @@ rm(list=ls())
 ####
 ####  Set some global simulation settings --------------------------------------
 ####
-parameter_reps <- 100
+parameter_reps <- 2
 clim_vars <- c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")
 
 
@@ -42,7 +42,22 @@ mcmc_outs <- readRDS("../results/poissonSage_randYear_mcmc.RDS")
 load("../results/Knot_cell_distances_subset.Rdata")
 K <- K.data$K
 
+### Only keep models with rcp45, 60, and 85 scenarios
+allmods <- unique(temp_projs$model)
+keeps <- character(length(allmods))
+my_scens <- c("rcp45", "rcp60", "rcp85")
+for(i in 1:length(allmods)){
+  tmp <- subset(temp_projs, model==allmods[i])
+  tmp.scns <- unique(tmp$scenario)
+  flag <- length(which(my_scens %in% tmp.scns == FALSE))
+  ifelse(flag>0, keeps[i]<-"no", keeps[i]<-"yes")
+}
+modelkeeps <- data.frame(model=allmods,
+                         allscenarios=keeps)
+my_mods <- modelkeeps[which(modelkeeps$allscenarios=="yes"),"model"]
 
+temp_projs <- subset(temp_projs, model %in% my_mods)
+ppt_projs <- subset(ppt_projs, model %in% my_mods)
 
 ####
 ####  Subset out observed climate; get scaling mean and sd ------------------------
@@ -102,33 +117,34 @@ for(do_model in all_models){
     climate_now["TmeanSpr2"] <- (climate_now["TmeanSpr2"] - obs_clim_means["TmeanSpr2"])/obs_clim_sds["TmeanSpr2"]
     
     # Create storage matrix for population
-    n_save <- array(dim = c(num_sims+1, parameter_reps, nrow(last_obs)))
-    n_save[1,,] <- last_obs$Cover # set first record to last observation
+    n_save <- array(dim = c(parameter_reps, num_sims+1, nrow(last_obs)))
+    n_save[,1,] <- last_obs$Cover # set first record to last observation
     
-    for(t in 2:num_sims){
       
-      weather <- climate_now[t-1, clim_vars] #t-1 since clim data starts in 2012
-      
-      for(i in 1:parameter_reps){
-        randchain <- sample(1:nchains, 1)
-        randiter <- sample(1:niters, 1)
-        params_now <- subset(mcmc_outs, chain==randchain & mcmc_iter==randiter)
-        alphas <- params_now[grep("alpha", params_now$Parameter), "value"]
-        int_mu <- params_now[grep("int_mu", params_now$Parameter), "value"]
-        beta_mu <- params_now[grep("beta_mu", params_now$Parameter), "value"]
-        beta_clims <- params_now[grep("beta.", params_now$Parameter), "value"][2:6]
-        eta_now <-  K%*%as.numeric(unlist(alphas))
+    for(i in 1:parameter_reps){
+      randchain <- sample(1:nchains, 1)
+      randiter <- sample(1:niters, 1)
+      params_now <- subset(mcmc_outs, chain==randchain & mcmc_iter==randiter)
+      alphas <- params_now[grep("alpha", params_now$Parameter), "value"]
+      int_mu <- params_now[grep("int_mu", params_now$Parameter), "value"]
+      beta_mu <- params_now[grep("beta_mu", params_now$Parameter), "value"]
+      beta_clims <- params_now[grep("beta.", params_now$Parameter), "value"][2:6]
+      eta_now <-  K%*%as.numeric(unlist(alphas))
         
-        n_save[t,i,] <- iterate_sage(N = n_save[t-1,i,], 
-                                     int = int_mu, 
-                                     beta.dens = beta_mu,
-                                     beta.clim = beta_clims,
-                                     eta = eta_now,
-                                     weather = weather)
+        for(t in 2:num_sims){
+          
+          weather <- climate_now[t-1, clim_vars] #t-1 since clim data starts in 2012
         
-      } # next parameter set
+          n_save[i,t,] <- iterate_sage(N = n_save[i,t-1,], 
+                                       int = int_mu, 
+                                       beta.dens = beta_mu,
+                                       beta.clim = beta_clims,
+                                       eta = eta_now,
+                                       weather = weather)
+        
+      } # next year (t)
       
-    } # next year (t)
+    } # next parameter set
     
     file <- paste0(do_model,"_", do_scenario, "_yearly_forecasts.RDS")
     path <- "../results/yearlyforecasts/"
