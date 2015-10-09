@@ -6,7 +6,7 @@ rm(list=ls(all=TRUE))
 ####
 ####  Set some file paths, etc. ------------------------------------------------
 ####
-datapath <- "/Users/atredenn/Dropbox/sageAbundance_data/"
+datapath <- "../data/"
 knotpath <- "../results/"
 
 
@@ -35,9 +35,8 @@ growD <- subset(fullD, Year>1984) # get rid of NA lagcover years
 growD$Cover <- round(growD$Cover,0) # round for count-like data
 growD$CoverLag <- round(growD$CoverLag,0) # round for count-like data
 
-climD <- read.csv(paste(datapath,
-                        "/studyarea1/climate/DAYMET/FormattedClimate_WY_SA1.csv",
-                        sep=""))
+climD <- read.csv(paste0(datapath,
+                        "/climate/DAYMET/FormattedClimate_WY_SA1.csv"))
 
 
 
@@ -249,7 +248,7 @@ tmp.theme3=theme(axis.ticks = element_blank(), axis.text = element_blank(),
                 axis.title=element_text(size=12),text=element_text(size=12),
                 legend.text=element_text(size=10))
 
-png("../results/obs_pred_spatial_subset.png", width = 8, height=8, units = "in", res=100)
+png("../results/obs_pred_spatial_subset.png", width = 8, height=8, units = "in", res=300)
 g1 <- ggplot(subset(sp.equil2, variable=="Observed"), aes(x=Lon, y=Lat))+
   geom_raster(aes(z=value, fill=value))+
   scale_fill_gradientn(colours=myPalette(200), name="% Cover", limit=c(0,25))+
