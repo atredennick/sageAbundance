@@ -139,7 +139,7 @@ We calculated the four climate variables outline above from the PRISM data for t
 
 To forecast future population states, we required future projections of climate for our study area.
 We downloaded the most recent climate projections used by the Intergovernmental Panel on Climate Change (IPCC), the Coupled Model Intercomparison Project 5 (CMIP5; *available online*)[^link2].
-The CMIP5 provides projections from a suite of global circulations models.
+The CMIP5 provides projections from a suite of global circulations models (Table X1).
 For our purposes, we averaged all model projections for the centroid of our study area over the time period of 2050 to 2100.
 We did the same for the time period of 1950 to 2000 so we could calculate projected changes in climate.
 To keep the temporal variability from observed climate consistent, for climate change scenarios we adjusted observed climate according to projected changes.
@@ -299,7 +299,7 @@ As such datasets become more available, we anticipate the approach we developed 
 
 Acknowledgments
 ---------------
-This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-1054040). ATT was supported by an NSF Postdoctoral Research Fellowship in Biology (DBI-1400370) and AK was supported by an NSF Graduate Research Fellowship. We are grateful to Mary LASTNAME at USGS EROS for exctracting the dataset used in this paper. Compute, storage and other re-sources from the Division of Research Computing in the Office of Research and Graduate Studies at Utah State University are gratefully acknowledged.
+This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-1054040). ATT was supported by an NSF Postdoctoral Research Fellowship in Biology (DBI-1400370) and AK was supported by an NSF Graduate Research Fellowship. We are grateful to Mary LASTNAME at USGS EROS for exctracting the dataset used in this paper. Compute, storage and other re-sources from the Division of Research Computing in the Office of Research and Graduate Studies at Utah State University are gratefully acknowledged. We acknowledge the World Climate Research Programme's Working Group on Coupled Modelling, which is responsible for CMIP, and we thank the climate modeling groups (listed in Table X1) for producing and making available their model output. For CMIP the U.S. Department of Energy's Program for Climate Model Diagnosis and Intercomparison provides coordinating support and led development of software infrastructure in partnership with the Global Organization for Earth System Science Portals.
 
 \pagebreak{}
 

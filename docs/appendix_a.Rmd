@@ -1,0 +1,44 @@
+---
+layout: 12pt
+header-includes:
+   - \usepackage{lineno}
+   - \linenumbers
+   - \usepackage{setspace}
+bibliography: ~/Dropbox/Bibliography/SageAbundance.bib
+csl: components/ecology.csl
+
+## rmarkdown render options
+output:
+  pdf_document:
+    fig_caption: true
+    keep_tex: true
+fontsize: 12pt
+geometry: margin=1in
+
+---
+
+\renewcommand\thefigure{X\arabic{figure}}  
+
+Appendix X: Table of CMIP5 models used in this study
+=======================================
+
+\scriptsize
+
+| Modeling Center | Model | Institution |
+| --------------- | ----- | ----------- |
+| BCC | BCC-CSM1.1 | Beijing Climate Center, China Meteorological Administration | 
+| BCC | BCC-CSM1.1(m) | Beijing Climate Center, China Meteorological Administration | 
+| CCCma | CanAM4 | Canadian Centre for Climate Modelling and Analysis |
+| CCCma | CanCM4 | Canadian Centre for Climate Modelling and Analysis |
+| CCCma | CanESM2 | Canadian Centre for Climate Modelling and Analysis |
+| CCCMC | CMCC-CESM | Centro Euro-Mediterraneo per I Cambiamenti Climatici |
+| CCCMC | CMCC-CM | Centro Euro-Mediterraneo per I Cambiamenti Climatici |
+| CCCMC | CMCC-CMS | Centro Euro-Mediterraneo per I Cambiamenti Climatici |
+| CNRM-CERFACS | CNRM-CM5 | Centre National de Recherches Meteorologiques / |
+|  |  | Centre Europeen de Recherche et Formation Avancees en Calcul Scientifique |
+| CNRM-CERFACS | CNRM-CM5-2 | Centre National de Recherches Meteorologiques / |
+|  |  | Centre Europeen de Recherche et Formation Avancees en Calcul Scientifique |
+| COLA and NCEP | CFSv2-2011 | Center for Ocean-Land-Atmosphere Studies and |
+|  |  | National Centers for Environmental Prediction |
+| CSIRO-BOM | ACCESS1.0 | CSIRO (Commonwealth Scientific and Industrial Research |
+|  |  | Organisation, Australia), and BOM (Bureau of Meteorology, Australia) |
