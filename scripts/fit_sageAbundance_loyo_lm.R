@@ -38,6 +38,29 @@ num_years <- length(all_years)
 
 "%w/o%" <- function(x, y) x[!x %in% y] # x without y
 
+
+
+####
+####  Fit and predict total in sample observations -----------------------------
+####
+zids <- growD[which(growD$Cover==0),"ID"]
+zids <- unique(c(zids, growD[which(growD$CoverLag==0),"ID"]))
+pixels_to_keep <- growD$ID %w/o%  zids
+modelD <- growD[which(growD$ID %in% pixels_to_keep),]
+
+X <- modelD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+X <- scale(X, center = TRUE, scale = TRUE)
+modelD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")] <- X
+# tmp.glm <- glmer(y~lag+X+(1|year), family="poisson")
+tmp.lm <- glm(Cover~log(CoverLag)+pptLag+ppt1+ppt2+TmeanSpr1+TmeanSpr2, 
+              family="poisson", data=modelD)
+all.pred <- predict(tmp.lm, type="response")
+sq.error.all <- as.numeric((all.pred-modelD$Cover)^2)
+rmse.all <- sqrt(mean(sq.error.all))
+
+
+
+
 ####
 ####  Loop over leave out years and predict left out year ----------------------
 ####
