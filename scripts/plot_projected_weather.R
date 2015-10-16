@@ -37,6 +37,8 @@ temp_agg <- ddply(temp, .(Year, scenario, season), summarise,
                  upval=quantile(TmeanSpr, 0.95, na.rm=TRUE),
                  loval=quantile(TmeanSpr, 0.05, na.rm=TRUE))
 
+# cols <- c("tan","coral","darkred")
+cols <- c("grey10", "grey30", "grey60")
 
 g1 <- ggplot(ppt_agg)+
   geom_ribbon(aes(x=Year, ymin=loval, ymax=upval, fill=scenario),
@@ -44,10 +46,10 @@ g1 <- ggplot(ppt_agg)+
   geom_line(aes(x=Year, y=avg_value, color=scenario))+
   stat_smooth(method="lm", se=FALSE, aes(x=Year, y=avg_value), color="black", linetype=2)+
   geom_vline(aes(xintercept=2011))+
-  scale_fill_manual(values=c("tan","coral","darkred"), 
+  scale_fill_manual(values=cols, 
                     name="IPCC \nScenario",
                     labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
-  scale_color_manual(values=c("tan","coral","darkred"), 
+  scale_color_manual(values=cols, 
                      name="IPCC \nScenario",
                      labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
   ylab("Fall through Spring Ppt. (mm)")+
@@ -60,10 +62,10 @@ g2 <- ggplot(temp_agg)+
   geom_line(aes(x=Year, y=avg_value, color=scenario))+
   stat_smooth(method="lm", se=FALSE, aes(x=Year, y=avg_value), color="black", linetype=2)+
   geom_vline(aes(xintercept=2011))+
-  scale_fill_manual(values=c("tan","coral","darkred"), 
+  scale_fill_manual(values=cols, 
                     name="IPCC \nScenario",
                     labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
-  scale_color_manual(values=c("tan","coral","darkred"), 
+  scale_color_manual(values=cols, 
                      name="IPCC \nScenario",
                      labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
   ylab("Mean Spring Temperature (deg. C)")+
