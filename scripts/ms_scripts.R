@@ -170,7 +170,7 @@ png("../results/post_climate_covariates.png", height=4, width=4, units="in", res
 ggplot(clim_posts, aes(x=value, fill=col))+
   geom_vline(aes(xintercept=0), linetype=2)+
   geom_density(alpha=0.5,size=0.5, col=NA, adjust=4)+
-  scale_fill_manual(values=c("grey", "blue", "red"))+
+  scale_fill_manual(values=c("grey70", "black", "red"))+
   ylab("Posterior density")+
   xlab("Standardized coefficient value")+
   facet_grid(rank~., labeller=my_labeller)+

@@ -331,7 +331,7 @@ RCP 8.5 & 4.79\textdegree & 11.0\%\tabularnewline
 
 Figures
 -------
-```{r figure_1_alt,dependson="plot-options", fig.cap="Location of the 2.5$\\times$5 kilometer study area in southwestern Wyoming and a snapshot of the percent cover data in 1984.", fig.height=6, eval=T}
+```{r figure_1_alt,dependson="plot-options", fig.cap="Location of the 2.5 x 5 kilometer study area in southwestern Wyoming and a snapshot of the percent cover data in 1984.", fig.height=6, eval=T}
 library(png)
 library(grid)
 img <- readPNG("components/figure/studyarea_map.png")
@@ -346,7 +346,14 @@ img <- readPNG("../results/all_years_percCover.png")
 grid.raster(img)
 ```
 
-```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the model using standardized covariate values. Only cumulative precipitation at time t is important (shown in blue; 90% CI does not overlap zero).", fig.height=4, eval=T}
+```{r figure_2a,dependson="plot-options", fig.cap="GCM yearly weather projections for our climate covariates.", eval=T}
+library(png)
+library(grid)
+img <- readPNG("components/figure/weather_projections.png")
+grid.raster(img)
+```
+
+```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the model using standardized covariate values. Only cumulative precipitation at time t is important (shown in dark grey; 90% CI does not overlap zero).", fig.height=4, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/post_climate_covariates.png")
@@ -389,7 +396,7 @@ img <- readPNG("../results/clim_change_densities.png")
 grid.raster(img)
 ```
 
-```{r figure_8,dependson="plot-options", fig.cap="Model forecasts under future climate for three IPCC emissions scenarios. Shaded regions show 90/% quantiles for simulations conducted using different sets of parameters from the MCMC output. Lines show mean trajectories.", eval=F}
+```{r figure_8,dependson="plot-options", fig.cap="Model forecasts under future climate for three IPCC emissions scenarios. Shaded regions show 90/% quantiles for simulations conducted using different sets of parameters from the MCMC output. Lines show mean trajectories.", eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/temporal_forecast.png")
