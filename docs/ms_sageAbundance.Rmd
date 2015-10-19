@@ -86,18 +86,18 @@ Indeed, almost every study of plant population dynamics relies on demographic ob
 Local-scale demographic data make building population projection models an easy task [@Ellner2006; @Rees2009; @Adler2012], but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions [@Freckleton2011; @Queenborough2011].
 Thus, the real challenge is not to simply make population forecasts, but to do so at spatial scales relevant to policy and management decisions [@Queenborough2011, Tredennick and Adler in review].
 
-Species distribution models (SDMs), on the other hand, are easily applied at landscape to continental scales.
-In a climate change context, SDMs typically rely on static associations between contemporary climate and a species' distribution or, more rarely, abundance to project future distribution or abundance.
+Species distribution models (SDMs), on the other hand, are easily applied at landscape to continental scales [e.g., @Maiorano2013; @Clark2014].
+In a climate change context, SDMs typically rely on static associations between contemporary climate and a species' distribution or, more rarely, abundance to project future distribution or abundance [@Elith2009].
 Thus, interannual dynamics that reflect population responses to yearly climate variations are not represented in SDMs.
 Longterm trends in species' occurence can be detected and correlated with climate variables, but these may or may not be representative of a species' sensitivity to climate.
 Likewise, since SDMs typically rely on occurence data, their projections of habitat suitability or probability of occurence provide little information on the future states of populations in the core of their range -- in areas where a species currently exists and is expected to persist in the future.
 Despite these limitations, SDMs remain one of the few ways to make forecasts of species responses to climate change at large spatial extents.
 
-It seems the ideal tool for forecasting future population states under climate change is a large-scale dynamic population model.
+It seems the ideal tool for forecasting future population states under climate change is a large-scale dynamic population model [@Schurr2012a; @Merow2014].
 Unfortunately, such methods have been elusive due to the lack of time series data at large spatial extents and the statistical machinary to fit high-dimensional spatial models.
 Fortunately, two recent technological advances put us in the position to develop large-scale population models.
 First, remotely-sensed (RS) time series of species-specific plant cover can provide data on interannual population dynamics that can be correlated with yearly climate fluctuations at large spatial extents.
-RS time series have been used to detect long term trends in plant population abundance [e.g., @Homer2015], but they have yet to be used to drive a dynamic model.
+RS time series have revolutionized models of ecosystem-level processes [e.g., @Running2004] and have been used to detect long term trends in plant population abundance [e.g., @Homer2015], but they have yet to be used to drive a dynamic population model.
 Second, animal population modelers have developed efficient dimension reduction and reparameterization techniques to fit high-dimension spatiotemporal models [see @Conn2015 for a review]. 
 However, these methods have yet to be use in a dynamic setting. 
 
@@ -272,7 +272,9 @@ Our model shows a tendency to underpredict perennially-low percent cover pixels 
 Nonetheless, observations and predictions are qualitatively similar (Fig. 4A, B).
 Predictions are most confident, even if biased, in low percent cover pixels (Fig. 4D).
 The model is also able to adequately reproduce observed dynamics when we make one-step-ahead predictions based on observed climate and cover in the previous year for each pixel.
-When we made these in-sample, one-step-ahead forecasts, the model achieved an RMSE = #.##.
+When we made these in-sample, one-step-ahead forecasts, the model achieved an RMSE = 4.31, in units of percent cover.
+The correlation between observations and predictions is 0.62.
+
 
 When we apply the fitted model to IPCC climate change scenarios, the model predicts gains in sagebrush percent cover, on average (Figs. 5, 6).
 The spatial effect remains strong enough in low cover regions to counteract the amplifying effect of projected precipitation increases (Fig. 5).
@@ -283,11 +285,11 @@ This is expected given the positive effect of precipitation on sagebrush cover c
 
 Discussion
 -----------
-Landscape-scale population models for plant species have been elusive and challenging [@Schurr2012a; @Merow].
+Landscape-scale population models for plant species have been elusive and challenging [@Schurr2012a; @Merow2014].
 Yet, the need to forecast population responses to climate change over large spatial extents is clear, as demonstrated by the wide application of species distribution models [see @Clark2014].
 Here we introduced a new statistical approach to modeling plant populations that overcame two major hurdles for spatially-explicit population models.
 First, we used species-specific remote sensing data as a response variable.
-Thus, we had at our disposal spatially-continuous estimates of sagebrush abundance over a large spatial extent, meaning we could fit a model at the same spatial resolution and extent as the data. In so doing we overcame a major limitation of most population models that are fit using detailed data from a single location (Tredennick and Adler, in review).
+Thus, we had at our disposal spatially-continuous estimates of sagebrush abundance over a large spatial extent, meaning we could fit a model at the same spatial resolution and extent as the data. In so doing we overcame a major limitation of most population models that are fit using detailed data from a single location.
 Second, borrowing from the vast literature on spatiotemporal modeling of animal abundance [@Conn2015], we employed a dimension reduction strategy to rigorously account for spatial autocorrelation.
 This means our model is statistical rigorous by explicitly accounting for spatial correlation.
 While important statistically, ecologically it means we can be confident in our estimates of climate effects on sagebrush cover change, given the data in-hand.
@@ -304,7 +306,7 @@ The relatively weak climate effects means we should expect small changes when we
 Our model projects modest increases in sagebrush cover under all RCP scenarios (Figs. 4,5).
 The forecasted increases are primarily driven by a positive response to precipitation (Fig. 2), but weak effects of temperature also influenced results.
 A previous analysis of a different subset of the remote sensing data set we used made projections of sagebrush decline in the future [@Homer2015].
-The descrepency between Homer et al.'s [-@Homer2015] results and ours is likely due to the climate projections used for forecasting future changes.
+The descrepency between Homer et al.'s (2015) results and ours is likely due to the climate projections used for forecasting future changes.
 The Homer et al. study also found a generally positive relationship between pixel-level sagebrush cover and precipitation, but the climate scenario they chose resulted in a mean decrease in precipitation.
 Thus, the decline in precipitation led to a decline in sagebrush cover.
 Our current work shows that when multiple climate projections are considered, on average sagebrush cover is forecast to increase, but decreases are not outside the realm of 90% confidence (Fig. 5).
@@ -338,7 +340,7 @@ Given the dependence of forecasts on the weather projections used, we urge ecolo
 Lastly, it will be important to include the effects of species interactions [@Clark2014].
 Fortunately, our spatiotemporal modeling framework is very flexible.
 It can be used for any spatially-explicit time series of species-specific estimates of plant cover or density.
-The core process model (Eq. 2) can take any form; meaning that additional covariates can easily be included or and entirely different functional form can be used depending on the ecological context.
+The core process model (Eq. 2) can take any form; meaning that additional covariates can easily be included or an entirely different functional form can be used depending on the ecological context.
 As such time-series data sets become more available, we anticipate the approach we developed here to complement studies using species distribution models and local-scale demographic population models.
 
 

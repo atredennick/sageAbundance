@@ -314,9 +314,23 @@ for(t in 1:time.steps){
 }
 
 obs.cover <- growD[,c("Year","Cover","ID")]
-pred.cover <- melt(ex.mat)
-plot(obs.cover$Cover, pred.cover$value, xlim=c(0,20), ylim=c(0,20))
-abline(0,1, col="red")
+
+ex.df <- as.data.frame(ex.mat)
+colnames(ex.df) <- unique(obs.cover$ID)
+ex.df$year <- yearid
+ex.melt <- melt(ex.df, id.vars = "year")
+ex.melt <- ex.melt[with(ex.melt, order(year)), ]
+colnames(ex.melt) <- c("Year", "ID", "cover.pred")
+error.df <- merge(obs.cover, ex.melt)
+error.df$error <- with(error.df, Cover - cover.pred)
+rmse <- sqrt(mean(error.df$error^2))
+cor(error.df$Cover, error.df$cover.pred)
+
+# pred.cover <- melt(ex.mat)
+# plot(obs.cover$Cover, pred.cover$value, xlim=c(0,20), ylim=c(0,20))
+# abline(0,1, col="red")
+
+
 
 brks <- 30
 y <- hist(growD$Cover, freq=FALSE, breaks=brks)
