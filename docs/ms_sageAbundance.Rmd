@@ -42,7 +42,7 @@ opts_chunk$set(dev='pdf')
 \begin{centering}
 \textbf{\large{A spatiotemporal modeling framework for forecasting climate change impacts on plant populations over large spatial extents}}
 
-\textsc{\small{Andrew T. Tredennick\footnote{Corresponding author: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4}, Cameron L. Aldridge\textsuperscript{5}, Colin G. Homer\textsuperscript{6}, David T. Iles\textsuperscript{1}, Andrew Kleinhesselink\textsuperscript{1}, Eric LaMalfa\textsuperscript{1}, Rebecca Mann\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
+\textsc{\small{Andrew T. Tredennick\footnote{Corresponding author: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4}, Cameron L. Aldridge\textsuperscript{5}, Collin G. Homer\textsuperscript{6}, David T. Iles\textsuperscript{1}, Andrew Kleinhesselink\textsuperscript{1}, Eric LaMalfa\textsuperscript{1}, Rebecca Mann\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
 
 \textit{\small{\textsuperscript{1}Department of Wildland Resources and the Ecology Center, 5230 Old Main Hill, Utah State University, Logan, Utah 84322 USA}} \\
 \textit{\small{\textsuperscript{2}U.S. Geological Survey, Colorado Cooperative Fish and Wildlife Research Unit, Colorado State University, Fort Collins, CO 80523 USA}} \\
