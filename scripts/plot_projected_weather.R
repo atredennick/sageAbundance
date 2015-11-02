@@ -77,3 +77,32 @@ png("../docs/components/figure/weather_projections.png", width = 6, height = 8, 
 outplot <- grid.arrange(g1, g2, ncol=1)
 dev.off()
 
+
+
+####
+####  Compare weather hindcasts to average weather at site ---------------------
+####
+obs_weather <- read.csv("../data/FormattedClimate_WY_SA1.csv")
+obs_weather <- melt(obs_weather, id.vars = "year")
+obs_ppt <- subset(obs_weather, variable=="ppt2")
+model_weather <- ddply(ppt_agg, .(Year, season), summarise,
+                       value = mean(avg_value))
+model_weather <- subset(model_weather, Year < 2014 & Year > 1979)
+precip_compare <- data.frame(year = model_weather$Year, 
+                             precip = c(obs_ppt$value, model_weather$value),
+                             value_source = rep(c("observed", "modeled"), each=34))
+ggplot(precip_compare)+
+  geom_boxplot(aes(x=value_source, y=precip))
+
+
+obs_temp <- subset(obs_weather, variable=="TmeanSpr2")
+model_weather <- ddply(temp_agg, .(Year, season), summarise,
+                       value = mean(avg_value))
+model_weather <- subset(model_weather, Year < 2014 & Year > 1979)
+temp_compare <- data.frame(year = model_weather$Year, 
+                             precip = c(obs_temp$value, model_weather$value),
+                             value_source = rep(c("observed", "modeled"), each=34))
+ggplot(temp_compare)+
+  geom_boxplot(aes(x=value_source, y=precip))
+
+
