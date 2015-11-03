@@ -42,3 +42,5 @@ Appendix X: Table of CMIP5 models used in this study
 |  |  | National Centers for Environmental Prediction |
 | CSIRO-BOM | ACCESS1.0 | CSIRO (Commonwealth Scientific and Industrial Research |
 |  |  | Organisation, Australia), and BOM (Bureau of Meteorology, Australia) |
+| CSIRO-BOM | ACCESS1.3 | CSIRO (Commonwealth Scientific and Industrial Research |
+|  |  | Organisation, Australia), and BOM (Bureau of Meteorology, Australia) |
