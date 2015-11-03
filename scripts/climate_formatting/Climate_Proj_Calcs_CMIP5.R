@@ -29,7 +29,7 @@ ppt <- as.data.frame(read.csv("pr.csv", header=FALSE))
 tmp<-read.table("COLS_pr.txt")
 tmp<-as.character(tmp[,1])
 colnames(ppt) <- c("Year", "Month",tmp)
-ppt <- melt(ppt, id.vars=c("Year", "Month"),)
+ppt <- melt(ppt, id.vars=c("Year", "Month"))
 ppt[,4] <- as.numeric(ppt[,4]) #NAs coerced for a couple December 2099 null values 
 tmp<-unlist(strsplit(x=as.character(ppt$variable),split=".",fixed=T))
 tmp<-matrix(tmp,nrow=length(tmp)/3,ncol=3,byrow=T)
@@ -39,7 +39,22 @@ ppt$period<-cut(ppt$Year,breaks=c(1950,2000,2050,2100),
   include.lowest=T,labels=c("past","present","future"))
 ppt$season<-ifelse(ppt$Month > 6 & ppt$Month < 10,"summer","fall2spr")
 
-pptMeans<-aggregate(value~period+season+scenario,data=ppt,FUN=mean)
+pptMeans<-aggregate(value~period+season+scenario+model,data=ppt,FUN=mean)
+allmods <- unique(pptMeans$model)
+keeps <- character(length(allmods))
+my_scens <- c("rcp45", "rcp60", "rcp85")
+for(i in 1:length(allmods)){
+  tmp <- subset(pptMeans, model==allmods[i])
+  tmp.scns <- unique(tmp$scenario)
+  flag <- length(which(my_scens %in% tmp.scns == FALSE))
+  ifelse(flag>0, keeps[i]<-"no", keeps[i]<-"yes")
+}
+modelkeeps <- data.frame(model=allmods,
+                         allscenarios=keeps)
+my_mods <- modelkeeps[which(modelkeeps$allscenarios=="yes"),"model"]
+ppt_projs <- subset(pptMeans, model %in% my_mods)
+
+pptMeans<-aggregate(value~period+season+scenario,data=ppt_projs,FUN=mean)
 colnames(pptMeans) <- c("period","season","scenario","value")
 pptMeans$days<-ifelse(pptMeans$season=="summer",92,365-92)
 pptMeans$ppt<-pptMeans$value*pptMeans$days
@@ -63,7 +78,23 @@ Tavg$period<-cut(Tavg$Year,breaks=c(1950,2000,2050,2100),
   include.lowest=T,labels=c("past","present","future"))
 Tavg$season<-ifelse(Tavg$Month > 3 & ppt$Month < 7,"spring","other")
 
-TavgMeans<-aggregate(as.numeric(value)~period+season+scenario,data=Tavg,FUN=mean)
+TavgMeans<-aggregate(as.numeric(value)~period+season+scenario+model,data=Tavg,FUN=mean)
+allmods <- unique(TavgMeans$model)
+keeps <- character(length(allmods))
+my_scens <- c("rcp45", "rcp60", "rcp85")
+for(i in 1:length(allmods)){
+  tmp <- subset(TavgMeans, model==allmods[i])
+  tmp.scns <- unique(tmp$scenario)
+  flag <- length(which(my_scens %in% tmp.scns == FALSE))
+  ifelse(flag>0, keeps[i]<-"no", keeps[i]<-"yes")
+}
+modelkeeps <- data.frame(model=allmods,
+                         allscenarios=keeps)
+my_mods <- modelkeeps[which(modelkeeps$allscenarios=="yes"),"model"]
+temp_projs <- subset(TavgMeans, model %in% my_mods)
+colnames(temp_projs)[5] <- "value"
+TavgMeans<-aggregate(value~period+season+scenario,data=temp_projs,FUN=mean)
+
 colnames(TavgMeans) <- c("period","season","scenario","value")
 TavgMeans<-reshape(TavgMeans[,c("period","season","scenario","value")],
               idvar=c("season","scenario"),timevar="period",direction="wide")
