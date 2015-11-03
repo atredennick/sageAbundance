@@ -352,9 +352,14 @@ ggsave("../results/obs_pred_hist.png", width = 4, height = 4, units="in")
 ####
 ####  Run climate simulations --------------------------------------------------
 ####
+# Read in climate projected changes
+ppt_projs <- subset(read.csv("../data/precipitation_projections.csv"), 
+                    scenario!="rcp26" & season=="fall2spr")
+temp_projs <- subset(read.csv("../data/temperature_projections.csv"),
+                     scenario!="rcp26" & season=="spring")
 projC<-data.frame("scenario"=c("rcp45","rcp60","rcp85"),
-                  "deltaPpt"=c(1.0894,1.0864,1.110),
-                  "deltaTspr"=c(2.975,3.134,4.786))
+                  "deltaPpt"=1+ppt_projs$change,
+                  "deltaTspr"=temp_projs$change)
 mean_params <- ddply(outs, .(Parameter), summarise,
                      mean(value))
 alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
