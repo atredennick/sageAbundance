@@ -187,7 +187,7 @@ dev.off()
 ####
 ####  Run equilibrium population simulation ------------------------------------
 ####
-time.steps <- 600
+time.steps <- 2000
 burn.in <- 100
 mean_params <- ddply(outs, .(Parameter), summarise,
                      value = mean(value))
@@ -332,18 +332,18 @@ cor(error.df$Cover, error.df$cover.pred)
 
 
 
-brks <- 30
-y <- hist(growD$Cover, freq=FALSE, breaks=brks)
-yhat <- hist(pred.cover$value, freq=FALSE, breaks=brks)
-hist_ydata <- data.frame(x = y$breaks, y=c(y$density,0))
-hist_yhatdata <- data.frame(x = yhat$breaks, y=c(yhat$density,0))
-
-ggplot()+
-  geom_step(data=hist_ydata, aes(x=x, y=y), size=1.5)+
-  geom_step(data=hist_yhatdata, aes(x=x, y=y), col="darkorange", size=1)+
-  xlab("Cover (%)")+
-  ylab("Density")
-ggsave("../results/obs_pred_hist.png", width = 4, height = 4, units="in")
+# brks <- 30
+# y <- hist(growD$Cover, freq=FALSE, breaks=brks)
+# yhat <- hist(pred.cover$value, freq=FALSE, breaks=brks)
+# hist_ydata <- data.frame(x = y$breaks, y=c(y$density,0))
+# hist_yhatdata <- data.frame(x = yhat$breaks, y=c(yhat$density,0))
+# 
+# ggplot()+
+#   geom_step(data=hist_ydata, aes(x=x, y=y), size=1.5)+
+#   geom_step(data=hist_yhatdata, aes(x=x, y=y), col="darkorange", size=1)+
+#   xlab("Cover (%)")+
+#   ylab("Density")
+# ggsave("../results/obs_pred_hist.png", width = 4, height = 4, units="in")
 
 
 
@@ -365,7 +365,7 @@ mean_params <- ddply(outs, .(Parameter), summarise,
 alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
 betas <- mean_params[grep("beta", mean_params$Parameter),"..1"][2:6]
 eta <- K%*%alphas
-time.steps <- 600
+time.steps <- 2000
 burn.in <- 100
 
 p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
@@ -505,16 +505,34 @@ ggplot(proj.equil2, aes(x=Lon, y=Lat))+
   theme(strip.background=element_rect(fill="white"))
 ggsave("../results/clim_change_mean_spatial.png", height=8, width=4)
 
-ggplot(all4plot)+
-#   geom_line(stat="density", aes(x=value, y=..density.., fill=variable), size=1, alpha=0.5)+
-  geom_density(aes(x=value, y=..density.., fill=variable, alpha=variable, color=variable), size=1, adjust=2)+
-  scale_fill_manual(values=c("dodgerblue","tan","coral","darkred"), name="Scenario") +
-  scale_color_manual(values=c("dodgerblue","tan","coral","darkred"), name="Scenario") +
-  scale_alpha_manual(values=c(1,0.75,0.5,0.5))+
-  guides(alpha=FALSE)+
-  xlab("Equilibrium Percent Cover")+
-  ylab("Estimated Kernel Density")
-ggsave("../results/clim_change_densities.png", height=4, width=5, dpi = 200)
+# Make plot of differences to CURRENT
+proj.cast <- dcast(proj.equil2, Lon+Lat~variable)
+projs.only <- proj.cast[,which(colnames(proj.cast) %in% c("RCP45", "RCP60", "RCP85"))]
+diffs.only <- projs.only - proj.cast$CURRENT
+diffs.only$Lon <- proj.cast$Lon
+diffs.only$Lat <- proj.cast$Lat
+diffs.df <- melt(diffs.only, id.vars = c("Lon", "Lat"))
+etaPalette <- colorRampPalette(rev(brewer.pal(11, "RdBu")))
+ggplot(diffs.df, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=value, fill=value))+
+  scale_fill_gradientn(colours=etaPalette(100), name="% Cover",
+                       limits=c(-7, 7))+
+  facet_wrap("variable", ncol=1)+
+  coord_equal()+
+  tmp.theme+
+  theme(strip.background=element_rect(fill="white"))
+ggsave("../results/clim_change_diffs_spatial.png", height=6, width=4)
+
+# ggplot(all4plot)+
+# #   geom_line(stat="density", aes(x=value, y=..density.., fill=variable), size=1, alpha=0.5)+
+#   geom_density(aes(x=value, y=..density.., fill=variable, alpha=variable, color=variable), size=1, adjust=2)+
+#   scale_fill_manual(values=c("dodgerblue","tan","coral","darkred"), name="Scenario") +
+#   scale_color_manual(values=c("dodgerblue","tan","coral","darkred"), name="Scenario") +
+#   scale_alpha_manual(values=c(1,0.75,0.5,0.5))+
+#   guides(alpha=FALSE)+
+#   xlab("Equilibrium Percent Cover")+
+#   ylab("Estimated Kernel Density")
+# ggsave("../results/clim_change_densities.png", height=4, width=5, dpi = 200)
 # gout <- grid.arrange(g1, g2, ncol=1, nrow=2)
 # dev.off()
 
