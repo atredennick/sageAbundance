@@ -58,19 +58,7 @@ opts_chunk$set(dev='pdf')
 
 Abstract
 --------
-Population modeling inference has traditionally been limited to small scale observational studies.
-Yet, global environmental changes, like climate change, play out at landscape and regional scales, creating a mismatch between available tools and real world problems.
-New technology is generating data products on massive scales covering entire ecosystems and teams are post-processing these data products to turn them into useful ecological information like species-specific estimates of plant percent cover.
-Unlike some ecological sub-disciplines, population modelers have yet to fully embrace the use of remotely-sensed data as estimates of population abundance.
-Such reluctance likely stems from challenges in fitting statistically appropriate models that rigorously account for spatial autocorrelation in large datasets.
-Here, we use modern, computationally efficient model reparameterizations to fit a dynamic population model to a remotely-sensed dataset.
-We use a 28 year time series of sagebrush (*Artemisia* spp.) percent cover over a $2.5\times5$ km landscape in southwestern Wyoming to fit a spatio-temporal population model that includes climate covariates and spatial random effects.
-We then use the model to forecast future population states (percent cover) under projected climate scenarios.
-Our analysis suggests sagebrush will increase in cover at this high elevation site, primarily driven by a positive response to previous year's precipitation.
-However, gains in cover are not homogeneous in space.
-Such spatially explicit estimates of increases/decreases in plant abundance have, until now, been elusive.
-The spatiotemporal model we describe can be applied to any spatially explicit time series of plant cover.
-As such datasets become increasingly available and precise, we expect the methods we use here to become an appealing alternative to species distribution models that lack population dynamics and, generally, estimates of species abundance.
+New remote sensing technology is producing ecological data at unprecedented spatial scales. These massive data offer an opportunity to study ecological processes at the landscape and regional scales that have traditionally been observed only at the level of small study plots. However, harnessing the power of new spatial data requires statistical models that can both rigorously account for spatial autocorrelation and can also be fit within a reasonable amount of computation time. Here we demonstrate how recent advances in the modeling of animal populations can be applied to newly available remotely-sensed species-specific estimates of plant cover at the landscape scale.  We fit a spatiotemporal population model to a 27 year time series of sagebrush (*Artemisia* spp.) percent cover over a $2.5\times5$ km landscape in southwestern Wyoming. We include interannual variation in precipitation and temperature as covariates in the model to investigtate how climate affects the cover of this species. (include more on the methodological advancement/novelty.. knots etc??) We then use the model to forecast the future abudance of sagebrush at the landscape scale under projected climate change. Our analysis provides spatially explicit estimates of increases and decreases in a plant population that have, until now, been impossible to produce at this scale. (any new insights about the statistical method?) Critically our large-scale and long-term predictions are rooted in small-scale and short-term population dynamics and so serve as a useful alternative to the predictions offered by most species distribution models that do not include population dynamics at all. We expect the approach we develope here will become an indispensable method for using new remote sensing data to model how populations respond to environmental changes, especially climate change, that play out at spatial scales far greater than the average study plot. 
 
 *Key words: population model, climate change, forecasting, spatiotemporal model, remote sensing, sagebrush*, Artemisia, *dimension reduction* 
 
