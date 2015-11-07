@@ -274,46 +274,40 @@ Discussion
 Landscape-scale population models for plant species have been elusive and challenging to implement [@Schurr2012a; @Merow2014].
 Yet, the need to forecast population responses to climate change over large spatial extents is clear, as demonstrated by the wide application of species distribution models [see @Clark2014].
 We introduced a new statistical approach to modeling plant populations that overcomes two major hurdles for spatially-explicit population models.
-First, we used species-specific remote sensing data as a response variable.
+First, we used high resolution species-specific remote sensing data as a response variable.
 Thus, we had a spatially-continuous data product of sagebrush abundance over a large spatial extent, meaning we could fit a model at the same spatial resolution and extent as the data. 
 In so doing we, overcame a major limitation of most population models that are fit using detailed data from a single location.
-Second, borrowing from the vast literature on spatio-temporal modeling of animal abundance [e.g., @Conn2015], we employed a dimension reduction strategy to rigorously account for spatial autocorrelation.
-Accounting for spatial autocorrelation allows for statistically rigorous inference.
-While important statistically, in terms of ecological inference, we can be confident in our estimates of climate effects on sagebrush cover change in our study region.
-It also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (Figs. 4,5).
+Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we employed a dimension reduction strategy that rigorously accounted for spatial autocorrelation while also allowing for feasible computational time in model fitting.
+Accounting for spatial autocorrelation in this large dataset allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. The spatial covariance structure also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (i.e. within the study region; Figs. 4,5).
 
 The amount of precipitation in the previous year (*pptLag* in our model) emerged as a strong predictor of sagebrush cover change (Fig. 2).
 Despite previous evidence that spring temperature strongly regulates population- and individual-level sagebrush performance [@Schlaepfer2012; @Schlaepfer2014], we found little evidence for a temperature effect (Fig. 2).
 Our estimates for temperature effects broadly overlapped zero, but they did trend positive.
-Thus, we did find some support for the idea that sagebrush will respond to positively to temperature increases colder parts of their range.
+Thus, we did find some support for the idea that sagebrush will respond to positively to temperature increases in this colder part of the sagebrush range.
 As seen when comparing our temporally-explicit forecasts (Fig. 6) to climate projections (Fig. 2), it also appears that our forecasts were driven by the weak, but positive, response to temperature.
-Although our estimates of climate effects were small, they are in agreement with previous studies, indicating our model does an adequate job of capturing the ecological process and the link between sagebrush growth and climate.
+Although our estimates of climate effects were small, they are in agreement with previous studies, improving our confidence that our model captured a realistic link between sagebrush growth and climate.
 
-The relatively weak climate effects suggests that we should expect small changes when we apply the model to projected climate scenarios.
-Our model projects modest increases in sagebrush cover under all RCP scenarios (Figs. 4,5).
+As expected given the relatively weak climate effects in this study area, our model projects only small changes in sagebrush cover in this area with future climate change.  Under all RCP scenarios, our model projects modest increases in sagebrush cover (Figs. 4,5).
 The forecasted increases are primarily driven by a positive response to precipitation (Fig. 3), but weak effects of temperature also influenced results.
 A previous analysis of a different subset of the remote sensing data set we used made projections of sagebrush decline in the future [@Homer2015].
-The discrepancy between Homer et al.'s (2015) results and ours is likely due to the climate projections used for forecasting future changes.
+The discrepancy between Homer et al.'s (2015) results and ours reflects a differences in the climate projections used for forecasting future changes rather than differences in our inference about how climate drives sagebrush cover change.
 The Homer et al. (2015) study also found a generally positive relationship between pixel-level sagebrush cover and precipitation, but the climate scenario they chose resulted in a mean decrease in precipitation.
 Thus, the decline in precipitation led to a decline in sagebrush cover.
 Our current work shows that when multiple climate projections are considered, on average sagebrush cover is forecast to increase, but decreases are not outside the realm of our forecasts when all sources of uncertainty are considered (Fig. 5).
 
-There is no clear answer to what climate model to use when making forecasts.
-Here we chose to use all possible projections.
-However, much like weather forecasters [@Bauer2015], ecological forecasters should use expert judgement to choose a climate projection.
-If a certain GCM tends to better predict weather in a specific study area, then that GCM should be given more weight than others.
-Extensions of these ideas are the subject of ongoing research.
+(not sure this next paragraph is needed--it also sounds a bit too prescriptive about climate projection which is probably outside the realm of the paper) 
+There is no clear answer to what climate model to use when making ecological forecasts. Much like weather forecasters [@Bauer2015], ecological forecasters may need to apply expert judgement to choose climate projections.
+If a certain GCM tends to better predict weather in a specific study area, then that GCM may be given more weight than others.
 
 Several *a priori* modeling decisions determined the spatial extent and resolution of our results. 
 We focused the native spatial resolution of the remote sensing data ($30\times30$ meters). 
 This constrained the extent that we could reasonably model because of the computational challenges in using a massive spatial random effect. 
-We used dimension reduction techniques, bu as more and more knots are used, computation time increases substantially [@Wikle2010].
-Had we decided to aggregate the original data to a coarser resolution, we would have been able to model a larger spatial extent using the same number of knots without increasing computation time.
+Even with our dimension reduction technique modeling a larger area at this resolution would require a greater number of spatial knots, and computation time would increase substantially [@Wikle2010].
+In order to overcome this, future investigators modeling a larger spatial extent may need to aggregate their original remote-sensing time series data to a coarse spatial resoluation.  This would allow them to model a much greater spatial extent with a similar number of knots and a similar amount of computation time.  A coarser scale model would lose some fine-scale detail but could be applied to a much larger area, potentially gaining some strength in estimating climate effects by spanning a greater range of climate variation.  
 
 Our spatial extent and resolution also impacted our incorporation of climate covariates.
-We decided against further downscaling Daymet data to match the spatial resolution of the sagebrush data.
+We did not downscale Daymet data to match the spatial resolution of the sagebrush data.
 Thus, in each year all pixels share the same climate covariates.
-In other words, climate informatino in our model only varied through time and not over space.
 This is a potential limitation of our study, and could explain the weak effect of climate covariates that we observed (Fig. 3).
 Future studies could examine lower spatial resolutions and larger spatial extents to facilitate the use of spatially-explicit climate covariates that match the resolution of the percent cover data.
 It would also be possible to include relevant abiotic data layers as predictors when fitting models at larger spatial extents where variation in spatial covariates like soil type, slope, and aspect may play important roles.
