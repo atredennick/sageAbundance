@@ -312,10 +312,12 @@ This is a potential limitation of our study, and could explain the weak effect o
 Future studies could examine lower spatial resolutions and larger spatial extents to facilitate the use of spatially-explicit climate covariates that match the resolution of the percent cover data.
 It would also be possible to include relevant abiotic data layers as predictors when fitting models at larger spatial extents where variation in spatial covariates like soil type, slope, and aspect may play important roles.
 
+While we focused on sagebrush projections at the end of the current century, one important feature of our aproach is that it could in theory be applied to forecast the effects of short-term climate events on sagebrush.  For instance this apprach could be used to model the effects of a multi-year regional drought on this species (cite Germino paper on Yellowstone ecosystem drought).  Validating the model against short-term predictions would give us a way to assess the amount of confidence we should have on any longer-term forecasts produced by the model.  It would also provide opportunities for refinement of the model itself.  This cycle of prediction, validation and refinement is missing from most population-level forecasts of the effects of climate change currently produced.   
+
 Conclusion
 ----------
-We have introduced a new approach to fitting and simulating population models at large spatial extents.
-As methodological and conceptual advancements are made we will be able to apply our approach over even larger spatial extents, and at higher spatial resolution.
+We have introduced a new approach to fitting and simulating population models at large spatial extents with state of the art population data derived from remote sensing.
+As remote sensing datasets and advances in computing power are made this approach will become useful for a wider number of species and be applicaple at even larger spatial extents, and higher resolution.
 Working at large spatial extents, it will become feasible to use spatially-explicit weather data products to fit and simulate the models.
 Given the dependence of forecasts on the weather projections used, we urge ecologists to adopt methods from weather forecasters to up- and down-weight GCMs based on study area-specific reliability.
 Lastly, it may also be important to include the effects of species interactions [@Clark2014].
