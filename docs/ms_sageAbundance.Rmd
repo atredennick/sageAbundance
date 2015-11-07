@@ -160,8 +160,8 @@ We also evaluated a negative binomial model, but found little evidence for overd
 
 Fitting the model with a spatial random effect ($\eta$) is computationally demanding when a large number of observations are considered.
 This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations [@Wikle2010].
-To overcome these computational constraints, we employed a dimension reduction strategy to reduce the number of parameters that need to be estimated to account for spatial variation.
-Reducing the number of effective spatial random effect parameters speeds up estimation by reducing the size of the covariance matrices that need to be inverted at each MCMC iteration.
+Key to our approach is a dimension reduction strategy that greatly reduces the number of parameters needed to be estimated to account for spatial variation.
+This greatly speeds up model fitting by reducing the size of the covariance matrices that need to be inverted at each MCMC iteration.
 Fitting models that appropriately account for spatial autocorrelation over large spatial extents would not be feasible without these modern techniques.
 We follow a common dimension reduction strategy, and express the high dimensional spatial random effect, $\boldsymbol{\eta}$, as the product of an expansion matrix, \textbf{K}, and a smaller parameter vector, $\boldsymbol{\alpha}$ [e.g., @Hooten2003; @Hooten2007a; @Conn2015].
 We can then define the spatial effect as
@@ -238,7 +238,7 @@ We assessed convergence visually and calculated scale reduction factors (Appendi
 We performed four sets of simulations: (1) to compare observed and simulated equilibrium cover, (2) to compare observed and simulated year- and location-specific cover, (3) to forecast future equilibrium population states under projected climate change, and (4) to make temporally-explicit forecasts of sagebrush cover starting the final year of our observations and ending in year 2098. 
 Using the posterior distribution of model parameters, we simulated a matrix of pixels equal to the size of the study area (13,689 pixels or matrix elements).
 For simulations (1) and (3) we initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series (for 1) or a pertubed climate time series (for 3).
-We ran equilibrium simulations (1 and 3) for 600 time steps and then compared the output across simulations, after discarding and initial 100 time steps.
+We ran equilibrium simulations (1 and 3) for 600 time steps and then compared the output across simulations, after discarding an initial 100 time steps.
 For simulation (2), we initialized each pixel with its actual value for time *t* and cell *s* and projected the model forward one time step and compared the one-step forecast with the observed value.
 For simulation (4), we initialized each pixel with the final observed value in 2011 and then projected the model forward based on GCM yearly weather projections.
 We used the posterior mean of each parameter for all simulations, except for (4) where we ran 50 simulations with unique sets of parameters from the MCMC chains.
