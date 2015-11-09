@@ -58,19 +58,7 @@ opts_chunk$set(dev='pdf')
 
 Abstract
 --------
-Population modeling inference has traditionally been limited to small scale observational studies.
-Yet, global environmental changes, like climate change, play out at landscape and regional scales, creating a mismatch between available tools and real world problems.
-New technology is generating data products on massive scales covering entire ecosystems and teams are post-processing these data products to turn them into useful ecological information like species-specific estimates of plant percent cover.
-Unlike some ecological sub-disciplines, population modelers have yet to fully embrace the use of remotely-sensed data as estimates of population abundance.
-Such reluctance likely stems from challenges in fitting statistically appropriate models that rigorously account for spatial autocorrelation in large datasets.
-Here, we use modern, computationally efficient model reparameterizations to fit a dynamic population model to a remotely-sensed dataset.
-We use a 28 year time series of sagebrush (*Artemisia* spp.) percent cover over a $2.5\times5$ km landscape in southwestern Wyoming to fit a spatio-temporal population model that includes climate covariates and spatial random effects.
-We then use the model to forecast future population states (percent cover) under projected climate scenarios.
-Our analysis suggests sagebrush will increase in cover at this high elevation site, primarily driven by a positive response to previous year's precipitation.
-However, gains in cover are not homogeneous in space.
-Such spatially explicit estimates of increases/decreases in plant abundance have, until now, been elusive.
-The spatiotemporal model we describe can be applied to any spatially explicit time series of plant cover.
-As such datasets become increasingly available and precise, we expect the methods we use here to become an appealing alternative to species distribution models that lack population dynamics and, generally, estimates of species abundance.
+New remote sensing technology is producing ecological data at unprecedented spatial scales. These massive data offer an opportunity to study ecological processes at the landscape and regional scales that have traditionally been observed only at the level of small study plots. However, harnessing the power of new spatial data requires statistical models that can both rigorously account for spatial autocorrelation and can also be fit within a reasonable amount of computation time. Here we demonstrate how recent advances in the modeling of animal populations can be applied to newly available remotely-sensed species-specific estimates of plant cover at the landscape scale.  We fit a spatiotemporal population model to a 27 year time series of sagebrush (*Artemisia* spp.) percent cover over a $2.5\times5$ km landscape in southwestern Wyoming. We include interannual variation in precipitation and temperature as covariates in the model to investigtate how climate affects the cover of this species. (include more on the methodological advancement/novelty.. knots etc??) We then use the model to forecast the future abudance of sagebrush at the landscape scale under projected climate change. Our analysis provides spatially explicit estimates of increases and decreases in a plant population that have, until now, been impossible to produce at this scale. (any new insights about the statistical method?) Critically our large-scale and long-term predictions are rooted in small-scale and short-term population dynamics and so serve as a useful alternative to the predictions offered by most species distribution models that do not include population dynamics at all. We expect the approach we develope here will become an indispensable method for using new remote sensing data to model how populations respond to environmental changes, especially climate change, that play out at spatial scales far greater than the average study plot. 
 
 *Key words: population model, climate change, forecasting, spatiotemporal model, remote sensing, sagebrush*, Artemisia, *dimension reduction* 
 
@@ -83,32 +71,19 @@ Indeed, almost every study of plant population dynamics relies on demographic ob
 Local-scale demographic data make building population projection models an easy task [@Ellner2006; @Rees2009; @Adler2012], but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions [@Freckleton2011; @Queenborough2011].
 Thus, the real challenge is not to simply make population forecasts, but to do so at spatial scales relevant to policy and management decisions [@Queenborough2011, Tredennick and Adler in review].
 
-Species distribution models (SDMs), on the other hand, are easily applied at landscape to continental scales [e.g., @Maiorano2013; @Clark2014].
-In a climate change context, SDMs typically rely on static associations between contemporary climate and a species' distribution or, more rarely, abundance to project future distribution or abundance [@Elith2009].
-Thus, interannual dynamics that reflect population responses to yearly climate variations are not represented in SDMs.
-Furthermore, since SDMs typically rely on occurence data, their projections of habitat suitability or probability of occurence provide little information on the future states of populations in the core of their range -- in areas where a species currently exists and is expected to persist in the future.
-Despite these limitations, SDMs remain one of the few ways to make forecasts of species responses to climate change at large spatial extents.
+The ideal tool for forecasting future population states under climate change would be a large-scale dynamic population model [@Schurr2012a; @Merow2014]; however, developing useful models at this scale has been limited by the lack of time series data at large spatial extents and the lack of statistical machinary needed to fit high-dimensional spatial models.
+Fortunately, new advances in remote sensing and statistics now allow us to overcome both of these limitations.
+First, new remote-sensing (RS) methods are now producing accurate time series of species-specific plant cover at landscape scales.  These data can be fit with dynamic population models which include yearly fluctuation in climate as covariates.
+Such RS time series have revolutionized models of how climate affects ecosystem-level processes [e.g., @Running2004] and have been used to detect long term trends in plant population abundance [e.g., @Homer2015], but they have yet to be used to drive a dynamic population model.
+Second, animal population modelers have developed efficient dimension reduction and reparameterization techniques that overcome the dfficulties of fitting high-dimension spatiotemporal models [see @Conn2015 for a review]. These new statistical methods have yet to be applied to RS derived plant populations data at large scales. 
 
-The ideal tool for forecasting future population states under climate change would be a large-scale dynamic population model [@Schurr2012a; @Merow2014].
-Unfortunately, such methods have been elusive due to the lack of time series data at large spatial extents and the statistical machinary needed to fit high-dimensional spatial models.
-Fortunately, two recent technological advances put us in the position to develop large-scale population models.
-First, remotely-sensed (RS) time series of species-specific plant cover can provide data on interannual population dynamics that can be correlated with yearly climate fluctuations at large spatial extents.
-RS time series have revolutionized models of ecosystem-level processes [e.g., @Running2004] and have been used to detect long term trends in plant population abundance [e.g., @Homer2015], but they have yet to be used to drive a dynamic population model.
-Second, animal population modelers have developed efficient dimension reduction and reparameterization techniques to fit high-dimension spatiotemporal models [see @Conn2015 for a review]. 
-However, these methods have yet to be used in a dynamic setting. 
+Large-scale, spatially explicit population models based on RS data could offer a valuable new way to investigate the effects of large-scale environmental changes--especially climate change--playing out at landscape and regional scales.  Currently most assesments of how plant and animal populations will respond to climate change rely on Species distribution models (SDMs).  SDMs rely on static associations between contemporary climate and a species' distribution or, more rarely, abundance to project future distribution or abundance [@Elith2009] and they are easily applied at landscape to continental scales [e.g., @Maiorano2013; @Clark2014]. However, the short-term and small-scale population dynamics that actually drive the large-scale distributions of species are not represented in most SDMs. Since SDMs typically rely on occurence data, their projections of habitat suitability or probability of occurence provide little information on the future states of populations in the core of their range -- areas where a species exists now and is expected to persist in the future [add EhrlenANDMorris]. Furthermore, because they lack short-term dynamics they usually cannot produce any estimate of the rate at which local populations will increase or decrease in the near-term and instead project a future equilibrium species distribution that may or may not ever be reached within our lifetimes. Large-scale dynamic population models could overcome both of these limitations.  They would produce spatially expicit estimates of species abundance within the species range [Ehrlen and Morris] and would provide testable predictions of how populations should respond to short-term climate perturbations.  These short-term predictions would give ecological forecasters the opportunity to repeatedly validate and refine their models (cite a prediction paper).  
 
-Building on these technological advances, we develop a statistical approach for modeling plant populations over large spatial extents using a process model motivated by Gompertz density-dependent population growth.
-Our approach leverages a unique remotely-sensed time series of *Artemisia* (sagebrush) species [@Homer2012] to fit a spatio-temporal model of plant population dynamics at the landscape scale.
-We use advanced dimension reduction techniques borrowed from the animal modeling literature [@Conn2015] to rigorously account for spatial autocorrelation and to produce spatially-explicit estimates of sagebrush percent cover.
-We then use the model to forecast the impacts of climate change on sagebrush percent cover.
+Sagebrush (*Artemisia tridentata*) ecosystems offer an ideal testing ground for new spatially explicit population models derived from RS data: sagebrush species are widely distributed [@Kuchler1964], sagebrush species are sensitive to climate [@Dalgleish2011; @Schlaepfer2014; @Schlaepfer2014a; @Miglia2005; @Poore2009; @Apodaca2013; @Perfors2003; @Harte2015], new landscape and regional scale time series of sagebrush cover are now being produced from aerial imagery [@Homer2012], and forecasts of future sagebrush ecosystems are in high demand due to the precarious conservation status of the greater sage-grouse (*Centrocercus urophasianus*) [@Arnett2015].  SDMs typically predict that much of the area occupied by sagebrush ecosystems today will become unsuitable for sagebrush due to climate change, resulting in a dramatic loss in the extent of sagebrush habitat by the end of this century [@Shafer2001; @Neilson2005; @Bradley2010; @Schlaepfer2012; @Still2015]. Ecohydrology models supply a possible mechanism for sagebrush losses predicted by SDMs: climate warming could lead to earlier snowmelt, increased evaporation and ultimately less recharge of deeper soil layers in the spring [@Schlaepfer2012; @Schlaepfer2014]. In warmer parts of its range, this could be especially detrimental to sagebrush as it depends on water from deeper soil to survive and grow in this arid region [@Pechanec1937; @Schlaepfer2011; @Germino2014]. In contrast, at higher elevations and colder regions, warming and earlier snowmelt could lengthen the growing season and increase sagebrush occurrence [@Schlaepfer2012; @Schlaepfer2014]. A large-scale spatially explicit population model for sagebrush driven by interannual climate would provide a valuable new tool for assesing how sagebrush could respond to climate change in the future. 
 
-Sagebrush ecosystems offer an ideal testing ground for our new modeling approach: sagebrush species are widely distributed [@Kuchler1964], sagebrush species are sensitive to climate [@Dalgleish2011; @Schlaepfer2014; @Schlaepfer2014a], and forecasts of future sagebrush ecosystems are in high demand due to the precarious conservation status of the greater sage-grouse (*Centrocercus urophasianus*) [@Arnett2015].
-Species distribution models typically predict that much of the area occupied by sagebrush ecosystems today will become unsuitable for sagebrush due to climate change, resulting in a dramatic loss overall in the extent of sagebrush habitat by the end of this century [@Shafer2001; @Neilson2005; @Bradley2010; @Schlaepfer2012; @Still2015].
-Sagebrush is thought to depend on winter snow and rain that recharges deeper soil layers [@Pechanec1937; @Schlaepfer2011; @Germino2014].
-Models suggest that warming could drive sagebrush losses at low elevations and southern parts of its distribution by making snowmelt earlier and increasing evaporation, leading to soil water deficits in the spring [@Schlaepfer2012; @Schlaepfer2014].
-In contrast, at higher elevations and colder regions, warming and earlier snowmelt could lengthen the growing season and increase sagebrush occurrence [@Schlaepfer2012; @Schlaepfer2014].
-Thus, the response of sagebrush to climate will likely vary in space depending on elevation, among other factors.
-Direct observations of individual plants and cover on experimental plots tend to agree with these models:  growth tends to respond negatively to spring and summer temperatures [@Miglia2005; @Poore2009; @Apodaca2013] except at higher elevations where earlier snowmelt may allow for a longer growing season and an increase in sagebrush growth and cover [@Perfors2003; @Harte2015]. 
+(Direct observations of individual plants and experimental plots tend to agree with these models:  growth tends to respond negatively to spring and summer temperatures [@Miglia2005; @Poore2009; @Apodaca2013] except at higher elevations where earlier snowmelt may allow for a longer growing season [@Perfors2003; @Harte2015].) <-- Too much detail? could move to discussion or cite as evidence that "sagebrush is sensitive to climate" above?
+
+Building on recent technological advances in spatial statistics and anticipating ever-increasing availability of RS data, we demonstrate how large-scale plant population models could be used to predict how climate change will affect sagebrush and other species in the future.  Our approach relies on a process model motivated by Gompertz density-dependent population growth and a cutting-edge remotely-sensed time series of sagebrush cover from Wyoming [@Homer2012]. We rigorously account for spatial autocorrelation with dimension reduction techniques borrowed from the animal modeling literature [@Conn2015] and produce spatially-explicit estimates of sagebrush percent cover.
 
 The modeling framework we propose can be applied to any spatially-explicit time series of plant cover or density, but its application to remotely-sensed data products offers the largest potential.
 In those cases, our approach is particularly well-suited for combining the information of population models (e.g., population status) and the spatial extent of species distribution models.
@@ -185,8 +160,8 @@ We also evaluated a negative binomial model, but found little evidence for overd
 
 Fitting the model with a spatial random effect ($\eta$) is computationally demanding when a large number of observations are considered.
 This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations [@Wikle2010].
-To overcome these computational constraints, we employed a dimension reduction strategy to reduce the number of parameters that need to be estimated to account for spatial variation.
-Reducing the number of effective spatial random effect parameters speeds up estimation by reducing the size of the covariance matrices that need to be inverted at each MCMC iteration.
+Key to our approach is a dimension reduction strategy that greatly reduces the number of parameters needed to be estimated to account for spatial variation.
+This greatly speeds up model fitting by reducing the size of the covariance matrices that need to be inverted at each MCMC iteration.
 Fitting models that appropriately account for spatial autocorrelation over large spatial extents would not be feasible without these modern techniques.
 We follow a common dimension reduction strategy, and express the high dimensional spatial random effect, $\boldsymbol{\eta}$, as the product of an expansion matrix, \textbf{K}, and a smaller parameter vector, $\boldsymbol{\alpha}$ [e.g., @Hooten2003; @Hooten2007a; @Conn2015].
 We can then define the spatial effect as
@@ -263,7 +238,7 @@ We assessed convergence visually and calculated scale reduction factors (Appendi
 We performed four sets of simulations: (1) to compare observed and simulated equilibrium cover, (2) to compare observed and simulated year- and location-specific cover, (3) to forecast future equilibrium population states under projected climate change, and (4) to make temporally-explicit forecasts of sagebrush cover starting the final year of our observations and ending in year 2098. 
 Using the posterior distribution of model parameters, we simulated a matrix of pixels equal to the size of the study area (13,689 pixels or matrix elements).
 For simulations (1) and (3) we initialized all pixels with arbitrarily low cover (1%) and then projected the model forward by randomly drawing climate covariates from the observed climate time series (for 1) or a pertubed climate time series (for 3).
-We ran equilibrium simulations (1 and 3) for 600 time steps and then compared the output across simulations, after discarding and initial 100 time steps.
+We ran equilibrium simulations (1 and 3) for 600 time steps and then compared the output across simulations, after discarding an initial 100 time steps.
 For simulation (2), we initialized each pixel with its actual value for time *t* and cell *s* and projected the model forward one time step and compared the one-step forecast with the observed value.
 For simulation (4), we initialized each pixel with the final observed value in 2011 and then projected the model forward based on GCM yearly weather projections.
 We used the posterior mean of each parameter for all simulations, except for (4) where we ran 50 simulations with unique sets of parameters from the MCMC chains.
@@ -299,61 +274,45 @@ Discussion
 Landscape-scale population models for plant species have been elusive and challenging to implement [@Schurr2012a; @Merow2014].
 Yet, the need to forecast population responses to climate change over large spatial extents is clear, as demonstrated by the wide application of species distribution models [see @Clark2014].
 We introduced a new statistical approach to modeling plant populations that overcomes two major hurdles for spatially-explicit population models.
-First, we used species-specific remote sensing data as a response variable.
+First, we used high resolution species-specific remote sensing data as a response variable.
 Thus, we had a spatially-continuous data product of sagebrush abundance over a large spatial extent, meaning we could fit a model at the same spatial resolution and extent as the data. 
 In so doing we, overcame a major limitation of most population models that are fit using detailed data from a single location.
-Second, borrowing from the vast literature on spatio-temporal modeling of animal abundance [e.g., @Conn2015], we employed a dimension reduction strategy to rigorously account for spatial autocorrelation.
-Accounting for spatial autocorrelation allows for statistically rigorous inference.
-While important statistically, in terms of ecological inference, we can be confident in our estimates of climate effects on sagebrush cover change in our study region.
-It also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (Figs. 4,5).
+Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we employed a dimension reduction strategy that rigorously accounted for spatial autocorrelation while also allowing for feasible computational time in model fitting.
+Accounting for spatial autocorrelation in this large dataset allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. The spatial covariance structure also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (i.e. within the study region; Figs. 4,5).
 
-The amount of precipitation in the previous year (*pptLag* in our model) emerged as a strong predictor of sagebrush cover change (Fig. 2).
-Despite previous evidence that spring temperature strongly regulates population- and individual-level sagebrush performance [@Schlaepfer2012; @Schlaepfer2014], we found little evidence for a temperature effect (Fig. 2).
-Our estimates for temperature effects broadly overlapped zero, but they did trend positive.
-Thus, we did find some support for the idea that sagebrush will respond to positively to temperature increases colder parts of their range.
-As seen when comparing our temporally-explicit forecasts (Fig. 6) to climate projections (Fig. 2), it also appears that our forecasts were driven by the weak, but positive, response to temperature.
-Although our estimates of climate effects were small, they are in agreement with previous studies, indicating our model does an adequate job of capturing the ecological process and the link between sagebrush growth and climate.
+The amount of precipitation in the previous year (*pptLag* in our model) emerged as a strong predictor of sagebrush cover change (Fig. 2) which agrees with previous research showing that wetter winters are correlated with greater stem growth in sagebrush [@Poore2009; @Apodaca2013]. The posterior distribution for the effect of spring temperature on sagebrush cover broadly overlapped zero but was slightly positive (Fig. 2).  Warmer spring temperatures may enhance sagebrush growth in colder climates by advancing the date of snowmelt and increasing the length of the growing season [@Perfors2003; @Harte2015].  As seen when comparing our temporally-explicit forecasts (Fig. 6) to climate projections (Fig. 2), it also appears that our forecasts were driven by the weak, but positive, response to temperature. 
 
-The relatively weak climate effects suggests that we should expect small changes when we apply the model to projected climate scenarios.
-Our model projects modest increases in sagebrush cover under all RCP scenarios (Figs. 4,5).
+As expected given the relatively weak climate effects in this study area, our model projects only small changes in sagebrush cover in this area with future climate change.  Under all RCP scenarios, our model projects modest increases in sagebrush cover (Figs. 4,5).
 The forecasted increases are primarily driven by a positive response to precipitation (Fig. 3), but weak effects of temperature also influenced results.
 A previous analysis of a different subset of the remote sensing data set we used made projections of sagebrush decline in the future [@Homer2015].
-The discrepancy between Homer et al.'s (2015) results and ours is likely due to the climate projections used for forecasting future changes.
+The discrepancy between Homer et al.'s (2015) results and ours reflects a differences in the climate projections used for forecasting future changes rather than differences in our inference about how climate drives sagebrush cover change.
 The Homer et al. (2015) study also found a generally positive relationship between pixel-level sagebrush cover and precipitation, but the climate scenario they chose resulted in a mean decrease in precipitation.
 Thus, the decline in precipitation led to a decline in sagebrush cover.
-Our current work shows that when multiple climate projections are considered, on average sagebrush cover is forecast to increase, but decreases are not outside the realm of our forecasts when all sources of uncertainty are considered (Fig. 5).
+Our current work shows that when multiple climate projections are considered, on average sagebrush cover is forecast to increase, but decreases are not outside the realm of our forecasts when all sources of uncertainty are considered (Fig. 5). 
 
-There is no clear answer to what climate model to use when making forecasts.
-Here we chose to use all possible projections.
-However, much like weather forecasters [@Bauer2015], ecological forecasters should use expert judgement to choose a climate projection.
-If a certain GCM tends to better predict weather in a specific study area, then that GCM should be given more weight than others.
-Extensions of these ideas are the subject of ongoing research.
+(not sure this next paragraph is needed--it also sounds a bit too prescriptive about climate projection which is probably outside the realm of the paper) 
+There is no clear answer to what climate model to use when making ecological forecasts. Much like weather forecasters [@Bauer2015], ecological forecasters may need to apply expert judgement to choose climate projections.
+If a certain GCM tends to better predict weather in a specific study area, then that GCM may be given more weight than others.
 
 Several *a priori* modeling decisions determined the spatial extent and resolution of our results. 
 We focused the native spatial resolution of the remote sensing data ($30\times30$ meters). 
 This constrained the extent that we could reasonably model because of the computational challenges in using a massive spatial random effect. 
-We used dimension reduction techniques, bu as more and more knots are used, computation time increases substantially [@Wikle2010].
-Had we decided to aggregate the original data to a coarser resolution, we would have been able to model a larger spatial extent using the same number of knots without increasing computation time.
+Even with our dimension reduction technique modeling a larger area at this resolution would require a greater number of spatial knots, and computation time would increase substantially [@Wikle2010].
+In order to overcome this, future investigators modeling a larger spatial extent may need to aggregate their original remote-sensing time series data to a coarse spatial resoluation.  This would allow them to model a much greater spatial extent with a similar number of knots and a similar amount of computation time.  A coarser scale model would lose some fine-scale detail but could be applied to a much larger area, potentially gaining some strength in estimating climate effects by spanning a greater range of climate variation.  
 
 Our spatial extent and resolution also impacted our incorporation of climate covariates.
-We decided against further downscaling Daymet data to match the spatial resolution of the sagebrush data.
+We did not downscale Daymet data to match the spatial resolution of the sagebrush data.
 Thus, in each year all pixels share the same climate covariates.
-In other words, climate informatino in our model only varied through time and not over space.
 This is a potential limitation of our study, and could explain the weak effect of climate covariates that we observed (Fig. 3).
 Future studies could examine lower spatial resolutions and larger spatial extents to facilitate the use of spatially-explicit climate covariates that match the resolution of the percent cover data.
 It would also be possible to include relevant abiotic data layers as predictors when fitting models at larger spatial extents where variation in spatial covariates like soil type, slope, and aspect may play important roles.
 
+While we presented projections for sagebrush cover at the end of this century, one important feature of our aproach is that it could also produce short-term forecasts for sagebrush cover as well.  For instance this apprach could be used to model the effects of a multi-year regional drought on this species (cite Debinski et al. 2010).  Validating spatial population models against short-term predictions would give modelers a way to assess the long-term forecasts produced by the model.  It would also provide opportunities for refinement of the model itself.  This cycle of prediction, validation and refinement is missing from most population-level forecasts of the effects of climate change currently produced [@Petchey2015 prediction paper -- is there a better reference for this idea?].   
+
 Conclusion
 ----------
-We have introduced a new approach to fitting and simulating population models at large spatial extents.
-As methodological and conceptual advancements are made we will be able to apply our approach over even larger spatial extents, and at higher spatial resolution.
-Working at large spatial extents, it will become feasible to use spatially-explicit weather data products to fit and simulate the models.
-Given the dependence of forecasts on the weather projections used, we urge ecologists to adopt methods from weather forecasters to up- and down-weight GCMs based on study area-specific reliability.
-Lastly, it may also be important to include the effects of species interactions [@Clark2014].
-Fortunately, our spatio-temporal modeling framework is very flexible.
-It can be used for any spatially-explicit time series of species-specific estimates of plant cover or density.
-The core process model (Eq. 2) can take any form; meaning that additional covariates can easily be included or an entirely different functional form can be used depending on the ecological context.
-As large scale time series data sets become more available, we anticipate the approach we developed here to fill the gap in spatial scales between species distribution models and local-scale demographic population models.
+We have introduced a new approach to fitting and simulating population models at large spatial extents with plant population data derived from state of the art remote sensing.
+As more species-level remote sensing datasets become available and computing power increases this approach will be applicable to a wider number of species and even larger spatial extents. Future modeling could include the effects of non-climate drivers--including the effects of species interactions and disturbance [@Clark2014].  For sagebrush, including fire and competition with non-native annual grasses in the model may be especially important for a complete assesment of the effects of climate change [@Bradford and Lauenroth  2009 ].  Fortunately, our spatio-temporal modeling framework could easily be extended to model additional species and dynamic processes as the data become availabe. The approach we have developed here fills an important gap in spatial scales between species distribution models and local-scale demographic population models.
 
 
 Acknowledgments
