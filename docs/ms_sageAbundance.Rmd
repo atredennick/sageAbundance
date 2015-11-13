@@ -61,7 +61,7 @@ Abstract
 New remote sensing technology is producing ecological data at unprecedented spatial scales. 
 These massive data offer an opportunity to study ecological processes at the landscape and regional scales that have traditionally been observed only at the level of small study plots. 
 However, harnessing the power of new spatial data requires statistical models that can both rigorously account for spatial autocorrelation and can also be fit within a reasonable amount of computation time. 
-Here we demonstrate how recent advances in the modeling of animal populations can be applied to newly available remotely-sensed species-specific estimates of plant cover at the landscape scale.  
+Here we demonstrate how recent advances in the modeling of animal populations can be applied to newly available remotely-sensed species-specific estimates of plant cover at the landscape scale.
 Using modern, computationally efficient model reparameterizations we fit a spatiotemporal population model to a 27 year time series of sagebrush (*Artemisia* spp.) percent cover over a $2.5\times5$ km landscape in southwestern Wyoming with rigorous accounting of spatial autocorrelation.
 We include interannual variation in precipitation and temperature as covariates in the model to investigtate how climate affects the cover of this species.
 We then use the model to forecast the future abudance of sagebrush at the landscape scale under projected climate change. 
