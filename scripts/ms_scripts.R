@@ -131,6 +131,18 @@ dev.off()
 
 
 ####
+####  Compare spatial field to landscape features ------------------------------
+####
+slope <- raster("/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea1/ancillary_data/ls3731_slope_subset.img")
+slopeDf <- as.data.frame(rasterToPoints(slope))
+eta_slope <- merge(oneyear, slopeDf, by.x=c("Lon", "Lat"), by.y=c("x", "y"))
+ggplot(eta_slope, aes(x=ls3731_slope_subset, y=eta))+
+  geom_point()+
+  stat_smooth(se=FALSE, color="black", method="gam", formula=y ~ s(x, bs = "cs"))+
+  theme_bw()
+
+
+####
 ####  Plot climate covariate posterior densities -------------------------------
 ####
 clim_vars <- c("beta.1.", "beta.2.", "beta.3.", "beta.4.", "beta.5.")
