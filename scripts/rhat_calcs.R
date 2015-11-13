@@ -7,7 +7,7 @@ rm(list=ls())
 ####  Load libraries -----------------------------------------------------------
 ####
 library(ggplot2)
-
+library(dplyr)
 
 
 ####
@@ -64,6 +64,6 @@ ggplot(rhats, aes(x=Rhat, y=Parameter))+
   xlab(expression(hat("R"))) + 
   ggtitle("Potential Scale Reduction Factors")
   
-ggsave("rhat_plot.pdf", height = 10)
+ggsave("rhat_plot.png", height = 10, dpi = 100)
 
 
