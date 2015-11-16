@@ -127,7 +127,7 @@ Thus, the full dataset contains 369,603 observations consisting of 27 year-to-ye
 [^link0]: *link to USGS data repo*
 
 #### Climate covariates
-Our approach is based on modeling how changes in plant populations relate to climate variables.
+Our approach is based on modeling how interannual changes in plant cover relate to seasonal climate variables.
 We downloaded daily historic weather data for our study site from the NASA Daymet data set (*available online*)[^link].
 The Daymet weather data are interpolated between coarse observation units and captures some spatial variation.
 We relied on weather data for the centroid of our study area.
@@ -275,7 +275,7 @@ Trajectories of our climate covariates from GCM projections, used to make yearly
 GCM projections are variable for our study area, highlighting the importance of making forecasts based on ensemble projections.
 
 All parameters in our model converged on stable posterior distributions (Appendix C).
-Only the *lagPpt* climate covariate can be considered important based on a 90% credible interval, and it had a positive effect on sagebrush annual percent cover change (Fig. 3).
+Only the *lagPpt* climate covariate can be considered important based on a 90% credible interval, and it had a positive effect on sagebrush percent cover change from year-to-year (Fig. 3).
 The posterior mean for the spatial random effect, $\boldsymbol{\eta}$, captured the overall spatial structure of the observed data (Fig. D1).
 This indicates our choice of knot placement and dimension reduction strategy was adequate for describing permanent spatial variation in the data.
 
@@ -303,7 +303,7 @@ We introduced a new statistical approach to modeling plant populations that over
 First, we used high resolution species-specific remote sensing data as a response variable.
 Thus, we had a spatially-continuous data product of sagebrush abundance over a large spatial extent, meaning we could fit a model at the same spatial resolution and extent as the data. 
 In so doing we, overcame a major limitation of most population models that are fit using detailed data from a single location.
-Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we employed a dimension reduction strategy that rigorously accounted for spatial autocorrelation while also allowing for feasible computational time in model fitting.
+Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we employed a dimension reduction strategy that accounted for spatial autocorrelation while also allowing for feasible computational time in model fitting.
 Accounting for spatial autocorrelation in this large dataset allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. 
 The spatial covariance structure also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (i.e. within the study region; Figs. 4,5).
 
