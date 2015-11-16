@@ -333,7 +333,8 @@ This constrained the extent that we could reasonably model because of the comput
 Even with our dimension reduction technique modeling a larger area at this resolution would require a greater number of spatial knots, and computation time would increase substantially [@Wikle2010].
 In order to overcome this, future investigators modeling a larger spatial extent may need to aggregate their original remote-sensing time series data to a coarse spatial resoluation.
 This would allow them to model a much greater spatial extent with a similar number of knots and a similar amount of computation time.
-A coarser scale model would lose some fine-scale detail but could be applied to a much larger area, potentially gaining some strength in estimating climate effects by spanning a greater range of climate variation.  
+A coarser scale model would lose some fine-scale detail but could be applied to a much larger area, potentially gaining some strength in estimating climate effects by spanning a greater range of climate variation.
+However, gains made by incorporating greater regional variability by modeling at a coarser resolution could be offset by the loss of information inherent when aggregating plant responses into larger and larger pixels.
 
 Our spatial extent and resolution also impacted our incorporation of climate covariates.
 We did not downscale Daymet data to match the spatial resolution of the sagebrush data.
