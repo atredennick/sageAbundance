@@ -1,0 +1,31 @@
+---
+layout: 12pt
+header-includes:
+   - \usepackage{lineno}
+   - \linenumbers
+   - \usepackage{setspace}
+   - \doublespacing
+bibliography: ~/Dropbox/Bibliography/SageAbundance.bib
+csl: components/ecology.csl
+
+## rmarkdown render options
+output:
+  pdf_document:
+    fig_caption: true
+    keep_tex: false
+fontsize: 12pt
+geometry: margin=1in
+
+---
+
+\renewcommand\thefigure{D\arabic{figure}}  
+
+Appendix D: Posterior estimate of spatial random effects ($\boldsymbol{\eta}$)
+==============================================================================
+
+```{r figure_D1,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=TRUE, echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("./components/spatialfield.png")
+grid.raster(img)
+```

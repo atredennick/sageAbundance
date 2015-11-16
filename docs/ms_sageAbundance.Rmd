@@ -142,9 +142,10 @@ Several model selection techniques exist that could be applied to our approach [
 
 To forecast future population states, we required future projections of climate for our study area.
 We used the most recent climate projections used by the Intergovernmental Panel on Climate Change (IPCC), the Coupled Model Intercomparison Project 5 (CMIP5; *available online*)[^link2].
-The CMIP5 provides projections from a suite of global circulations models (GCMs), and we used projections from 18 GCMs (Table A1) that produced weather projections for all three ``Representative Concentration Pathways'': RCP 4.5, RCP 6.0, and RCP 8.5 (*described online*)[^link3].
+The CMIP5 provides projections from a suite of global circulations models (GCMs), and we used projections from 18 GCMs (Table A1) that produced weather projections for three ``Representative Concentration Pathways'': RCP 4.5, RCP 6.0, and RCP 8.5 (*described online*)[^link3].
 The three RCPs correspond to stabilization of radiative forcing before 2100, after 2100, and increasing greenhouse gas emissions, respectively.
-To simulate equilibrium sagebrush cover under projected future climate (see below), we averaged all model projections for the centroid of our study area over the time period of 2050 to 2100.
+We chose these three RCP scenarios to demonstrate our approach because they have close analogues to previous emissions scenarios used by the IPCC.
+To simulate equilibrium sagebrush cover under projected future climate (see below), we averaged the 18 GCM projections for each of the three emissions scenarios for the centroid of our study area over the time period of 2050 to 2100.
 We did the same for the time period of 1950 to 2000 so we could calculate projected changes in climate.
 To keep the temporal variability from observed climate consistent for climate change scenarios, we adjusted observed climate according to projected changes.
 For temperature, we subtracted the average historic (1950-2000) temperature from the average projected (2050-2100) temperature. 
@@ -255,7 +256,7 @@ Such short MCMC chains may seem unusual to those more familiar with other MCMC s
 However, the Stan algorithm is extremely efficient, meaning that, compared to other samplers, fewer iterations are required to achieve convergence.
 Each MCMC chain was initialized with unique parameter values and the model was fit in parallel using the Utah State University High-Performance Computing facility.
 Model fitting required five days.
-We assessed convergence visually and calculated scale reduction factors (Appendix C, $\hat{R}$ < 1.01 for all paramters) [@Gelman1992; @Gelman2009]. 
+We assessed convergence visually and calculated scale reduction factors (Appendix C, $\hat{R}$ < 1.1 for all paramters) [@Gelman1992; @Gelman2009]. 
 
 ####Simulating the process
 We performed four sets of simulations: (1) to compare observed and simulated equilibrium cover, (2) to compare observed and simulated year- and location-specific cover, (3) to forecast future equilibrium population states under projected climate change, and (4) to make temporally-explicit forecasts of sagebrush cover starting the final year of our observations and ending in year 2098. 
@@ -273,9 +274,9 @@ Averaged across all GCMs, precipitation and temperature in our study area are pr
 Trajectories of our climate covariates from GCM projections, used to make yearly forecasts, show similar trends (Fig. 2). 
 GCM projections are variable for our study area, highlighting the importance of making forecasts based on ensemble projections.
 
-All parameters in our model converged on stable posterior distributions (Appendix X).
+All parameters in our model converged on stable posterior distributions (Appendix C).
 Only the *lagPpt* climate covariate can be considered important based on a 90% credible interval, and it had a positive effect on sagebrush annual percent cover change (Fig. 3).
-The posterior mean for the spatial random effect, $\boldsymbol{\eta}$, captured the overall spatial structure of the observed data (Fig. X#).
+The posterior mean for the spatial random effect, $\boldsymbol{\eta}$, captured the overall spatial structure of the observed data (Fig. D1).
 This indicates our choice of knot placement and dimension reduction strategy was adequate for describing permanent spatial variation in the data.
 
 When we simulated the pixel-based population model based on observed climate it was able to reproduce average observed percent cover in space (Fig. 4A,B).
@@ -314,9 +315,11 @@ As seen when comparing our temporally-explicit forecasts (Fig. 6) to climate pro
 As expected given the relatively weak climate effects in this study area, our model projects only small changes in sagebrush cover in this area with future climate change. 
 Under all RCP scenarios, our model projects modest increases in sagebrush cover (Figs. 4,5).
 The forecasted increases are primarily driven by a positive response to precipitation (Fig. 3), but weak effects of temperature also influenced results.
-A previous analysis of a different subset of the remote sensing data set we used made projections of sagebrush decline in the future [@Homer2015].
+A previous analysis of a different subset of the remote sensing data set we used made projections of sagebrush decline, on average, in the future [@Homer2015].
 The discrepancy between Homer et al.'s (2015) results and ours reflects a difference in the climate projections used for forecasting future changes rather than differences in our inference about how climate drives sagebrush cover change.
-The Homer et al. (2015) study also found a generally positive relationship between pixel-level sagebrush cover and precipitation, but the climate scenario they chose resulted in a mean decrease in precipitation.
+First, Homer et al. (2015) used downscaled IPCC projections that allowed for spatial variation in future climate, unlike our analysis here.
+Therefore, Homer et al. (2015) did predict some pixel-level increases in sagebrush cover since each pixel was subject to its own regression between climate and cover.
+Second, like our study, Homer et al. (2015) found a generally positive relationship between pixel-level sagebrush cover and precipitation, but the climate scenario they chose resulted in a mean decrease in precipitation.
 Thus, the decline in precipitation led to a decline in sagebrush cover.
 Our current work shows that when multiple climate projections are considered, on average sagebrush cover is forecast to increase, but decreases are not outside the realm of our forecasts when all sources of uncertainty are considered (Fig. 5). 
 
