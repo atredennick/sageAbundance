@@ -11,6 +11,8 @@ require(sp)
 require(rgdal)
 library(colorRamps)
 
+#Source scale_bar function
+source("/Users/atredenn/Desktop/ggplot_scale_bar.R")
 
 #Get multiplot function
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
@@ -105,11 +107,13 @@ ggplot()+
         panel.grid.major=element_blank(),
         panel.grid.minor=element_blank(),
         plot.background=element_blank()
-  )
+  )+
+  scaleBar(lon = -130, lat = 26, distanceLon = 500, distanceLat = 100, 
+           distanceLegend = 200, dist.unit = "km")
 ggsave("../docs/components/figure/us_wyo_studyarea_mark.png")
 
 ggplot()+
-  geom_raster(data=sage_oneyear, aes(y=Lat, x=Lon, fill=Cover))+
+  geom_raster(data=shrub.df, aes(y=y, x=x, fill=Cover))+
   theme_bw() +
   coord_equal() +
   scale_fill_gradient(high="white", low="black") +
@@ -118,10 +122,10 @@ ggplot()+
         panel.background=element_rect(fill="white"),
         panel.grid.major=element_blank(),
         panel.grid.minor=element_blank(),
-        plot.background=element_blank(),
-        axis.text.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks=element_blank()
+        plot.background=element_blank()
+#         axis.text.x=element_blank(),
+#         axis.text.y=element_blank(),
+#         axis.ticks=element_blank()
   )
 ggsave("../docs/components/figure/oneyear_cover_example.png")
 
