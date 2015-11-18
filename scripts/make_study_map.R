@@ -12,7 +12,7 @@ require(rgdal)
 library(colorRamps)
 
 #Source scale_bar function
-source("/Users/atredenn/Desktop/ggplot_scale_bar.R")
+source("../R/ggplot_scale_bar.R")
 
 #Get multiplot function
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
@@ -113,11 +113,11 @@ ggplot()+
 ggsave("../docs/components/figure/us_wyo_studyarea_mark.png")
 
 ggplot()+
-  geom_raster(data=shrub.df, aes(y=y, x=x, fill=Cover))+
+  geom_raster(data=sage_oneyear, aes(y=Lat, x=Lon, fill=Cover))+
   theme_bw() +
   coord_equal() +
   scale_fill_gradient(high="white", low="black") +
-  xlab("Longitude") + ylab("Latitude")+ 
+  xlab("Longitude (m)") + ylab("Latitude (m)")+ 
   theme(
         panel.background=element_rect(fill="white"),
         panel.grid.major=element_blank(),

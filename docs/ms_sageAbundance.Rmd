@@ -43,7 +43,7 @@ opts_chunk$set(dev='pdf')
 \begin{centering}
 \textbf{\large{A spatio-temporal modeling framework for forecasting climate change impacts on plant populations over large spatial extents}}
 
-\textsc{\small{Andrew T. Tredennick\footnote{Corresponding author: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4}, Cameron L. Aldridge\textsuperscript{5}, Collin G. Homer\textsuperscript{6}, Andrew Kleinhesselink\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
+\textsc{\small{Andrew T. Tredennick\footnote{Corresponding author: atredenn@gmail.com}\textsuperscript{1}, Mevin B. Hooten\textsuperscript{2,3,4}, Cameron L. Aldridge\textsuperscript{5}, Collin G. Homer\textsuperscript{6}, Andrew R. Kleinhesselink\textsuperscript{1}, and Peter B. Adler\textsuperscript{1}}}
 
 \textit{\small{\textsuperscript{1}Department of Wildland Resources and the Ecology Center, 5230 Old Main Hill, Utah State University, Logan, Utah 84322 USA}} \\
 \textit{\small{\textsuperscript{2}U.S. Geological Survey, Colorado Cooperative Fish and Wildlife Research Unit, Colorado State University, Fort Collins, CO 80523 USA}} \\
@@ -383,7 +383,7 @@ RCP 8.5 & 4.79\textdegree & 11.0\%\tabularnewline
 
 Figures
 -------
-```{r figure_1_alt,dependson="plot-options", fig.cap="Location of the 2.5 $\\times$ 5 kilometer study area in southwestern Wyoming and a snapshot of the percent cover data in 1984.", fig.height=6, eval=T}
+```{r figure_1_alt,dependson="plot-options", fig.cap="Location of the 2.5 $\\times$ 5 kilometer study area in southwestern Wyoming (black rectangle) and a snapshot of the percent cover data in 1984 (detailed inset). Scale bar is relevant for US map only; refer to axes labels on the detailed inset of sagebrush percent cover for scale of the study area.", fig.height=6, eval=T}
 library(png)
 library(grid)
 img <- readPNG("components/figure/studyarea_map.png")
