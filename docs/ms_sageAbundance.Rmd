@@ -79,7 +79,7 @@ Population models are ideally suited for meeting such a challenge because they a
 However, inference from population models is typically limited to small spatial extents because the data required is difficult to collect across broad species ranges.
 Indeed, almost every study of plant population dynamics relies on demographic observations recorded at the meter to sub-meter scale [see, e.g., @Salguero-Gomez2015].
 Local-scale demographic data make building population projection models an easy task [@Ellner2006; @Rees2009; @Adler2012], but it is very difficult to extrapolate small-scale studies to large spatial extents with any certainty because the data likely only represent a small subset of parameter space and environmental conditions [@Freckleton2011; @Queenborough2011].
-Thus, the real challenge is not to simply make population forecasts, but to do so at spatial scales relevant to policy and management decisions [@Queenborough2011; @Tredennick2015].
+Thus, the real challenge is not to simply make population forecasts, but to do so at spatial scales relevant to policy and management decisions [@Queenborough2011].
 
 The ideal tool for forecasting future population states under climate change would be a large-scale dynamic population model [@Schurr2012a; @Merow2014]; however, developing useful models at this scale has been limited by the lack of time series data at large spatial extents and the lack of statistical machinary needed to fit high-dimensional spatial models.
 Fortunately, new advances in remote sensing and statistics now allow us to overcome both of these limitations.
@@ -122,7 +122,7 @@ The regression tree model was further validated using another 500 field observat
 To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images. 
 This resulted in an annual time series of sagebrush cover at 30 meter resolution from 1984 to 2011.
 In this dataset, values represent the percentage of a 30 $\times$ 30 meter pixel covered by sagebrush.
-In our study, we focused on a 5,070 $\times$ 2,430 meter subset totaling 13,689 30 $\times$ 30 meter pixels each year (Figure 1).
+In our study, we focused on a 5,070 $\times$ 2,430 meter subset totaling 13,689 30 $\times$ 30 meter pixels each year (Fig. 1).
 Thus, the full dataset contains 369,603 observations consisting of 27 year-to-year transitions (27 years $\times$ 13,689 pixels).
 
 #### Climate covariates
@@ -133,7 +133,7 @@ We relied on weather data for the centroid of our study area.
 We calculated five climate variables from the Daymet data for the time period coinciding with our remotely sensed data (1984 to 2011).
 
 We narrowed our focus to climate covariates we know are important for sagebrush and that could be calculated from general circulation model projections.
-The five climate variables in our population model are: (1) "water year" precipitation (*description*) for year \emph{t} (*lagPpt*), (2) year \emph{t} fall through summer precipitation (*ppt2*), (3) year \emph{t}-1 fall through summer precipitation (*ppt1*), (4) year \emph{t} average spring temperature (*TmeanSpr2*), and (5) year \emph{t}-1 average spring temperature (*TmeanSpr1*).
+The five climate variables in our population model are: (1) "water year" precipitation (*description*) for year \emph{t}-1 (*lagPpt*), (2) year \emph{t}-1 fall through summer precipitation (*ppt2*), (3) year \emph{t}-2 fall through summer precipitation (*ppt1*), (4) year \emph{t}-1 average spring temperature (*TmeanSpr2*), and (5) year \emph{t}-2 average spring temperature (*TmeanSpr1*), where *t-1* to *t* is the transition of interest.
 We selected these variables based on previous studies (see *Introduction*), even though not all emerge as important predictors in our model.
 To identify top covariates, we could have applied a variety of model selection techniques [@Hooten2015], but we avoid model selection here to maximize focus on the general approach.
 
@@ -181,6 +181,8 @@ The intercept, $\beta_{0,t}$, was allowed to vary through time so that climate v
 We used a Poisson likelihood because integer percent cover values in the sagebrush data product can be considered a form of count data.
 We also evaluated a negative binomial model, but found little evidence for overdispersion beyond what our model was already accomodating via the spatial random effects ($\boldsymbol{\eta}$). There was no evidence of zero-inflation in our data, but see below (*Accomodating zeros*) for how we dealt with the small number of zero percent cover observations.
 
+The spatial random effect ($\boldsymbol{\eta}$) accounts for spatial autocorrelation among pixel that occur closely in space.
+Thus, $\boldsymbol{\eta}$ acts as an offset on the intercept ($\beta_{0,t}$) that essentially creates a spatial field that defines how pixels differ from the mean, on average, in space (e.g., areas of perennially low or high cover, relative to average cover).
 Fitting the model with a spatial random effect ($\eta$) is computationally demanding when a large number of observations are considered.
 This is due to the required calculations of the resulting covariance matrices, which increase as a cubic function of the number of locations [@Wikle2010].
 Key to our approach is a dimension reduction strategy that greatly reduces the number of parameters needed to be estimated to account for spatial variation.
@@ -220,17 +222,22 @@ w_{s,m} &= \text{exp}\left(\frac{-d_{s,m}}{\sigma}\right)
 
 where $d_{s,m}$ is the Euclidean distance between the centroid of sample cell \emph{s} and the location of knot \emph{m}, and $\sigma$ is the kernel bandwidth.
 It is possible through exhaustive model selection and fitting to determine the optimal form of the kernel and to estimate optimal values for $\sigma$ [@Higdon2002; @Hooten2015].
-However, given the relative size of our dataset and computational limitations, we defined kernels around 121 knots (Fig. B2) whose nearest neighbor distances are approximately equal to the range of spatial dependence in residuals from a simple GLM fit without climate covariates and the spatial random effect (Appendix B). The Bayesian posterior distribution can be expressed as
+However, given the relative size of our dataset and computational limitations, we defined kernels around 200 knots (Fig. B2) whose nearest neighbor distances are approximately equal to the range of spatial dependence in residuals from a simple GLM fit without climate covariates and the spatial random effect (~500 meters; Appendix B).
+An infinite number of knots would result in a perfectly accurate representation of the spatial process and covariance model.
+Since using an infinite number of knots is not possible, any use of the dimension reduction technique is an approximation, where the accuracy increases with the number of knots.
+Given the tradeoff between knot number and computation time, we chose to base our knot number on the spatial dependence as described above.
+
+The Bayesian posterior distribution of our spatio-temporal model can be expressed as
 
 \vspace{-4em}
 \begin{align}
 [\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2 | \textbf{y}] &\propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \beta_{0,t}, \beta_{1}, \boldsymbol{\gamma},\boldsymbol{\alpha}] [\beta_{0,t}|\bar{\beta_{0}}, \sigma_{\beta_{0}}^2] \right) \times \\
-&\left(\prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2]\right)[\bar{\beta_{0}}][\beta_{1}][\boldsymbol{\gamma}][\sigma_{\beta_{0}}^2][\sigma_{\eta}^2].
+&\left(\prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2]\right)[\bar{\beta_{0}}][\beta_{1}][\boldsymbol{\gamma}][\sigma_{\beta_{0}}^2][\sigma_{\eta}^2]. \nonumber
 \end{align}
 \vspace{-4em}
 
 ### Accomodating zeros
-Our process model (Eq. 2) includes a log transformation of the observations ($\text{log}(y_{t-1}$). 
+Our process model (Eq. 2) includes a log transformation of the observations ($\text{log}(y_{t-1}$)). 
 Thus, our model does not accomodate zeros. 
 Fortunately, we had very few instances where pixels went had 0% cover at time *t-1* (*N* = 47, which is 0.01% of the data set). 
 Thus, we excluded those pixels from the model fitting process. 
@@ -297,22 +304,22 @@ This result reflects the positive effect of precipitation on sagebrush cover cha
 Discussion
 -----------
 Landscape-scale population models for plant species have been elusive and challenging to implement [@Schurr2012a; @Merow2014].
-Yet, the need to forecast population responses to climate change over large spatial extents is clear, as demonstrated by the wide application of species distribution models [see @Clark2014].
+Yet, the need to forecast population responses to climate change over large spatial extents is clear, as demonstrated by the wide application of species distribution models [e.g., @Clark2014].
 We introduced a new statistical approach to modeling plant populations that overcomes two major hurdles for spatially-explicit population models.
-First, we used high resolution species-specific remote sensing data as a response variable.
-Thus, we had a spatially-continuous data product of sagebrush abundance over a large spatial extent, meaning we could fit a model at the same spatial resolution and extent as the data. 
+First, we used moderate resolution species-specific estimates of sagebrush percent cover estimated from remote sensing data as a response variable.
+Thus, we were able to fit a dynamic population model over a large spatial extent.
 In so doing we, overcame a major limitation of most population models that are fit using detailed data from a single location.
 Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we employed a dimension reduction strategy that accounted for spatial autocorrelation while also allowing for feasible computational time in model fitting.
 Accounting for spatial autocorrelation in this large dataset allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. 
 The spatial covariance structure also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (i.e. within the study region; Figs. 4,5).
 
-The amount of precipitation in the previous year (*pptLag* in our model) emerged as a strong predictor of sagebrush cover change (Fig. 2), which agrees with previous research showing that wetter winters are correlated with greater stem growth in sagebrush [@Poore2009; @Apodaca2013]. 
-The posterior distribution for the effect of spring temperature on sagebrush cover broadly overlapped zero but was slightly positive (Fig. 2).  
-Warmer spring temperatures may enhance sagebrush growth in colder climates by advancing the date of snowmelt and increasing the length of the growing season [@Perfors2003; @Harte2015].  
+The amount of precipitation in the previous year (*pptLag* in our model) emerged as a strong predictor of sagebrush cover change (Fig. 3), which agrees with previous research showing that wetter winters are correlated with greater stem growth in sagebrush [@Poore2009; @Apodaca2013]. 
+The posterior distribution for the effect of spring temperature on sagebrush cover broadly overlapped zero but was slightly positive (Fig. 3).
+Warmer spring temperatures may enhance sagebrush growth in colder climates by advancing the date of snowmelt and increasing the length of the growing season [@Perfors2003; @Harte2015].
 As seen when comparing our temporally-explicit forecasts (Fig. 6) to climate projections (Fig. 2), it also appears that our forecasts were driven by the weak, but positive, response to temperature. 
 
-As expected given the relatively weak climate effects in this study area, our model projects only small changes in sagebrush cover in this area with future climate change. 
-Under all RCP scenarios, our model projects modest increases in sagebrush cover (Figs. 4,5).
+Our model projects only small changes in sagebrush cover in this area with future climate change, which is expected since only precipitation in the previous year emerged as an important covariate (Fig. 3) and projections of future precipitation show only modest increases (Fig. 2).
+Under all RCP scenarios, our model projects modest increases in sagebrush cover (Figs. 5,6).
 The forecasted increases are primarily driven by a positive response to precipitation (Fig. 3), but weak effects of temperature also influenced results.
 A previous analysis of a different subset of the remote sensing data set we used made projections of sagebrush decline, on average, in the future [@Homer2015].
 The discrepancy between Homer et al.'s (2015) results and ours reflects a difference in the climate projections used for forecasting future changes rather than differences in our inference about how climate drives sagebrush cover change.
@@ -320,10 +327,17 @@ First, Homer et al. (2015) used downscaled IPCC projections that allowed for spa
 Therefore, Homer et al. (2015) did predict some pixel-level increases in sagebrush cover since each pixel was subject to its own regression between climate and cover.
 Second, like our study, Homer et al. (2015) found a generally positive relationship between pixel-level sagebrush cover and precipitation, but the climate scenario they chose resulted in a mean decrease in precipitation.
 Thus, the decline in precipitation led to a decline in sagebrush cover.
-Our current work shows that when multiple climate projections are considered, on average sagebrush cover is forecast to increase, but decreases are not outside the realm of our forecasts when all sources of uncertainty are considered (Fig. 5). 
+Our current work shows that when multiple climate projections are considered, on average sagebrush cover is forecast to increase, but decreases are not outside the realm of our forecasts when all sources of uncertainty are considered (Fig. 6).
+Lastly, Homer et al.'s (2015) analysis relied on pixel-level regressions of cover through time against climate covariates.
+Our current approach is fundamentally different in that we specifically model the impact of weather on year-to-year changes in sagebrush cover.
+Thus, our model captures the essential interaction point between populations and the interannual variation in weather that drives population dynamics.
 
-There is no clear answer to what climate model to use when making ecological forecasts. Much like weather forecasters [@Bauer2015], ecological forecasters may need to apply expert judgement to choose climate projections.
-If a certain GCM tends to better predict weather in a specific study area, then that GCM may be given more weight than others.
+As mentioned above, one of the main differences between our current work and that of Homer et al. (2015) is our choice of climate projections.
+Weather projections from GCMs differ because each model incorporates processes and feedbacks in different ways [@Flato2013].
+These structural differences among GMCs can lead to divergent weather forecasts for specific regions, even if the GCMs converge on projections at the global scale [@Flato2013].
+Thus, there is no clear answer to what climate model to use when making ecological forecasts at the regional scale.
+Much like weather forecasters [@Bauer2015], ecological forecasters may need to apply expert judgement to choose climate projections.
+If a certain GCM tends to better predict weather in a specific study area [e.g., @Rupp2013], then that GCM may be given more weight than others.
 Extensions of these ideas are the subject of ongoing research.
 
 Several *a priori* modeling decisions determined the spatial extent and resolution of our results. 
@@ -339,11 +353,15 @@ Our spatial extent and resolution also impacted our incorporation of climate cov
 We did not downscale Daymet data to match the spatial resolution of the sagebrush data.
 Thus, in each year all pixels share the same climate covariates.
 This is a potential limitation of our study, and could explain the weak effect of climate covariates that we observed (Fig. 3).
-Future studies could examine lower spatial resolutions and larger spatial extents to facilitate the use of spatially-explicit climate covariates that match the resolution of the percent cover data.
-It would also be possible to include relevant abiotic data layers as predictors when fitting models at larger spatial extents where variation in spatial covariates like soil type, slope, and aspect may play important roles.
+We also did not allow for the possibility that different parts of our study area would respond to climate in different ways.
+This would require spatially-varying climate effects that substantially increase computational time.
+However, in some case, for example over very large regions, allowing the effect of climate to vary over space will be important.
+@Conn2015 provide examples of how such spatiotemporal interactions can be included in abundance models.
+Future studies could examine lower spatial resolutions and larger spatial extents to facilitate the use of spatially-explicit and spatially-varying climate covariates that match the resolution of the percent cover data.
+It is also possible to include relevant abiotic data layers as predictors when fitting models at larger spatial extents where variation in spatial covariates like soil type, slope, and aspect may play more important roles than we observed in our study area.
 
-While we presented projections for sagebrush cover at the end of this century, one important feature of our aproach is that it could also produce short-term forecasts for sagebrush cover as well.
-For instance this apprach could be used to model the effects of a multi-year regional drought on this species (cite Debinski et al. 2010).
+While we presented projections for sagebrush cover at the end of this century, one important feature of our approach is that it could also produce short-term forecasts for sagebrush cover.
+For example, our approach could be used to model the effects of a multi-year regional drought on this species [@Debinski2010].
 Validating spatial population models against short-term predictions would give modelers a way to assess the long-term forecasts produced by the model.
 It would also provide opportunities for refinement of the model itself.
 This cycle of prediction, validation and refinement is missing from most population-level forecasts of the effects of climate change currently produced [@Petchey2015].   
@@ -352,7 +370,7 @@ Conclusion
 ----------
 We have introduced a new approach to fitting and simulating population models at large spatial extents with plant population data derived from state of the art remote sensing.
 As more species-level remote sensing datasets become available and computing power increases this approach will be applicable to a wider number of species and even larger spatial extents.
-Future modeling could include the effects of non-climate drivers--including the effects of species interactions and disturbance [@Clark2014].
+Future modeling could include the effects of non-climate drivers -- including the effects of species interactions and disturbance [@Clark2014].
 For sagebrush, including fire and competition with non-native annual grasses in the model may be especially important for a complete assesment of the effects of climate change [@Bradford2006].
 Fortunately, our spatio-temporal modeling framework could easily be extended to model additional species and dynamic processes as the data become availabe.
 The approach we have developed here fills an important gap in spatial scales between species distribution models and local-scale demographic population models.
@@ -360,7 +378,7 @@ The approach we have developed here fills an important gap in spatial scales bet
 
 Acknowledgments
 ---------------
-This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-1054040). ATT was supported by an NSF Postdoctoral Research Fellowship in Biology (DBI-1400370) and AK was supported by an NSF Graduate Research Fellowship. Additional support came from the Utah Agricultural Experiment Station, Utah State University, and this article is approved as journal paper number XXXX. We are grateful to Debra K. Meyer at USGS EROS for exctracting the data set used in this paper. Compute, storage and other resources from the Division of Research Computing in the Office of Research and Graduate Studies at Utah State University are gratefully acknowledged. We acknowledge the World Climate Research Programme's Working Group on Coupled Modelling, which is responsible for CMIP, and we thank the climate modeling groups (listed in Table X1) for producing and making available their model output. For CMIP the U.S. Department of Energy's Program for Climate Model Diagnosis and Intercomparison provides coordinating support and led development of software infrastructure in partnership with the Global Organization for Earth System Science Portals. Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. government. David T. Iles, Eric LaMalfa, and Rebecca Mann participated in project conception as part of the distributed graduate seminar and provided comments that improved the manuscript.
+This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-1054040). David T. Iles, Eric LaMalfa, and Rebecca Mann participated in project conception as part of the distributed graduate seminar and provided comments that improved the manuscript. ATT was supported by an NSF Postdoctoral Research Fellowship in Biology (DBI-1400370) and AK was supported by an NSF Graduate Research Fellowship. Additional support came from the Utah Agricultural Experiment Station, Utah State University, and this article is approved as journal paper number 8856. We are grateful to Debra K. Meyer at USGS EROS for exctracting the data set used in this paper. Compute, storage and other resources from the Division of Research Computing in the Office of Research and Graduate Studies at Utah State University are gratefully acknowledged. We acknowledge the World Climate Research Programme's Working Group on Coupled Modelling, which is responsible for CMIP, and we thank the climate modeling groups (listed in Table A1) for producing and making available their model output. For CMIP the U.S. Department of Energy's Program for Climate Model Diagnosis and Intercomparison provides coordinating support and led development of software infrastructure in partnership with the Global Organization for Earth System Science Portals. Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. government. 
 
 \pagebreak{}
 
@@ -405,7 +423,7 @@ img <- readPNG("components/figure/weather_projections.png")
 grid.raster(img)
 ```
 
-```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \\emph{t} (pptLag) is important (shown in dark grey; 90% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \\emph{t}; TmeanSpr1 = year \\emph{t-1} average spring temperature; ppt2 = year \\emph{t} fall through summer precipitation; TmeanSpr2 = year \\emph{t} average spring temperature; ppt1 = year \\emph{t-1} fall through summer precipitation.", fig.height=4, eval=T}
+```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \\emph{t} (pptLag) is important (shown in dark grey; 90% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \\emph{t-1}; TmeanSpr1 = year \\emph{t-2} average spring temperature; ppt2 = year \\emph{t-1} fall through summer precipitation; TmeanSpr2 = year \\emph{t-1} average spring temperature; ppt1 = year \\emph{t-2} fall through summer precipitation.", fig.height=4, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/post_climate_covariates.png")
