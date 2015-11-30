@@ -105,9 +105,10 @@ x.max=max(Coords[,1])
 y.min=min(Coords[,2])
 y.max=max(Coords[,2])
 
-splits <- 10
-X=x.min+(x.max-x.min)/splits*c(0:splits)
-Y=y.min+(y.max-y.min)/splits*c(splits:0)
+splits.x <- round((x.max-x.min)/250)
+splits.y <- round((y.max-y.min)/250)
+X=x.min+(x.max-x.min)/splits.x*c(0:splits.x)
+Y=y.min+(y.max-y.min)/splits.y*c(splits.y:0)
 XY=expand.grid(x=X,y=Y)
 
 Knots=SpatialPoints(coords=XY,proj4string=CRS(proj4string(shrub.ras)))
@@ -118,8 +119,8 @@ my.buffer=150000
 Which.include=which(Distances<my.buffer)
 # save(Knots,file="BOSS_Knots_SP.Rda")
 Knot.cell.distances=gDistance(Knots[Which.include,],obsPts,byid=TRUE)
-diff.x=(x.max-x.min)/splits #normally 6
-diff.y=(y.max-y.min)/splits #normally 6
+diff.x=(x.max-x.min)/splits.x #normally 6
+diff.y=(y.max-y.min)/splits.y #normally 6
 test=(diff.x+diff.y)/2
 sigma=range_parameter
 
@@ -131,7 +132,7 @@ ggplot(data=m, aes(x=Var1, y=Var2))+
 
 setwd("~/Repos/sageAbundance/R")
 source("Conn_util_funcs.R")
-Knot.Adj=rect_adj(splits+1,splits+1)
+Knot.Adj=rect_adj(splits.x+1,splits.y+1)
 Knot.Adj=Knot.Adj[Which.include,Which.include]
 Q.knot=-Knot.Adj
 diag(Q.knot)=apply(Knot.Adj,2,'sum')
