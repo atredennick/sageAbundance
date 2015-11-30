@@ -54,12 +54,12 @@ colnames(out.mcmc) <- c("Iteration", "Parameter", "value", "mcmc_iter", "Chain")
 attributes(out.mcmc)$nChains <- length(unique(out.mcmc$Chain))
 attributes(out.mcmc)$nIterations <- length(unique(out.mcmc$Iteration))
 rhats <- get_rhats(out.mcmc)
-rhats$facet_id <- rep(c(1,2), each=nrow(rhats)/2)
+rhats$facet_id <- rep(c(1,2,3,4), each=nrow(rhats)/4)
 
 ggplot(rhats, aes(x=Rhat, y=Parameter))+
   geom_point()+
   geom_vline(aes(xintercept=1.1), col="red")+
-  facet_wrap("facet_id", ncol=2, scales="free_y")+
+  facet_wrap("facet_id", ncol=4, scales="free_y")+
   xlim(min(rhats$Rhat, na.rm = TRUE), 1.5)+
   xlab(expression(hat("R"))) + 
   ggtitle("Potential Scale Reduction Factors")
