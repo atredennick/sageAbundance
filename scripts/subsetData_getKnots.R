@@ -13,9 +13,8 @@ library(plyr);     library(ggplot2)
 ####
 #### Bring in data
 ####
-setwd("/Users/atredenn/Dropbox/sageAbundance_data/")
-climD<-read.csv("./studyarea1/climate/DAYMET/FormattedClimate_WY_SA1.csv")
-rawD<-read.csv("./WY_SAGECoverData_V2check.csv")
+climD<-read.csv("../data/FormattedClimate_WY_SA1.csv")
+rawD<-read.csv("/Users/atredenn/Dropbox/sageAbundance_data/WY_SAGECoverData_V2check.csv")
 shrub.ras <- raster("/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea1/sage/ls3731_00sage_subset_est.img")
 
 # merge in climate data 
@@ -82,13 +81,15 @@ dat <- subset(resD, select = c("Lon", "Lat", "resid"))
 coordinates(dat) <- c("Lon", "Lat")
 varMod <- variogram(resid~1, data=dat, width=50)
 
-png("avgresidual_variogram_withrange_subset.png", width = 5, height = 5, 
+results_path <- "~/Repos/sageAbundance/results/"
+png(paste0(results_path,"avgresidual_variogram_withrange_subset.png"), width = 5, height = 5, 
     units = "in", res=200)
 plot(varMod$dist, varMod$gamma, ylim=c(0,max(varMod$gamma)), col="dodgerblue", 
      type="l", main="variogram of model residuals", xlab="distance (m)",
      ylab="semivariance")
 points(varMod$dist, varMod$gamma, ylim=c(0,max(varMod$gamma)), col="dodgerblue", pch=21, bg="white")
 abline(v = 500/3, lwd=3, lty=2)
+abline(v = 500, lwd=3, lty=1, col="darkred")
 dev.off()
 
 range_parameter <- round(500/3) #set to 1/3 of the spatial dependence in the residuals
@@ -164,8 +165,8 @@ tmp.theme=theme(axis.ticks = element_blank(), axis.text = element_blank(),
                 axis.title=element_text(size=14),text=element_text(size=16),
                 legend.text=element_text(size=12), legend.title=element_text(size=16))
 
-setwd("/Users/atredenn/Dropbox/sageAbundance_data/")
-png('SAGE_Grid_wKnots_subset.png', width=6, height=3, units = "in", res=200)
+# setwd("/Users/atredenn/Dropbox/sageAbundance_data/")
+png(paste0(results_path,'SAGE_Grid_wKnots_subset.png'), width=6, height=3, units = "in", res=200)
 g <- ggplot()+
   geom_raster(data=avgD, aes(x=Lon, y=Lat, z=cover, fill=cover))+
   geom_point(data=knotsD, aes(x,y), size=2, color="white")+

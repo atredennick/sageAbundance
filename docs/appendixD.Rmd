@@ -26,6 +26,6 @@ Appendix D: Posterior estimate of spatial random effects ($\boldsymbol{\eta}$)
 ```{r figure_D1,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=TRUE, echo=FALSE}
 library(png)
 library(grid)
-img <- readPNG("./components/spatialfield.png")
+img <- readPNG("../results/spatialfield.png")
 grid.raster(img)
 ```
