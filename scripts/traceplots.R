@@ -104,3 +104,5 @@ lc.save <- rbind(lc1, lc2, lc3)
 ####
 setwd("/Users/atredenn/Repos/sageAbundance/results/")
 saveRDS(lc.save, outmcmcfile)
+
+
