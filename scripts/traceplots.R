@@ -21,7 +21,7 @@ library(scales)
 ####
 ####  Read in MCMC chunks from server
 ####
-setwd("/Volumes/A02046115/sage/")
+setwd("/Volumes/A02046115/sage2/")
 maxiter <- 10
 longchain1 <- readRDS(paste0(filestart, "1_chain2.RDS"))
 for(i in 2:maxiter){
