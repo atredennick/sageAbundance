@@ -321,8 +321,15 @@ for(t in 1:time.steps){
   tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-  tmp.out[which(tmp.out>100)] <- mean(ex.mat[t-1,])
+  
+  #Colonization
+  zeros <- which(lagcover==0)
+  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+  colonizer.cover <- colonizers*avg.new.cover
+  tmp.out[zeros] <- colonizer.cover
+  
   ex.mat[t,] <- tmp.out
+  
 }
 
 obs.cover <- growD[,c("Year","Cover","ID")]
@@ -335,21 +342,20 @@ ex.melt <- ex.melt[with(ex.melt, order(year)), ]
 colnames(ex.melt) <- c("Year", "ID", "cover.pred")
 error.df <- merge(obs.cover, ex.melt)
 error.df$error <- with(error.df, Cover - cover.pred)
-rmse <- sqrt(mean(error.df$error^2))
-cor(error.df$Cover, error.df$cover.pred)
+insamp.rmse <- sqrt(mean(error.df$error^2))
+insamp.cor <- cor(error.df$Cover, error.df$cover.pred)
+out <- data.frame(insamp_rmse = insamp.rmse,
+                  insamp_cor = insamp.cor)
+write.csv(out, "../results/insample_error_cor.csv")
 
 # pred.cover <- melt(ex.mat)
 # plot(obs.cover$Cover, pred.cover$value, xlim=c(0,20), ylim=c(0,20))
 # abline(0,1, col="red")
-
-
-
 # brks <- 30
 # y <- hist(growD$Cover, freq=FALSE, breaks=brks)
 # yhat <- hist(pred.cover$value, freq=FALSE, breaks=brks)
 # hist_ydata <- data.frame(x = y$breaks, y=c(y$density,0))
 # hist_yhatdata <- data.frame(x = yhat$breaks, y=c(yhat$density,0))
-# 
 # ggplot()+
 #   geom_step(data=hist_ydata, aes(x=x, y=y), size=1.5)+
 #   geom_step(data=hist_yhatdata, aes(x=x, y=y), col="darkorange", size=1)+
@@ -364,14 +370,18 @@ cor(error.df$Cover, error.df$cover.pred)
 ####
 ####  Run climate simulations --------------------------------------------------
 ####
+##  This may take a while...
+##  Runs equilibrium simulations for each model and RCP scenario
+
 # Read in climate projected changes
-ppt_projs <- subset(read.csv("../data/precipitation_projections.csv"), 
+ppt_projs <- subset(read.csv("../data/precipitation_projections_bymodel.csv"), 
                     scenario!="rcp26" & season=="fall2spr")
-temp_projs <- subset(read.csv("../data/temperature_projections.csv"),
+temp_projs <- subset(read.csv("../data/temperature_projections_bymodel.csv"),
                      scenario!="rcp26" & season=="spring")
 projC<-data.frame("scenario"=c("rcp45","rcp60","rcp85"),
                   "deltaPpt"=1+ppt_projs$change,
-                  "deltaTspr"=temp_projs$change)
+                  "deltaTspr"=temp_projs$change,
+                  "model"=ppt_projs$model)
 mean_params <- ddply(outs, .(Parameter), summarise,
                      mean(value))
 alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
