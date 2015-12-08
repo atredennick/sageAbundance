@@ -22,8 +22,8 @@ rm(list=ls())
 datapath <- "../data/"
 knotpath <- "../results/"
 
-global_time_steps <- 100
-global_burnin <- 50
+global_time_steps <- 2000
+global_burnin <- 100
 
 
 ####
@@ -213,6 +213,7 @@ proj.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon,
                          RCP45=rcp_matrix[1,],
                          RCP60=rcp_matrix[2,],
                          RCP85=rcp_matrix[3,])
+colnames(proj.equil)[4:6] <- c("RCP 4.5", "RCP 6.0", "RCP 8.5")
 proj.equil2 <- melt(proj.equil, id.vars = c("Lon", "Lat"))
 
 # png("../results/climchange_small.png", width = 6, height=4.5, units = "in", res=150)
