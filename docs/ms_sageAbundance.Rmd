@@ -302,14 +302,10 @@ The generally increasing trend reflects the positive effect of precipitation on 
 
 Discussion
 -----------
-Landscape-scale population models for plant species have been elusive and challenging to implement [@Schurr2012a; @Merow2014].
-Yet, the need to forecast population responses to climate change over large spatial extents is clear, as demonstrated by the wide application of species distribution models [e.g., @Clark2014].
-We introduced a new statistical approach to modeling plant populations that overcomes two major hurdles for spatially-explicit population models.
-First, we used moderate resolution species-specific estimates of sagebrush percent cover estimated from remote sensing data as a response variable.
-Thus, we were able to fit a dynamic population model over a large spatial extent.
-In so doing we, overcame a major limitation of most population models that are fit using detailed data from a single location.
-Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we employed a dimension reduction strategy that accounted for spatial autocorrelation while also allowing for feasible computational time in model fitting.
-Accounting for spatial autocorrelation in this large dataset allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. 
+Despite the need to forecast population responses to climate change over large spatial extents is clear, as demonstrated by the wide application of species distribution models [e.g., @Clark2014], landscape-scale population models for plant species remain more concept than reality [@Schurr2012a; @Merow2014].
+Our approach for modeling plant populations overcomes two major hurdles for spatially-explicit population models.
+First, we used moderate resolution, remotely-sensed estimates of sagebrush percent cover as a response variable, enabling us to fit a dynamic population model over a large spatial extent. Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we fit the model using a dimension reduction strategy that accounted for spatial autocorrelation within a feasible computational time.
+Accounting for spatial autocorrelation allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. 
 The spatial covariance structure also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (i.e. within the study region; Figs. 4,5).
 
 The amount of precipitation in the previous year (*pptLag* in our model) emerged as a strong predictor of sagebrush cover change (Fig. 3), which agrees with previous research showing that wetter winters are correlated with greater stem growth in sagebrush [@Poore2009; @Apodaca2013]. 
@@ -317,8 +313,7 @@ The posterior distribution for the effect of spring temperature on sagebrush cov
 Warmer spring temperatures may enhance sagebrush growth in colder climates by advancing the date of snowmelt and increasing the length of the growing season [@Perfors2003; @Harte2015].
 As seen when comparing our temporally-explicit forecasts (Fig. 6) to climate projections (Fig. 2), it also appears that our forecasts were driven by the weak, but positive, response to temperature. 
 
-Our model projects only small changes in sagebrush cover in this area with future climate change, which is expected since only precipitation in the previous year emerged as an important covariate (Fig. 3) and projections of future precipitation show only modest increases (Fig. 2).
-Under all RCP scenarios, our model projects modest increases in sagebrush cover (Figs. 5,6).
+Our model projects only small changes in sagebrush cover in this area with future climate change. This result reflects the fact that only precipitation in the previous year emerged as an important covariate (Fig. 3) and projections of future precipitation show only modest increases (Fig. 2). Under all RCP scenarios, our model projects modest increases in sagebrush cover (Figs. 5,6).
 The forecasted increases are primarily driven by a positive response to precipitation (Fig. 3), but weak effects of temperature also influenced results.
 A previous analysis of a different subset of the remote sensing data set we used made projections of sagebrush decline, on average, in the future [@Homer2015].
 The discrepancy between Homer et al.'s (2015) results and ours reflects a difference in the climate projections used for forecasting future changes rather than differences in our inference about how climate drives sagebrush cover change.
@@ -333,8 +328,7 @@ Thus, our model captures the essential interaction point between populations and
 
 As mentioned above, one of the main differences between our current work and that of Homer et al. (2015) is our choice of climate projections.
 Weather projections from GCMs differ because each model incorporates processes and feedbacks in different ways [@Flato2013].
-These structural differences among GMCs can lead to divergent weather forecasts for specific regions, even if the GCMs converge on projections at the global scale [@Flato2013].
-Thus, there is no clear answer to what climate model to use when making ecological forecasts at the regional scale.
+These structural differences among GMCs can lead to divergent weather forecasts for specific regions, even if the GCMs converge on projections at the global scale [@Flato2013]. There is no clear answer to what climate model to use when making ecological forecasts at the regional scale.
 Much like weather forecasters [@Bauer2015], ecological forecasters may need to apply expert judgement to choose climate projections.
 If a certain GCM tends to better predict weather in a specific study area [e.g., @Rupp2013], then that GCM may be given more weight than others.
 Extensions of these ideas are the subject of ongoing research.
@@ -343,8 +337,7 @@ Several *a priori* modeling decisions determined the spatial extent and resoluti
 We focused the native spatial resolution of the remote sensing data ($30\times30$ meters). 
 This constrained the extent that we could reasonably model because of the computational challenges in using a massive spatial random effect. 
 Even with our dimension reduction technique modeling a larger area at this resolution would require a greater number of spatial knots, and computation time would increase substantially [@Wikle2010].
-In order to overcome this, future investigators modeling a larger spatial extent may need to aggregate their original remote-sensing time series data to a coarse spatial resoluation.
-This would allow them to model a much greater spatial extent with a similar number of knots and a similar amount of computation time.
+In order to overcome this, future investigators modeling a larger spatial extent may need to aggregate their original remote-sensing time series data to a coarse spatial resoluation. This would allow them to model a much greater spatial extent with a similar number of knots and a similar amount of computation time.
 A coarser scale model would lose some fine-scale detail but could be applied to a much larger area, potentially gaining some strength in estimating climate effects by spanning a greater range of climate variation.
 However, gains made by incorporating greater regional variability by modeling at a coarser resolution could be offset by the loss of information inherent when aggregating plant responses into larger and larger pixels.
 
@@ -377,7 +370,7 @@ The approach we have developed here fills an important gap in spatial scales bet
 
 Acknowledgments
 ---------------
-This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-1054040). David T. Iles, Eric LaMalfa, and Rebecca Mann participated in project conception as part of the distributed graduate seminar and provided comments that improved the manuscript. ATT was supported by an NSF Postdoctoral Research Fellowship in Biology (DBI-1400370) and AK was supported by an NSF Graduate Research Fellowship. Additional support came from the Utah Agricultural Experiment Station, Utah State University, and this article is approved as journal paper number 8856. We are grateful to Debra K. Meyer at USGS EROS for exctracting the data set used in this paper. Compute, storage and other resources from the Division of Research Computing in the Office of Research and Graduate Studies at Utah State University are gratefully acknowledged. We acknowledge the World Climate Research Programme's Working Group on Coupled Modelling, which is responsible for CMIP, and we thank the climate modeling groups (listed in Table A1) for producing and making available their model output. For CMIP the U.S. Department of Energy's Program for Climate Model Diagnosis and Intercomparison provides coordinating support and led development of software infrastructure in partnership with the Global Organization for Earth System Science Portals. Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. government. 
+This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-1054040). David T. Iles, Eric LaMalfa, and Rebecca Mann participated in project conception as part of the distributed graduate seminar and provided comments that improved the manuscript. ATT was supported by an NSF Postdoctoral Research Fellowship in Biology (DBI-1400370) and AK was supported by an NSF Graduate Research Fellowship. Additional support came from the Utah Agricultural Experiment Station, Utah State University, and this article is approved as journal paper number 8856. We are grateful to Debra K. Meyer at USGS EROS for extracting the data set used in this paper. Compute, storage and other resources from the Division of Research Computing in the Office of Research and Graduate Studies at Utah State University are gratefully acknowledged. We acknowledge the World Climate Research Programme's Working Group on Coupled Modelling, which is responsible for CMIP, and we thank the climate modeling groups (listed in Table A1) for producing and making available their model output. For CMIP the U.S. Department of Energy's Program for Climate Model Diagnosis and Intercomparison provides coordinating support and led development of software infrastructure in partnership with the Global Organization for Earth System Science Portals. Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. government. 
 
 \pagebreak{}
 
