@@ -374,176 +374,176 @@ write.csv(out, "../results/insample_error_cor.csv")
 ##  Runs equilibrium simulations for each model and RCP scenario
 
 # Read in climate projected changes
-ppt_projs <- subset(read.csv("../data/precipitation_projections_bymodel.csv"), 
-                    scenario!="rcp26" & season=="fall2spr")
-temp_projs <- subset(read.csv("../data/temperature_projections_bymodel.csv"),
-                     scenario!="rcp26" & season=="spring")
-projC<-data.frame("scenario"=c("rcp45","rcp60","rcp85"),
-                  "deltaPpt"=1+ppt_projs$change,
-                  "deltaTspr"=temp_projs$change,
-                  "model"=ppt_projs$model)
-mean_params <- ddply(outs, .(Parameter), summarise,
-                     mean(value))
-alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
-betas <- mean_params[grep("beta", mean_params$Parameter),"..1"][2:6]
-eta <- K%*%alphas
-time.steps <- 2000
-burn.in <- 100
-
-p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-clim_avg <- apply(X = p.climD, MARGIN = 2, FUN = mean)
-clim_sd <- apply(X = p.climD, MARGIN = 2, FUN = sd)
-
-
-
-pixels <- nrow(subset(growD, Year==1985))
-ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
-ex.mat[1,] <- 10
-p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[1,2],dim(climD)[1],2)
-p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[1,3],dim(climD)[1],2)
-X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-
-# Now scale based on perturbed or regular data, depending on scenario
-X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
-X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
-X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
-X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
-X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
-for(t in 2:time.steps){
-  Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
-  dens.dep[which(dens.dep==-Inf)] <- 0
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
-  tmp.mu <- exp(tmp.mu + eta)
-  tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-  
-  #Colonization
-  zeros <- which(ex.mat[t-1,]==0)
-  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
-  colonizer.cover <- colonizers*avg.new.cover
-  tmp.out[zeros] <- colonizer.cover
-  
-  ex.mat[t,] <- tmp.out
-}
-rcp45 <- ex.mat[(burn.in+1):time.steps, ]
-
-
-pixels <- nrow(subset(growD, Year==1985))
-ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
-ex.mat[1,] <- 10
-p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[2,2],dim(climD)[1],2)
-p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[2,3],dim(climD)[1],2)
-X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-# Now scale based on perturbed or regular data, depending on scenario
-X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
-X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
-X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
-X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
-X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
-for(t in 2:time.steps){
-  Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
-  dens.dep[which(dens.dep==-Inf)] <- 0
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
-  tmp.mu <- exp(tmp.mu + eta)
-  tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-  
-  #Colonization
-  zeros <- which(ex.mat[t-1,]==0)
-  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
-  colonizer.cover <- colonizers*avg.new.cover
-  tmp.out[zeros] <- colonizer.cover
-  
-  ex.mat[t,] <- tmp.out
-}
-rcp60 <- ex.mat[(burn.in+1):time.steps, ]
-
-
-pixels <- nrow(subset(growD, Year==1985))
-ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
-ex.mat[1,] <- 10
-p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[3,2],dim(climD)[1],2)
-p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[3,3],dim(climD)[1],2)
-X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
-# Now scale based on perturbed or regular data, depending on scenario
-X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
-X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
-X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
-X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
-X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
-for(t in 2:time.steps){
-  Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
-  dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
-  dens.dep[which(dens.dep==-Inf)] <- 0
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
-  tmp.mu <- exp(tmp.mu + eta)
-  tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
-  
-  #Colonization
-  zeros <- which(ex.mat[t-1,]==0)
-  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
-  colonizer.cover <- colonizers*avg.new.cover
-  tmp.out[zeros] <- colonizer.cover
-  
-  ex.mat[t,] <- tmp.out
-}
-rcp85 <- ex.mat[(burn.in+1):time.steps, ]
-
-
-####
-####  Plot climate change results
-####
-all.sims <- data.frame(pixel=c(1:length(eq.pixels)),
-                       Baseline=eq.pixels,
-                       RCP45=colMeans(rcp45),
-                       RCP60=colMeans(rcp60),
-                       RCP85=colMeans(rcp85))
-all4plot <- melt(all.sims, id.vars = "pixel")
-
-
-
-
-####
-####  Plot spatial projections for RCP scenarios
-####
-proj.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
-                         Lat=subset(growD, Year==1985)$Lat,
-                         CURRENT=eq.pixels,
-                         RCP45=colMeans(rcp45),
-                         RCP60=colMeans(rcp60),
-                         RCP85=colMeans(rcp85))
-proj.equil2 <- melt(proj.equil, id.vars = c("Lon", "Lat"))
-
-# png("../results/climchange_small.png", width = 6, height=4.5, units = "in", res=150)
-ggplot(proj.equil2, aes(x=Lon, y=Lat))+
-  geom_raster(aes(z=value, fill=value))+
-  scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
-  facet_wrap("variable", ncol=1)+
-  coord_equal()+
-  tmp.theme+
-  theme(strip.background=element_rect(fill="white"))
-ggsave("../results/clim_change_mean_spatial.png", height=8, width=4)
-
-# Make plot of differences to CURRENT
-proj.cast <- dcast(proj.equil2, Lon+Lat~variable)
-projs.only <- proj.cast[,which(colnames(proj.cast) %in% c("RCP45", "RCP60", "RCP85"))]
-diffs.only <- projs.only - proj.cast$CURRENT
-diffs.only$Lon <- proj.cast$Lon
-diffs.only$Lat <- proj.cast$Lat
-diffs.df <- melt(diffs.only, id.vars = c("Lon", "Lat"))
-etaPalette <- colorRampPalette(rev(brewer.pal(11, "RdBu")))
-ggplot(diffs.df, aes(x=Lon, y=Lat))+
-  geom_raster(aes(z=value, fill=value))+
-  scale_fill_gradientn(colours=etaPalette(100), name="% Cover",
-                       limits=c(-7, 7))+
-  facet_wrap("variable", ncol=1)+
-  coord_equal()+
-  tmp.theme+
-  theme(strip.background=element_rect(fill="white"))
-ggsave("../results/clim_change_diffs_spatial.png", height=6, width=4)
+# ppt_projs <- subset(read.csv("../data/precipitation_projections_bymodel.csv"), 
+#                     scenario!="rcp26" & season=="fall2spr")
+# temp_projs <- subset(read.csv("../data/temperature_projections_bymodel.csv"),
+#                      scenario!="rcp26" & season=="spring")
+# projC<-data.frame("scenario"=c("rcp45","rcp60","rcp85"),
+#                   "deltaPpt"=1+ppt_projs$change,
+#                   "deltaTspr"=temp_projs$change,
+#                   "model"=ppt_projs$model)
+# mean_params <- ddply(outs, .(Parameter), summarise,
+#                      mean(value))
+# alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
+# betas <- mean_params[grep("beta", mean_params$Parameter),"..1"][2:6]
+# eta <- K%*%alphas
+# time.steps <- 2000
+# burn.in <- 100
+# 
+# p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+# clim_avg <- apply(X = p.climD, MARGIN = 2, FUN = mean)
+# clim_sd <- apply(X = p.climD, MARGIN = 2, FUN = sd)
+# 
+# 
+# 
+# pixels <- nrow(subset(growD, Year==1985))
+# ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
+# ex.mat[1,] <- 10
+# p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+# p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[1,2],dim(climD)[1],2)
+# p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[1,3],dim(climD)[1],2)
+# X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+# 
+# # Now scale based on perturbed or regular data, depending on scenario
+# X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+# X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+# X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+# X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+# X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
+# for(t in 2:time.steps){
+#   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
+#   dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
+#   dens.dep[which(dens.dep==-Inf)] <- 0
+#   tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
+#   tmp.mu <- exp(tmp.mu + eta)
+#   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
+#   
+#   #Colonization
+#   zeros <- which(ex.mat[t-1,]==0)
+#   colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+#   colonizer.cover <- colonizers*avg.new.cover
+#   tmp.out[zeros] <- colonizer.cover
+#   
+#   ex.mat[t,] <- tmp.out
+# }
+# rcp45 <- ex.mat[(burn.in+1):time.steps, ]
+# 
+# 
+# pixels <- nrow(subset(growD, Year==1985))
+# ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
+# ex.mat[1,] <- 10
+# p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+# p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[2,2],dim(climD)[1],2)
+# p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[2,3],dim(climD)[1],2)
+# X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+# # Now scale based on perturbed or regular data, depending on scenario
+# X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+# X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+# X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+# X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+# X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
+# for(t in 2:time.steps){
+#   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
+#   dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
+#   dens.dep[which(dens.dep==-Inf)] <- 0
+#   tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
+#   tmp.mu <- exp(tmp.mu + eta)
+#   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
+#   
+#   #Colonization
+#   zeros <- which(ex.mat[t-1,]==0)
+#   colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+#   colonizer.cover <- colonizers*avg.new.cover
+#   tmp.out[zeros] <- colonizer.cover
+#   
+#   ex.mat[t,] <- tmp.out
+# }
+# rcp60 <- ex.mat[(burn.in+1):time.steps, ]
+# 
+# 
+# pixels <- nrow(subset(growD, Year==1985))
+# ex.mat <- matrix(NA,nrow=time.steps,ncol=pixels)
+# ex.mat[1,] <- 10
+# p.climD<-climD[climD$year %in% unique(growD$Year),c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+# p.climD[,c(2:3)]<-p.climD[,c(2:3)]*matrix(projC[3,2],dim(climD)[1],2)
+# p.climD[,c(4:5)]<-p.climD[,c(4:5)]+matrix(projC[3,3],dim(climD)[1],2)
+# X_sim = p.climD[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
+# # Now scale based on perturbed or regular data, depending on scenario
+# X_sim["pptLag"] <- (X_sim["pptLag"] - clim_avg["pptLag"])/clim_sd["pptLag"]
+# X_sim["ppt1"] <- (X_sim["ppt1"] - clim_avg["ppt1"])/clim_sd["ppt1"]
+# X_sim["ppt2"] <- (X_sim["ppt2"] - clim_avg["ppt2"])/clim_sd["ppt2"]
+# X_sim["TmeanSpr1"] <- (X_sim["TmeanSpr1"] - clim_avg["TmeanSpr1"])/clim_sd["TmeanSpr1"]
+# X_sim["TmeanSpr2"] <- (X_sim["TmeanSpr2"] - clim_avg["TmeanSpr2"])/clim_sd["TmeanSpr2"]
+# for(t in 2:time.steps){
+#   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
+#   dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(ex.mat[t-1,])
+#   dens.dep[which(dens.dep==-Inf)] <- 0
+#   tmp.mu <- mean_params[mean_params$Parameter=="int_mu","..1"] + dens.dep + sum(betas*Xtmp)
+#   tmp.mu <- exp(tmp.mu + eta)
+#   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
+#   
+#   #Colonization
+#   zeros <- which(ex.mat[t-1,]==0)
+#   colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+#   colonizer.cover <- colonizers*avg.new.cover
+#   tmp.out[zeros] <- colonizer.cover
+#   
+#   ex.mat[t,] <- tmp.out
+# }
+# rcp85 <- ex.mat[(burn.in+1):time.steps, ]
+# 
+# 
+# ####
+# ####  Plot climate change results
+# ####
+# all.sims <- data.frame(pixel=c(1:length(eq.pixels)),
+#                        Baseline=eq.pixels,
+#                        RCP45=colMeans(rcp45),
+#                        RCP60=colMeans(rcp60),
+#                        RCP85=colMeans(rcp85))
+# all4plot <- melt(all.sims, id.vars = "pixel")
+# 
+# 
+# 
+# 
+# ####
+# ####  Plot spatial projections for RCP scenarios
+# ####
+# proj.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
+#                          Lat=subset(growD, Year==1985)$Lat,
+#                          CURRENT=eq.pixels,
+#                          RCP45=colMeans(rcp45),
+#                          RCP60=colMeans(rcp60),
+#                          RCP85=colMeans(rcp85))
+# proj.equil2 <- melt(proj.equil, id.vars = c("Lon", "Lat"))
+# 
+# # png("../results/climchange_small.png", width = 6, height=4.5, units = "in", res=150)
+# ggplot(proj.equil2, aes(x=Lon, y=Lat))+
+#   geom_raster(aes(z=value, fill=value))+
+#   scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
+#   facet_wrap("variable", ncol=1)+
+#   coord_equal()+
+#   tmp.theme+
+#   theme(strip.background=element_rect(fill="white"))
+# ggsave("../results/clim_change_mean_spatial.png", height=8, width=4)
+# 
+# # Make plot of differences to CURRENT
+# proj.cast <- dcast(proj.equil2, Lon+Lat~variable)
+# projs.only <- proj.cast[,which(colnames(proj.cast) %in% c("RCP45", "RCP60", "RCP85"))]
+# diffs.only <- projs.only - proj.cast$CURRENT
+# diffs.only$Lon <- proj.cast$Lon
+# diffs.only$Lat <- proj.cast$Lat
+# diffs.df <- melt(diffs.only, id.vars = c("Lon", "Lat"))
+# etaPalette <- colorRampPalette(rev(brewer.pal(11, "RdBu")))
+# ggplot(diffs.df, aes(x=Lon, y=Lat))+
+#   geom_raster(aes(z=value, fill=value))+
+#   scale_fill_gradientn(colours=etaPalette(100), name="% Cover",
+#                        limits=c(-7, 7))+
+#   facet_wrap("variable", ncol=1)+
+#   coord_equal()+
+#   tmp.theme+
+#   theme(strip.background=element_rect(fill="white"))
+# ggsave("../results/clim_change_diffs_spatial.png", height=6, width=4)
 
 # ggplot(all4plot)+
 # #   geom_line(stat="density", aes(x=value, y=..density.., fill=variable), size=1, alpha=0.5)+

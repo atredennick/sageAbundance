@@ -148,6 +148,7 @@ params <- list(int_mu=int_mu, beta_mu=beta_mu, betas=betas, eta=eta)
 ####
 ####  Run Equilibrium Population Simulation
 ####
+burn_in <- global_burnin
 clim_vars <- c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")
 init_cover_vector <- rep(1, times=nrow(subset(growD, Year==1985)))
 Xtmp <- climD[climD$year %in% unique(growD$Year),clim_vars]
