@@ -308,32 +308,37 @@ The climate effects detected by our statistical model are in agreement with prev
 More generally, the approach we described is applicable to any spatially-explicit time series of plant population abundance and opens the door to forecasts of plant populations at the landscape-scale.
 
 ### Sagebrush response to climate and climate change
+The climate effects estimated in our model, and detected at a spatial resolution of 30 meters, are consistent with individual-level responses of sagebrush to climate-related variables.
+At the level of individual plants, research shows that wetter winters are correlated with greater stem growth in sagebrush [@Poore2009; @Apodaca2013] and warmer spring temperatures may enhance sagebrush growth in colder climates by advancing the date of snowmelt and increasing the length of the growing season [@Perfors2003; @Harte2015].
+Mirroring those individual-level responses, posterior means for all climate effects in our cover change model were positive, except for the effect of fall-through-spring precipitation one year before a cover transition (*ppt1*, Fig. 3).
 The amount of precipitation two years before a cover transition (*pptLag* in our model) emerged as the strongest predictor of sagebrush cover change (Fig. 3).
-All other covariates related to precipitation and temperature were also positive on average, except for the effect of fall-through-spring precipitation two years before a cover transition (Fig. 3).
-These effects, detected at a spatial resolution 30 meters, are consistent with individual-level responses of sagebrush to climate-related variables.
-Wetter winters are correlated with greater stem growth in sagebrush [@Poore2009; @Apodaca2013] and warmer spring temperatures may enhance sagebrush growth in colder climates by advancing the date of snowmelt and increasing the length of the growing season [@Perfors2003; @Harte2015].
 However, the mean estimates for the climate effects are relatively small on the standardized scale (Fig. 3).
 Such small effects could indicate that sagebrush are not very sensitive to interannual climate variability, that our model is poorly specified, or that climate responses are difficult to detect using coarse-scale data.
-Given findings from previous research on the importance of precipitation and temperature on sagebrush growth [@Pechanec1937; @Schlaepfer2011; @Germino2014] and regeneration [@Schlaepfer2014a], it is unlikely that sagebrush are insensitive to climate or that our model is poorly specified.
+Given findings from previous research demonstrating the importance of precipitation and temperature on sagebrush growth [@Pechanec1937; @Schlaepfer2011; @Germino2014] and regeneration [@Schlaepfer2014a], it is unlikely that sagebrush are insensitive to climate.
+Our model could be poorly specified since we used aggregated climate covariates that may not completely capture the climate-dependence of sagebrush cover change.
+But, the covariates we chose closely match the climate-related variables that have been shown to drive sagebrush growth, survival, and regeneration.
 More likely is that aggregated estimates of plant abundance, like percent cover, mask interannual variability at the level of the individual plant.
 Such averaging inevitably reduces interannual variability, which also makes detecting drivers of internanual variability more difficult.
-Nonetheless, our model was capabable of detecting climate effects, albeit small, that agree with our knowledge of sagebrush ecology.
+Nonetheless, our model was capabable of detecting climate effects, albeit small, that agree with our knowledge of sagebrush ecology and allowed us to make forecasts of future sagebrush abundance.
 
 Under projected climate, we forecast small positive changes in sagebrush cover in this area for all RCP scenarios (Figs. 5,6).
-Our forecast is a direct result of the interaction between the estimated effect size for each cliamte covariate and the amount of change in those covariates projected in the future.
+Our forecasts are a direct result of the interaction between the estimated effect size for each cliamte covariate and the amount of change in those covariates projected in the future.
 First, precipitation two years before a given year-to-year transition was the most important effect (Fig. 3), but precipitation is projected to increase only moderately (Table 1, Fig. 2).
 Second, mean spring temperature had a positive, but small, effect on sagebrush cover changes, while the projected change in temperature was large (Table 1, Fig. 2).
-Lastly, the negative effect of precipitation two years before a cover transition (*ppt1*) had an offsetting effect. 
+Lastly, the negative effect of precipitation two years before a cover transition (*ppt1*) had an offsetting effect.
+An interesting consequence of explicitly modeling the effect of space (through $\boldsymbol{\eta}$) is the increase in spatial heterogeity we forecast: the distribution of sagebrush cover expands rather than just shifting (Fig. D1).
+This effect is seen in the spatial forecasts where low cover pixels are constrained to low cover while high cover pixels increase (Fig. 5).
+Had we not explicitly accounted for spatial-dependence in our model, this result would be missed.
 
 While we forecast an increase in sagebrush cover at our study area, SDM studies tend to project declines in sagebrush abundance in the future due to temperature increases [@Shafer2001; @Neilson2005; @Bradley2010; @Schlaepfer2012; @Still2015].
 Why do our results differ?
 There are many potential reasons, ranging from the type of model used to the particular climate covariates considered, but the location of our study area in the cold range of the sagebrush distrubtion is the most likely explanation.
-The response of plant species to weather varies along climatic gradients [e.g., @Clark2011; @Vanderwel2013b].
-Sagebrush are especially sensitive to the timing of snowmelt since their growth depends on recharge of deep soil water [@Schlaepfer2012; @Schlaepfer2014].
-In warmer parts the sagebrush range, earlier snowmelt is detrimental to growth and survival [@Pechanec1937; @Schlaepfer2011; @Germino2014].
-In colder regions, however, earlier snowmelt due to temperature increases can lengthen the growing season and increase sagebrush occurence and cover [@Schlaepfer2012; @Schlaepfer2014].
+The response of plant species to weather varies along climatic gradients [e.g., @Clark2011; @Vanderwel2013b], and sagebrush are especially sensitive to the timing of snowmelt since their growth depends on recharge of deep soil water [@Schlaepfer2012; @Schlaepfer2014].
+The generally positive effect of precipitation we found is consistent with findings from across the sagebrush distribution [@Schlaepfer2012; @Schlaepfer2015].
+However, the effect of temperature may vary depending on location.
+In warmer parts of the sagebrush range, earlier snowmelt is detrimental to growth and survival [@Pechanec1937; @Schlaepfer2011; @Germino2014].
+In colder regions, earlier snowmelt due to temperature increases can lengthen the growing season and increase sagebrush occurence and cover [@Schlaepfer2012; @Schlaepfer2014].
 Since our study area lies at the cold end of the sagebrush distribution, the weak positive response to temperature detected by our statistical model (Fig. 3) and carried through to our forecasts (Figs. 5,6) likely represents the positive effect of earlier snowmelt.
-The positive effect of precipitation we found is consistent with findings from across the sagebrush distribution (CITATIONS), adding further /.//.
 
 Also in contrast to our results, a previous analysis of a different subset of the remote sensing data set we used made projections of sagebrush decline, on average, in the future [@Homer2015].
 The discrepancy between Homer et al.'s (2015) results and ours reflects a difference in the climate projections used for forecasting future changes rather than differences in our inference about how climate drives sagebrush cover change.
@@ -352,18 +357,22 @@ Validating spatial population models against short-term predictions would give e
 It would also provide opportunities for refinement of the model itself.
 This cycle of prediction, validation, and refinement is missing from most population-level forecasts of the effects of climate change currently produced.  
 
-### A flexible, landscape-scale plant population modeling approach
+### A landscape-scale plant population modeling approach: opportunities and limitations
 
 Our approach for modeling plant populations overcomes two major hurdles for spatially-explicit population models.
 First, we used moderate resolution, remotely-sensed estimates of sagebrush percent cover as a response variable, enabling us to fit a dynamic population model over a large spatial extent. Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we fit the model using a dimension reduction strategy that accounted for spatial autocorrelation within a feasible computational time.
 Accounting for spatial autocorrelation allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. 
 The spatial covariance structure also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (i.e. within the study region; Figs. 4,5).
+Our approach is amenable to any spatially-explicit time series of plant abundance, but we see remote-sensing datasets offering the largest opportunity for landscape-scale population models.
+Furthermore, it would be straighforward to include additional covariates related to disturbance (e.g., fire) or biotic interactions.
+Thus, we see our method as a first step toward coupling the mechanistic power of dynamic population models with the spatial extent of SDMs.
+The spatially- and temporally-explicit forecasts made possible by our approach should be especially relevant to land management decisions that need to made based on near-term forecasts.
 
 Several *a priori* modeling decisions determined the spatial extent and resolution of our results. 
 We focused the native spatial resolution of the remote sensing data ($30\times30$ meters).
 This constrained the extent that we could reasonably model because of the computational challenges in using a massive spatial random effect. 
 Even with our dimension reduction technique modeling a larger area at this resolution would require a greater number of spatial knots, and computation time would increase substantially [@Wikle2010].
-In order to overcome this, future investigators modeling a larger spatial extent may need to aggregate their original remote-sensing time series data to a coarse spatial resoluation. This would allow them to model a much greater spatial extent with a similar number of knots and a similar amount of computation time.
+To overcome this, future investigators modeling a larger spatial extent may need to aggregate their original remote-sensing time series data to a coarse spatial resoluation. This would allow them to model a much greater spatial extent with a similar number of knots and a similar amount of computation time.
 A coarser scale model would lose some fine-scale detail but could be applied to a much larger area, potentially gaining some strength in estimating climate effects by spanning a greater range of climate variation.
 However, gains made by incorporating greater regional variability by modeling at a coarser resolution could be offset by the loss of information inherent when aggregating plant responses into larger and larger pixels.
 
@@ -389,6 +398,7 @@ Extensions of these ideas are the subject of ongoing research.
 Conclusion
 ----------
 We have introduced a new approach to fitting and simulating population models at large spatial extents with plant population data derived from state of the art remote sensing.
+We used the model to forecast future abundances of sagebrush in Wyoming and found that at our relatively cold site sagebrush should be expected to increase in cover.
 As more species-level remote sensing datasets become available and computing power increases this approach will be applicable to a wider number of species and even larger spatial extents.
 Future modeling could include the effects of non-climate drivers -- including the effects of species interactions and disturbance [@Clark2014].
 For sagebrush, including fire and competition with non-native annual grasses in the model may be especially important for a complete assesment of the effects of climate change [@Bradford2006].
