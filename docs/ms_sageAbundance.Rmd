@@ -323,7 +323,7 @@ Under projected climate, we forecast modest increases in sagebrush cover for all
 Our forecasts reflect both the estimated effect size for each climate covariate and the amount of change in those covariates projected by the GCMs.
 Precipitation two years before a given year-to-year transition was the strongest standardized effect (Fig. 3), but precipitation is projected to increase only moderately (Table 1, Fig. 2) and the negative effect of precipitation two years before a cover transition (*ppt1*) had an offsetting effect.
 In contrast, mean spring temperature had a weak positive effect on sagebrush cover changes, but the projected temperature increase is large (Table 1, Fig. 2).
-An interesting consequence of explicitly modeling the effect of space (through $\boldsymbol{\eta}$) is the forecast increase in spatial heterogeity (Fig. D1).
+An interesting consequence of explicitly modeling the effect of space (through $\boldsymbol{\eta}$) is the forecast increase in spatial heterogeity (Fig. E1).
 Our model projects little change in low cover pixels but substantial increases in the cover of high cover pixels (Fig. 5). 
 Had we not explicitly accounted for spatial-dependence in our model, we would have missed this result.
 

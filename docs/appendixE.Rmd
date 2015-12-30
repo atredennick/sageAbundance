@@ -1,0 +1,31 @@
+---
+layout: 12pt
+header-includes:
+   - \usepackage{lineno}
+   - \linenumbers
+   - \usepackage{setspace}
+   - \doublespacing
+bibliography: ~/Dropbox/Bibliography/SageAbundance.bib
+csl: components/ecology.csl
+
+## rmarkdown render options
+output:
+  pdf_document:
+    fig_caption: true
+    keep_tex: false
+fontsize: 12pt
+geometry: margin=1in
+
+---
+
+\renewcommand\thefigure{E\arabic{figure}}  
+
+Appendix E: Density plots of sagebrush cover forecasts ($\boldsymbol{\eta}$)
+==============================================================================
+
+```{r figure_E1,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time. These densities represent the desnity of cover values from the spatial plots in Figure 5 of the main text.", eval=TRUE, echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../results/clim_change_densities.png")
+grid.raster(img)
+```
