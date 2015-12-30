@@ -302,10 +302,8 @@ The generally increasing trend reflects the positive effect of precipitation on 
 Discussion
 -----------
 Despite the need to forecast population responses to climate change over large spatial extents, as demonstrated by the wide application of species distribution models [e.g., @Clark2014], landscape-scale population models for plant species remain more concept than reality [@Schurr2012a; @Merow2014].
-We developed a new approach using remotely-sensed time series of plant percent cover [@Homer2012] and methods from the spatio-temporal modeling of animal abundance [e.g., @Conn2015].
-Our approach allowed us to fit a dynamic population model and to make spatially-explicit forecasts of sagebrush response to climate change at the landscape scale.
-The climate effects detected by our statistical model are in agreement with previous findings at the individual and landscape scale, which imspires some confidence in our forecasts.
-More generally, the approach we described is applicable to any spatially-explicit time series of plant population abundance and opens the door to forecasts of plant populations at the landscape-scale.
+Here, we developed a new approach using remotely-sensed time series of plant percent cover [@Homer2012] and methods from the spatio-temporal modeling of animal abundance [e.g., @Conn2015].
+We first discuss our results specific to sagebrush ecology and response to climate, and then discuss the more general implications and limitations of our proposed approach.
 
 ### Sagebrush response to climate and climate change
 The climate effects we estimated, based on cover data at 30 meter spatial resolution, are consistent with individual-level responses of sagebrush to climate-related variables.
@@ -317,21 +315,23 @@ Such small effects could indicate that sagebrush are not very sensitive to inter
 Given findings from previous research demonstrating the importance of precipitation and temperature on sagebrush growth [@Pechanec1937; @Schlaepfer2011; @Germino2014] and regeneration [@Schlaepfer2014a], it is unlikely that sagebrush are insensitive to climate.
 Our model could be poorly specified since we used aggregated climate covariates that may not completely capture the climate-dependence of sagebrush cover change.
 However, the covariates we chose closely match the climate-related variables that have been shown to drive sagebrush growth, survival, and regeneration (e.g. REFERENCE????).
-More likely, aggregated estimates of plant abundance, such as percent cover, mask interannual variability at the level of the individual plant and makes it more difficult to detect the drivers of internanual 
-variability. Nonetheless, our model was capabable of detecting climate effects, albeit small, that agree with our knowledge of sagebrush ecology and allowed us to make forecasts of future sagebrush abundance.
+More likely, aggregated estimates of plant abundance, such as percent cover, mask interannual variability at the level of the individual plant and makes it more difficult to detect the drivers of internanual variability. 
+Nonetheless, our model was capabable of detecting climate effects, albeit small, that agree with our knowledge of sagebrush ecology and allowed us to make forecasts of future sagebrush abundance.
 
 Under projected climate, we forecast modest increases in sagebrush cover for all RCP scenarios (Figs. 5,6).
 Our forecasts reflect both the estimated effect size for each climate covariate and the amount of change in those covariates projected by the GCMs.
 Precipitation two years before a given year-to-year transition was the strongest standardized effect (Fig. 3), but precipitation is projected to increase only moderately (Table 1, Fig. 2) and the negative effect of precipitation two years before a cover transition (*ppt1*) had an offsetting effect.
 In contrast, mean spring temperature had a weak positive effect on sagebrush cover changes, but the projected temperature increase is large (Table 1, Fig. 2).
 An interesting consequence of explicitly modeling the effect of space (through $\boldsymbol{\eta}$) is the forecast increase in spatial heterogeity (Fig. D1).
-Our model projects little change in low cover pixels but substantial increases in the cover of high cover pixels (Fig. 5). Had we not explicitly accounted for spatial-dependence in our model, we would have missed this result.
+Our model projects little change in low cover pixels but substantial increases in the cover of high cover pixels (Fig. 5). 
+Had we not explicitly accounted for spatial-dependence in our model, we would have missed this result.
 
 While we forecast an increase in sagebrush cover at our study area, SDM studies typically project dramatic declines in climate suitability for sagebrush with warming [@Shafer2001; @Neilson2005; @Bradley2010; @Schlaepfer2012; @Still2015].
 There are many potential explanations for this apparent contrast, ranging from the type of model used to the particular climate covariates considered, but the location of our study area in a cold portion of sagebrush's geographic distribution may be the best.
 The response of plant species to weather varies along climatic gradients [e.g., @Clark2011; @Vanderwel2013b], and sagebrush are especially sensitive to the timing of snowmelt since their growth depends on recharge of deep soil water [@Schlaepfer2012; @Schlaepfer2014].
 In warmer parts of the sagebrush range, earlier snowmelt is detrimental to growth and survival [@Pechanec1937; @Schlaepfer2011; @Germino2014].
 In colder regions, earlier snowmelt due to temperature increases can lengthen the growing season and increase sagebrush occurence and cover [@Schlaepfer2012; @Schlaepfer2014].
+The average temperature across the sagebrush steppe biome is 6.9\textdegree C [sd = 1.6; @Schlaepfer2011], whereas average temperature at our study area from 1980 to 2013 is 4.6\textdegree C (calculated from DAYMET estimates).
 Since our study area lies at the cold extreme of the sagebrush range, the weak positive response to temperature that we estimated (Fig. 3) and carried through to our forecasts (Figs. 5,6) likely represents the positive effect of earlier snowmelt.
 
 A previous analysis of a different subset of the remote sensing data set we used also came to a different conclusion, projecting future sagebrush decline [@Homer2015].
