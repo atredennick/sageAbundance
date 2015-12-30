@@ -64,7 +64,7 @@ Plant population models are powerful tools for predicting climate change impacts
 Here we overcome this limitation by taking advantage of two recent advances: remotely-sensed, species-specific estimates of plant cover and statistical models developed for spatio-temporal dynamics of animal populations.
 Using computationally efficient model reparameterizations we fit a spatiotemporal population model to a 28 year time series of sagebrush (*Artemisia* spp.) percent cover over a $2.5\times5$ km landscape in southwestern Wyoming with rigorous accounting of spatial autocorrelation.
 We include interannual variation in precipitation and temperature as covariates in the model to investigate how climate affects the cover of this species.
-We then use the model to forecast the future abudance of sagebrush at the landscape scale under projected climate change, generating spatially explicit estimates of change in a plant population that have, until now, been impossible to produce at this scale. 
+We then use the model to forecast the future abundance of sagebrush at the landscape scale under projected climate change, generating spatially explicit estimates of change in a plant population that have, until now, been impossible to produce at this scale. 
 Our broad-scale and long-term predictions are rooted in small-scale and short-term population dynamics and provide an alternative to predictions offered by species distribution models that do not include population dynamics. 
 Our approach is an important first step to using remote sensing data to model population responses to environmental change that play out at spatial scales far greater than the traditional field study plot. 
 
@@ -125,7 +125,7 @@ Thus, the full dataset contains 369,603 observations spanning 27 year-to-year tr
 #### Climate covariates
 Our approach is based on modeling how interannual changes in plant cover relate to seasonal climate variables.
 We downloaded daily historic weather data for the center of our study site from the NASA Daymet data set (*available online*)[^link].
-The Daymet weather data are interpolated between coarse observation units and captures some spatial variation.
+The Daymet weather data are interpolated between coarse observation units and capture some spatial variation.
 We relied on weather data for the centroid of our study area.
 We calculated five climate variables from the Daymet data for the time period coinciding with our remotely sensed data (1984 to 2011).
 
@@ -163,7 +163,7 @@ We also evaluated a negative binomial model, but found little evidence for overd
 
 The spatial random effect ($\boldsymbol{\eta}$) accounts for spatial autocorrelation among pixels that occur near each other in space.
 Thus, $\boldsymbol{\eta}$ acts as an offset on the intercept ($\beta_{0,t}$), creating a spatial field that defines how pixels differ from the mean, on average, in space (e.g., areas of perennially low or high cover, relative to average cover).
-Fitting the model with a spatial random effect ($\eta$) is computationally for large data sets like ours.
+Fitting the model with a spatial random effect ($\eta$) is computationally demanding for large data sets like ours.
 This is due to the required calculations of the spatial covariance matrices, which increase as a cubic function of the number of locations [@Wikle2010].
 Key to our approach is a dimension reduction strategy that greatly reduces the number of parameters needed to be estimated to account for spatial variation by reducing the size of the spatial covariance matrices that need to be inverted at each MCMC iteration.
 Fitting models that appropriately account for spatial autocorrelation over large spatial extents would not be feasible without these modern techniques.
@@ -201,7 +201,7 @@ w_{s,m} &= \text{exp}\left(\frac{-d_{s,m}}{\sigma}\right)
 
 and $d_{s,m}$ is the Euclidean distance between the centroid of sample cell \emph{s} and the location of knot \emph{m}, and $\sigma$ is the kernel bandwidth.
 It is possible through exhaustive model selection and fitting to determine the optimal form of the kernel and to estimate optimal values for $\sigma$ [@Higdon2002; @Hooten2015].
-However, given the relative size of our dataset and computational limitations, we defined kernels around 221 knots (Fig. B2) whose nearest neighbor distances are approximately equal to the range of spatial dependence in residuals from a simple GLM fit without climate covariates and the spatial random effect (~500 meters; Appendix B).
+However, given the relative size of our dataset and computational limitations, we defined kernels around 231 knots (Fig. B2) whose nearest neighbor distances are approximately equal to the range of spatial dependence in residuals from a simple GLM fit without climate covariates and the spatial random effect (~500 meters; Appendix B).
 An infinite number of knots would result in a perfectly accurate representation of the spatial process and covariance model.
 Since using an infinite number of knots is not possible, any use of the dimension reduction technique is an approximation, where the accuracy increases with the number of knots.
 Given the tradeoff between knot number and computation time, we chose to base our knot number on the spatial dependence as described above.
@@ -309,7 +309,7 @@ We first discuss our results specific to sagebrush ecology and response to clima
 ### Sagebrush response to climate and climate change
 The climate effects we estimated, based on cover data at 30 meter spatial resolution, are consistent with individual-level responses of sagebrush to climate-related variables.
 Research on individual plants has shown that wetter winters are correlated with greater stem growth in sagebrush [@Poore2009; @Apodaca2013] and that warmer spring temperatures may enhance sagebrush growth in cold climates by advancing the date of snowmelt and increasing the length of the growing season [@Perfors2003; @Harte2015].
-In agreement with those individual-level responses, posterior means for all precipitation and temperature effects in our model were positive, except for the effect of fall-through-spring precipitation one year before a cover transition (*ppt1*, Fig. 3).
+In agreement with those individual-level responses, posterior means for all precipitation and temperature effects in our model were positive, except for the effect of fall-through-spring precipitation two years before a cover transition (*ppt1*, Fig. 3).
 The amount of precipitation two years before a cover transition (*pptLag* in our model) emerged as the strongest predictor of sagebrush cover change (Fig. 3).
 However, the mean estimates for the climate effects are relatively weak (Fig. 3).
 Such small effects could indicate that sagebrush are not very sensitive to interannual climate variability, that our model is poorly specified, or that climate responses are difficult to detect using coarse-scale data.
@@ -332,7 +332,7 @@ There are many potential explanations for this apparent contrast, ranging from t
 The response of plant species to weather varies along climatic gradients [e.g., @Clark2011; @Vanderwel2013b], and sagebrush are especially sensitive to the timing of snowmelt since their growth depends on recharge of deep soil water [@Schlaepfer2012; @Schlaepfer2014].
 In warmer parts of the sagebrush range, earlier snowmelt is detrimental to growth and survival [@Pechanec1937; @Schlaepfer2011; @Germino2014].
 In colder regions, earlier snowmelt due to temperature increases can lengthen the growing season and increase sagebrush occurence and cover [@Schlaepfer2012; @Schlaepfer2014].
-The average temperature across the sagebrush steppe biome is 6.9\textdegree C [sd = 1.6; @Schlaepfer2011], whereas average temperature at our study area from 1980 to 2013 is 4.6\textdegree C (calculated from DAYMET estimates).
+The average temperature across the sagebrush steppe biome is 6.9\textdegree C [sd = 1.6; @Schlaepfer2011], whereas average temperature at our study area from 1980 to 2013 is 4.6\textdegree C (calculated from Daymet estimates).
 Since our study area lies at the cold extreme of the sagebrush range, the weak positive response to temperature that we estimated (Fig. 3) and carried through to our forecasts (Figs. 5,6) likely represents the positive effect of earlier snowmelt.
 
 A previous analysis of a different subset of the remote sensing data set we used also came to a different conclusion, projecting future sagebrush decline [@Homer2015].
@@ -371,7 +371,7 @@ However, in future applications it will be important to allow climate effects to
 @Conn2015 provide examples of how such spatiotemporal interactions can be included in abundance models.
 We might expect climate effects to interact with spatial covariates such as soil type, slope, and aspect. In our relative small study area, we did not observe important effects of these factors, but it is possible to include such abiotic data layers as predictors when fitting models at larger spatial extents.
 
-The contrast between our conclusions and those of Homer et al. (2015), mentioned above, emphasizes the irole of climate projections in ecological forecasting.
+The contrast between our conclusions and those of Homer et al. (2015), mentioned above, emphasizes the role of climate projections in ecological forecasting.
 Weather projections from GCMs differ because each model incorporates processes and feedbacks in different ways [@Flato2013].
 These structural differences among GMCs can lead to divergent weather forecasts for specific regions, even if the GCMs converge on projections at the global scale [@Flato2013]. There is no clear answer to what climate model to use when making ecological forecasts at the regional scale.
 Much like weather forecasters [@Bauer2015], ecological forecasters may need to apply expert judgement to choose climate projections.
@@ -437,7 +437,7 @@ img <- readPNG("components/figure/weather_projections.png")
 grid.raster(img)
 ```
 
-```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \\emph{t} (pptLag) is important (shown in dark grey; 90% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \\emph{t-1}; TmeanSpr1 = year \\emph{t-2} average spring temperature; ppt2 = year \\emph{t-1} fall through summer precipitation; TmeanSpr2 = year \\emph{t-1} average spring temperature; ppt1 = year \\emph{t-2} fall through summer precipitation.", fig.height=4, eval=T}
+```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \\emph{t-2} (pptLag) is important (shown in dark grey; 90% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \\emph{t-2}; TmeanSpr1 = year \\emph{t-2} average spring temperature; ppt2 = year \\emph{t-1} fall through summer precipitation; TmeanSpr2 = year \\emph{t-1} average spring temperature; ppt1 = year \\emph{t-2} fall through summer precipitation.", fig.height=4, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/post_climate_covariates.png")
@@ -452,7 +452,7 @@ img <- readPNG("../results/spatialfield.png")
 grid.raster(img)
 ```
 
-```{r figure_4,dependson="plot-options", fig.cap="Observed and predicted (A, B) equilibrium percent cover of sagebrush, and prediction bias and standard deviation (C, D) for the extent of our spatial area at 30-m resolution. Observed equilibrium sagebrush cover (A) is the temporal mean of each pixel from the 28 year time series. Prediction results are from simulations that use mean parameter values and no random year effects. Axes definitions: Lat = latitude; Lon = longitude.", fig.height=8, eval=T}
+```{r figure_4,dependson="plot-options", fig.cap="Observed and predicted (A, B) equilibrium percent cover of sagebrush, and prediction bias and precision (C, D) for the extent of our spatial area at 30-m resolution. Observed equilibrium sagebrush cover (A) is the temporal mean of each pixel from the 28 year time series. Prediction results are from simulations that use mean parameter values and no random year effects. Axes definitions: Lat = latitude; Lon = longitude.", fig.height=8, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_spatial_subset.png")
