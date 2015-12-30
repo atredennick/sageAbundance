@@ -19,13 +19,16 @@ geometry: margin=1in
 ---
 
 \renewcommand\thefigure{C\arabic{figure}}  
+\renewcommand\thetable{C\arabic{table}}  
 
 Appendix C: Model convergence diagnostics
 =========================================
 Scale reduction factors [@Gelman1992; @Gelman2009] were less than 1.1 for all fitted parameters (Figure C1).
-Visual inspection of traceplots indicates convergence (Figures C2-C10).
+Visual inspection of traceplots indicates convergence (Figures C2-C16).
 
-Table:  Definition of parameters and model notation for Figures C1-C10.
+\footnotesize
+
+Table:  Definition of parameters and model notation for Figures C1-C16.
 
 | Parameter | Definition | Notation in figures |
 | --------- | ---------- | -------------------------------------- |
@@ -37,26 +40,39 @@ Table:  Definition of parameters and model notation for Figures C1-C10.
 | $\sigma_{\beta_{0}}^2$ | variance of year random effect | ``sig_yr`` |
 | $\sigma_{\eta}^2$ | variance of spatial random effect | ``sig_a`` |
 
+\normalsize
 
 ![Scale reduction factors for each parameter ($\hat{R}$, points) and the unacceptable level of 1.1 shown in red.](../results/rhat_plot.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_1.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_01.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_2.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_02.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_3.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_03.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_4.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_04.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_5.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_05.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_6.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_06.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_7.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_07.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_8.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_08.png)
 
-![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_9.png)
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_09.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_10.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_11.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_12.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_13.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_14.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_15.png)
 
 References
 ----------

@@ -5,6 +5,7 @@ header-includes:
    - \linenumbers
    - \usepackage{setspace}
    - \doublespacing
+   - \usepackage[document]{ragged2e}
 bibliography: ~/Dropbox/Bibliography/SageAbundance.bib
 csl: components/ecology.csl
 
@@ -239,7 +240,7 @@ Such short MCMC chains may seem unusual to those more familiar with other MCMC s
 However, the Stan algorithm is extremely efficient, meaning that, compared to other samplers, fewer iterations are required to achieve convergence.
 Each MCMC chain was initialized with unique parameter values and the model was fit in parallel using the Utah State University High-Performance Computing facility.
 Model fitting required five days.
-We assessed convergence visually and calculated scale reduction factors (Appendix C, $\hat{R}$ < 1.1 for all paramters) [@Gelman1992; @Gelman2009]. 
+We assessed convergence visually and calculated scale reduction factors (Appendix C, $\hat{R}$ < 1.1 for all parameters) [@Gelman1992; @Gelman2009]. 
 
 ### Simulating the process
 We performed four sets of simulations to (1) compare observed and simulated equilibrium cover, (2) compare observed and simulated year- and location-specific cover, (3) forecast future equilibrium population states under projected climate change, and (4) make temporally-explicit forecasts of sagebrush cover starting the final year of our observations and ending in year 2098. 
@@ -314,7 +315,7 @@ However, the mean estimates for the climate effects are relatively weak (Fig. 3)
 Such small effects could indicate that sagebrush are not very sensitive to interannual climate variability, that our model is poorly specified, or that climate responses are difficult to detect using coarse-scale data.
 Given findings from previous research demonstrating the importance of precipitation and temperature on sagebrush growth [@Pechanec1937; @Schlaepfer2011; @Germino2014] and regeneration [@Schlaepfer2014a], it is unlikely that sagebrush are insensitive to climate.
 Our model could be poorly specified since we used aggregated climate covariates that may not completely capture the climate-dependence of sagebrush cover change.
-However, the covariates we chose closely match the climate-related variables that have been shown to drive sagebrush growth, survival, and regeneration (e.g. REFERENCE????).
+However, the covariates we chose closely match the climate-related variables that have been shown to drive sagebrush growth, survival, and regeneration [e.g., @Dalgleish2011; @Schlaepfer2014a].
 More likely, aggregated estimates of plant abundance, such as percent cover, mask interannual variability at the level of the individual plant and makes it more difficult to detect the drivers of internanual variability. 
 Nonetheless, our model was capabable of detecting climate effects, albeit small, that agree with our knowledge of sagebrush ecology and allowed us to make forecasts of future sagebrush abundance.
 
@@ -346,7 +347,6 @@ For example, we could forecast the effects of a multi-year regional drought on s
 This cycle of prediction, validation, and refinement is missing from most currently available population-level forecasts of the effects of climate change.  
 
 ### A landscape-scale plant population modeling approach: opportunities and limitations
-
 Our approach for modeling plant populations overcomes two major hurdles for spatially-explicit population models.
 First, we used moderate resolution, remotely-sensed estimates of sagebrush percent cover as a response variable, enabling us to fit a dynamic population model over a large spatial extent. Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we fit the model using a dimension reduction strategy that accounted for spatial autocorrelation within a feasible computational time. Accounting for spatial autocorrelation allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. 
 The spatial covariance structure also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (i.e. within the study region; Figs. 4,5).
@@ -415,7 +415,7 @@ RCP 8.5 & 4.79\textdegree & 11.0\%\tabularnewline
 
 Figures
 -------
-```{r figure_1_alt,dependson="plot-options", fig.cap="Location of the 2.5 $\\times$ 5 kilometer study area in southwestern Wyoming (black rectangle) and a snapshot of the percent cover data in 1984 (detailed inset). Scale bar is relevant for US map only; refer to axes labels on the detailed inset of sagebrush percent cover for scale of the study area.", fig.height=6, eval=F}
+```{r figure_1_alt,dependson="plot-options", fig.cap="Location of the 2.5 $\\times$ 5 kilometer study area in southwestern Wyoming (black rectangle) and a snapshot of the percent cover data in 1984 (detailed inset). Scale bar is relevant for US map only; refer to axes labels on the detailed inset of sagebrush percent cover for scale of the study area.", fig.height=6, eval=T}
 library(png)
 library(grid)
 img <- readPNG("components/figure/studyarea_map.png")
@@ -430,14 +430,14 @@ img <- readPNG("../results/all_years_percCover.png")
 grid.raster(img)
 ```
 
-```{r figure_2a,dependson="plot-options", fig.cap="GCM yearly weather hindcasts (before solid line at 2011) and projections (after solid line at 2011) for precipitation (A) and temperature (B) at our study area in southwestern Wyoming (see Fig. 1).", eval=F}
+```{r figure_2a,dependson="plot-options", fig.cap="GCM yearly weather hindcasts (before solid line at 2011) and projections (after solid line at 2011) for precipitation (A) and temperature (B) at our study area in southwestern Wyoming (see Fig. 1).", eval=T}
 library(png)
 library(grid)
 img <- readPNG("components/figure/weather_projections.png")
 grid.raster(img)
 ```
 
-```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \\emph{t} (pptLag) is important (shown in dark grey; 90% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \\emph{t-1}; TmeanSpr1 = year \\emph{t-2} average spring temperature; ppt2 = year \\emph{t-1} fall through summer precipitation; TmeanSpr2 = year \\emph{t-1} average spring temperature; ppt1 = year \\emph{t-2} fall through summer precipitation.", fig.height=4, eval=F}
+```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \\emph{t} (pptLag) is important (shown in dark grey; 90% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \\emph{t-1}; TmeanSpr1 = year \\emph{t-2} average spring temperature; ppt2 = year \\emph{t-1} fall through summer precipitation; TmeanSpr2 = year \\emph{t-1} average spring temperature; ppt1 = year \\emph{t-2} fall through summer precipitation.", fig.height=4, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/post_climate_covariates.png")
@@ -452,7 +452,7 @@ img <- readPNG("../results/spatialfield.png")
 grid.raster(img)
 ```
 
-```{r figure_4,dependson="plot-options", fig.cap="Observed and predicted (A, B) equilibrium percent cover of sagebrush, and prediction bias and standard deviation (C, D) for the extent of our spatial area at 30-m resolution. Observed equilibrium sagebrush cover (A) is the temporal mean of each pixel from the 28 year time series. Prediction results are from simulations that use mean parameter values and no random year effects. Axes definitions: Lat = latitude; Lon = longitude.", fig.height=8, eval=F}
+```{r figure_4,dependson="plot-options", fig.cap="Observed and predicted (A, B) equilibrium percent cover of sagebrush, and prediction bias and standard deviation (C, D) for the extent of our spatial area at 30-m resolution. Observed equilibrium sagebrush cover (A) is the temporal mean of each pixel from the 28 year time series. Prediction results are from simulations that use mean parameter values and no random year effects. Axes definitions: Lat = latitude; Lon = longitude.", fig.height=8, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_spatial_subset.png")
@@ -466,7 +466,7 @@ img <- readPNG("../results/obs_pred_hist.png")
 grid.raster(img)
 ```
 
-```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under three IPCC climate change scenarios (RCP = Representative Concentration Pathways) for our study area in southwestern Wyoming. The top panel shows equilibrium cover based on simulations using observed climate. Subsequent panels show equilibrium cover based on perturbed climate for each RCP scenario. Forecasts are based on the projected climate changes in Table 1 applied to the observed climate time series used to fit the statistical model. We used mean parameter estimates for all simulations. Color bar indicates percent cover of sagebrush in each 30x30 meter pixel.", fig.height=6, eval=F}
+```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under three IPCC climate change scenarios (RCP = Representative Concentration Pathways) for our study area in southwestern Wyoming. The top panel shows equilibrium cover based on simulations using observed climate. Subsequent panels show equilibrium cover based on perturbed climate for each RCP scenario. Forecasts are based on the projected climate changes in Table 1 applied to the observed climate time series used to fit the statistical model. We used mean parameter estimates for all simulations. Color bar indicates percent cover of sagebrush in each 30x30 meter pixel.", fig.height=6, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/clim_change_mean_spatial.png")
@@ -480,7 +480,7 @@ img <- readPNG("../results/clim_change_densities.png")
 grid.raster(img)
 ```
 
-```{r figure_8,dependson="plot-options", fig.cap="Observed (black line before 2011) and forecasted (colored lines after 2011) sagebrush percent cover. Forecasts were made for three IPCC emissions scenarios (RCPs 4.5, 6.0, and 8.5) and are for the period of 2012 to 2098. Shaded regions show 90% quantiles for simulations conducted using 50 different sets of parameters from the MCMC output. Lines show mean trajectories. Uncertainty in forecasts arises from uncertainty in GCM projections, uncerainty around the ecological process, and uncertainty around parameter estimates. Before calculating the mean and 90% quantiles for each year across parameter sets and GCMs, we averaged percent cover over the 13,689 pixles.", eval=F}
+```{r figure_8,dependson="plot-options", fig.cap="Observed (black line before 2011) and forecasted (colored lines after 2011) sagebrush percent cover. Forecasts were made for three IPCC emissions scenarios (RCPs 4.5, 6.0, and 8.5) and are for the period of 2012 to 2098. Shaded regions show 90% quantiles for simulations conducted using 50 different sets of parameters from the MCMC output. Lines show mean trajectories. Uncertainty in forecasts arises from uncertainty in GCM projections, uncerainty around the ecological process, and uncertainty around parameter estimates. Before calculating the mean and 90% quantiles for each year across parameter sets and GCMs, we averaged percent cover over the 13,689 pixles.", eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/temporal_forecast.png")
