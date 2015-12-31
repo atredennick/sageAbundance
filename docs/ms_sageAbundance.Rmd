@@ -130,7 +130,7 @@ We relied on weather data for the centroid of our study area.
 We calculated five climate variables from the Daymet data for the time period coinciding with our remotely sensed data (1984 to 2011).
 
 We narrowed our focus to climate covariates we know are important for sagebrush and that could be calculated from general circulation model projections.
-The five climate variables in our population model are: (1) "water year" precipitation (*description*) for year \emph{t}-2 (*lagPpt*), (2) year \emph{t}-1 fall through summer precipitation (*ppt1*), (3) year \emph{t} fall through summer precipitation (*ppt2*), (4) year \emph{t}-1 average spring temperature (*TmeanSpr1*), and (5) year \emph{t} average spring temperature (*TmeanSpr2*), where *t-1* to *t* is the transition of interest.
+The five climate variables in our population model are: (1) cumulative, "water year" precipitation for year \emph{t}-2 (*lagPpt*), (2) year \emph{t}-1 fall through summer precipitation (*ppt1*), (3) year \emph{t} fall through summer precipitation (*ppt2*), (4) year \emph{t}-1 average spring temperature (*TmeanSpr1*), and (5) year \emph{t} average spring temperature (*TmeanSpr2*), where *t-1* to *t* is the transition of interest.
 We selected these variables a priori based on previous studies (see *Introduction*),  though not all emerge as important predictors in our model.
 We could have applied a variety of model selection techniques [@Hooten2015], but chose not to because our focus is on the general approach.
 
@@ -281,7 +281,7 @@ Trajectories of our climate covariates from GCM projections show similar trends 
 All parameters in our model converged on stable posterior distributions (Appendix C).
 Only the *lagPpt* climate covariate can be considered important based on a 90% credible interval, and it had a positive effect on sagebrush percent cover change (Fig. 3).
 In other words, if the year 2000 water year was wetter than average, sagebrush cover would increase from the 2001 to the 2002 growing season.
-Other climate effects strongly overlapped zero but their posterior means were positive, except for fall-through-spring precipitation two years before a cover transition, whose posterior mean was negative (Fig. 3).
+Other climate effects strongly overlapped zero but their posterior means were positive, except for fall-through-spring precipitation the first year of a cover transition (*t*-1), whose posterior mean was negative (Fig. 3).
 The posterior mean for the spatial random effect, $\boldsymbol{\eta}$, captured the overall spatial structure of the observed data (Fig. D1).
 This indicates our choice of knot placement and dimension reduction strategy was adequate for describing permanent spatial variation in the data.
 
@@ -309,8 +309,8 @@ We first discuss our results specific to sagebrush ecology and response to clima
 ### Sagebrush response to climate and climate change
 The climate effects we estimated, based on cover data at 30 meter spatial resolution, are consistent with individual-level responses of sagebrush to climate-related variables.
 Research on individual plants has shown that wetter winters are correlated with greater stem growth in sagebrush [@Poore2009; @Apodaca2013] and that warmer spring temperatures may enhance sagebrush growth in cold climates by advancing the date of snowmelt and increasing the length of the growing season [@Perfors2003; @Harte2015].
-In agreement with those individual-level responses, posterior means for all precipitation and temperature effects in our model were positive, except for the effect of fall-through-spring precipitation two years before a cover transition (*ppt1*, Fig. 3).
-The amount of precipitation two years before a cover transition (*pptLag* in our model) emerged as the strongest predictor of sagebrush cover change (Fig. 3).
+In agreement with those individual-level responses, posterior means for all precipitation and temperature effects in our model were positive, except for the effect of fall-through-spring precipitation in the first year of a cover transition (*ppt1*, Fig. 3).
+The cumulative amount of precipitation the year before a cover transition (*pptLag* in our model) emerged as the strongest predictor of sagebrush cover change (Fig. 3).
 However, the mean estimates for the climate effects are relatively weak (Fig. 3).
 Such small effects could indicate that sagebrush are not very sensitive to interannual climate variability, that our model is poorly specified, or that climate responses are difficult to detect using coarse-scale data.
 Given findings from previous research demonstrating the importance of precipitation and temperature on sagebrush growth [@Pechanec1937; @Schlaepfer2011; @Germino2014] and regeneration [@Schlaepfer2014a], it is unlikely that sagebrush are insensitive to climate.
@@ -321,7 +321,7 @@ Nonetheless, our model was capabable of detecting climate effects, albeit small,
 
 Under projected climate, we forecast modest increases in sagebrush cover for all RCP scenarios (Figs. 5,6).
 Our forecasts reflect both the estimated effect size for each climate covariate and the amount of change in those covariates projected by the GCMs.
-Precipitation two years before a given year-to-year transition was the strongest standardized effect (Fig. 3), but precipitation is projected to increase only moderately (Table 1, Fig. 2) and the negative effect of precipitation two years before a cover transition (*ppt1*) had an offsetting effect.
+Cumulative precipitation the year before before a given year-to-year transition was the strongest standardized effect (Fig. 3), but precipitation is projected to increase only moderately (Table 1, Fig. 2) and the negative effect of fall-through-spring precipitation in the first year of a cover transition (*ppt1*) had an offsetting effect.
 In contrast, mean spring temperature had a weak positive effect on sagebrush cover changes, but the projected temperature increase is large (Table 1, Fig. 2).
 An interesting consequence of explicitly modeling the effect of space (through $\boldsymbol{\eta}$) is the forecast increase in spatial heterogeity (Fig. E1).
 Our model projects little change in low cover pixels but substantial increases in the cover of high cover pixels (Fig. 5). 
