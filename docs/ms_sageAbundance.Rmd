@@ -295,7 +295,7 @@ The correlation between observations and predictions was 0.62.
 
 When we apply the fitted model to IPCC climate change scenarios, the model predicts gains in sagebrush percent cover, on average (Figs. 5, 6).
 The spatial effect remains strong enough in low cover regions to counteract the positive effect of projected precipitation increases (Fig. 5).
-Thus, our model predicts an increase in the heterogeneity of sagebrush cover because projected cover increases are smaller in low cover pixels than in high cover pixels (Fig. 5).
+Thus, our model predicts an increase in the heterogeneity of sagebrush cover because projected cover increases are smaller in low cover pixels than in high cover pixels (Fig. 5 and Fig. E1).
 For the temporally-explicit forecasts, we show spatially-averaged values and the associated uncertainty due to variability in GCM projections, variability in model parameters, and uncertainty in our process model (Fig. 6).
 Based on our model and GCM projections, we forecast an average increase in sagebrush cover at our study area, but a decrease is not outside the realm of possibility (shaded regions in Fig. 6).
 The generally increasing trend reflects the positive effect of precipitation on sagebrush cover change (Fig. 3).
@@ -437,7 +437,7 @@ img <- readPNG("components/figure/weather_projections.png")
 grid.raster(img)
 ```
 
-```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \\emph{t-2} (pptLag) is important (shown in dark grey; 90% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \\emph{t-2}; TmeanSpr1 = year \\emph{t-2} average spring temperature; ppt2 = year \\emph{t-1} fall through summer precipitation; TmeanSpr2 = year \\emph{t-1} average spring temperature; ppt1 = year \\emph{t-2} fall through summer precipitation.", fig.height=4, eval=T}
+```{r figure_2,dependson="plot-options", fig.cap="Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \\emph{t-2} (pptLag) is important (shown in dark grey; 90% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \\emph{t-2}; TmeanSpr1 = year \\emph{t-1} average spring temperature; ppt2 = year \\emph{t} fall through summer precipitation; TmeanSpr2 = year \\emph{t} average spring temperature; ppt1 = year \\emph{t-1} fall through summer precipitation.", fig.height=4, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/post_climate_covariates.png")
