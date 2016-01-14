@@ -315,7 +315,8 @@ Such small effects could indicate that sagebrush are not very sensitive to inter
 Given findings from previous research demonstrating the importance of precipitation and temperature on sagebrush growth [@Pechanec1937; @Schlaepfer2011; @Germino2014] and regeneration [@Schlaepfer2014a], it is unlikely that sagebrush are insensitive to climate.
 We used aggregated climate covariates that may not completely capture the climate-dependence of sagebrush cover change.
 However, the covariates we chose closely match the climate-related variables that have been shown to drive sagebrush growth, survival, and regeneration [e.g., @Dalgleish2011; @Schlaepfer2014a].
-More likely, aggregated estimates of plant abundance, such as percent cover, mask interannual variability at the level of the individual plant and makes it more difficult to detect the drivers of internanual variability. 
+More likely, aggregated estimates of plant abundance, such as percent cover, mask interannual variability at the level of the individual plant and makes it more difficult to detect the drivers of internanual variability.
+Additionally, we chose not to downscale the Daymet weather data, meaning that in a given year all pixels shared the same climate, which limits our statistical power.
 Nonetheless, our model was capabable of detecting climate effects that agree with our knowledge of sagebrush ecology and allowed us to make forecasts of future sagebrush abundance.
 
 Under projected climate, we forecast modest increases in sagebrush cover for all RCP scenarios (Figs. 5,6).
