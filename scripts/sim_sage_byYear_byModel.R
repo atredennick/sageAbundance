@@ -127,6 +127,7 @@ for(do_model in all_models){
       params_now <- subset(mcmc_outs, chain==randchain & mcmc_iter==randiter)
       alphas <- params_now[grep("alpha", params_now$Parameter), "value"]
       int_mu <- params_now[grep("int_mu", params_now$Parameter), "value"]
+      sd_int <- params_now[grep("sig_yr", params_now$Parameter), "value"]
       beta_mu <- params_now[grep("beta_mu", params_now$Parameter), "value"]
       beta_clims <- params_now[grep("beta.", params_now$Parameter), "value"][2:6]
       eta_now <-  K%*%as.numeric(unlist(alphas))
@@ -134,9 +135,9 @@ for(do_model in all_models){
         for(t in 2:num_sims){
           
           weather <- climate_now[t-1, clim_vars] #t-1 since clim data starts in 2012
-        
+          int_now <- rnorm(1, int_mu, sd_int)
           n_save[i,t,] <- iterate_sage(N = n_save[i,t-1,], 
-                                       int = int_mu, 
+                                       int = int_now, 
                                        beta.dens = beta_mu,
                                        beta.clim = beta_clims,
                                        eta = eta_now,

@@ -44,6 +44,6 @@ that includes a density-dependence effect of log-transformed cover in the previo
 
 Spatial dependence existed in the residuals until pixels were separated by about 500 meters (Fig. B1). Thus, we set the kernal bandwidth ($\sigma$ in Eq. X of the main text) to 500/3 = `r round(500/3,2)`. We then placed equally-spaced knots across our spatial grid until the distance between nearest neighbors was approximately 500 meters. Knots were placed evenly across space in the x and y directions. This resulted in a 11 $\times$ 21 knot grid (231 knots; Fig. B2).
 
-![Spatial variogram of model residuals showing where spatial dependence disappears (~500 meters; asymptote of the variogram), and the value chosen for the kernal bandwidth in Eq. 6 of the main text (500/3; dashed black line).](../results/avgresidual_variogram_withrange_subset.png)
+![Spatial variogram of model residuals showing where spatial dependence disappears (~500 meters; asymptote of the variogram), and the value chosen for the kernel bandwidth in Eq. 6 of the main text (500/3; dashed black line).](../results/avgresidual_variogram_withrange_subset.png)
 
 ![Map of our study area showing percent cover in 1984 and the location of the 231 evenly-spaced knots.](../results/SAGE_Grid_wKnots_subset.png)

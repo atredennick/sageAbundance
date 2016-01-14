@@ -44,6 +44,8 @@ Table:  Definition of parameters and model notation for Figures C1-C16.
 
 ![Scale reduction factors for each parameter ($\hat{R}$, points) and the unacceptable level of 1.1 shown in red.](../results/rhat_plot.png)
 
+<!--
+
 ![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_01.png)
 
 ![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_02.png)
@@ -73,6 +75,8 @@ Table:  Definition of parameters and model notation for Figures C1-C16.
 ![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_14.png)
 
 ![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_15.png)
+
+-->
 
 References
 ----------
