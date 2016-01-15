@@ -94,6 +94,10 @@ num_sims <- length(sim_years)
 
 nchains <- length(unique(mcmc_outs$chain))
 niters <- length(unique(mcmc_outs$mcmc_iter))
+dogrid <- expand.grid(1:niters, 1:nchains)
+
+
+tmp.time=Sys.time()
 
 ####
 ####  Begin looping: parameters within years within scenario within model ------
@@ -121,9 +125,11 @@ for(do_model in all_models){
     n_save[,1,] <- last_obs$Cover # set first record to last observation
     
       
-    for(i in 1:parameter_reps){
-      randchain <- sample(1:nchains, 1)
-      randiter <- sample(1:niters, 1)
+    for(i in 1:nrow(dogrid)){
+#       randchain <- sample(1:nchains, 1)
+#       randiter <- sample(1:niters, 1)
+      randchain <- dogrid[i,2]
+      randiter <- dogrid[i,1]
       params_now <- subset(mcmc_outs, chain==randchain & mcmc_iter==randiter)
       alphas <- params_now[grep("alpha", params_now$Parameter), "value"]
       int_mu <- params_now[grep("int_mu", params_now$Parameter), "value"]
@@ -159,5 +165,7 @@ for(do_model in all_models){
 } # next model
 
 
-
+time.2=Sys.time()-tmp.time
+sfStop()
+time.2
 
