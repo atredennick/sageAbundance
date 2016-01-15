@@ -121,7 +121,8 @@ for(do_model in all_models){
     climate_now["TmeanSpr2"] <- (climate_now["TmeanSpr2"] - obs_clim_means["TmeanSpr2"])/obs_clim_sds["TmeanSpr2"]
     
     # Create storage matrix for population
-    n_save <- array(dim = c(parameter_reps, num_sims+1, nrow(last_obs)))
+    # n_save <- array(dim = c(parameter_reps, num_sims+1, nrow(last_obs)))
+    n_save <- array(dim = c(nrow(dogrid), num_sims+1, nrow(last_obs)))
     n_save[,1,] <- last_obs$Cover # set first record to last observation
     
       
