@@ -121,16 +121,16 @@ for(do_model in all_models){
     climate_now["TmeanSpr2"] <- (climate_now["TmeanSpr2"] - obs_clim_means["TmeanSpr2"])/obs_clim_sds["TmeanSpr2"]
     
     # Create storage matrix for population
-    # n_save <- array(dim = c(parameter_reps, num_sims+1, nrow(last_obs)))
-    n_save <- array(dim = c(nrow(dogrid), num_sims+1, nrow(last_obs)))
+    n_save <- array(dim = c(parameter_reps, num_sims+1, nrow(last_obs)))
+    # n_save <- array(dim = c(nrow(dogrid), num_sims+1, nrow(last_obs)))
     n_save[,1,] <- last_obs$Cover # set first record to last observation
     
       
-    for(i in 1:nrow(dogrid)){
-#       randchain <- sample(1:nchains, 1)
-#       randiter <- sample(1:niters, 1)
-      randchain <- dogrid[i,2]
-      randiter <- dogrid[i,1]
+    for(i in parameter_reps){
+      randchain <- sample(1:nchains, 1)
+      randiter <- sample(1:niters, 1)
+#       randchain <- dogrid[i,2]
+#       randiter <- dogrid[i,1]
       params_now <- subset(mcmc_outs, chain==randchain & mcmc_iter==randiter)
       alphas <- params_now[grep("alpha", params_now$Parameter), "value"]
       int_mu <- params_now[grep("int_mu", params_now$Parameter), "value"]
