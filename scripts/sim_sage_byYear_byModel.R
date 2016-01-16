@@ -76,8 +76,9 @@ obs_clim_scalers <- data.frame(variable = clim_vars,
 iterate_sage <- function(N, int, beta.dens, beta.clim, eta, weather){
   dens.dep <- beta.dens*log(N)
   clim.effs <- sum(beta.clim*weather)
-  Nout <- exp(int + dens.dep + clim.effs + eta)
-  return(Nout)
+  mutmp <- exp(int + dens.dep + clim.effs + eta)
+  Nout <- rpois(length(eta), mutmp)
+  return(mutmp)
 }
 
 
@@ -166,7 +167,6 @@ for(do_model in all_models){
 } # next model
 
 
-time.2=Sys.time()-tmp.time
-sfStop()
-time.2
+# time.2=Sys.time()-tmp.time
+# time.2
 
