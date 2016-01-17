@@ -60,7 +60,7 @@ temp_projs <- subset(temp_projs, model %in% my_mods)
 ppt_projs <- subset(ppt_projs, model %in% my_mods)
 
 ####
-####  Subset out observed climate; get scaling mean and sd ------------------------
+####  Subset out observed climate; get scaling mean and sd ---------_-----------
 ####
 obs_clim <- obs_data[,c("Year",clim_vars)]
 obs_clim <- unique(obs_clim)
@@ -70,15 +70,42 @@ obs_clim_scalers <- data.frame(variable = clim_vars,
                                means = obs_clim_means,
                                sdevs = obs_clim_sds)
 
+
+
+####
+####  Fit Colonization Logistic Model for 0% Cover Cells -----------------------
+####
+# Get data structure right
+growD <- subset(obs_data, Year>1984) # get rid of NA lagcover years
+growD$Cover <- round(growD$Cover,0) # round for count-like data
+growD$CoverLag <- round(growD$CoverLag,0) # round for count-like data
+
+colD <- growD[which(growD$CoverLag == 0), ]
+colD$colonizes <- ifelse(colD$Cover==0, 0, 1)
+col.fit <- glm(colonizes ~ 1, data=colD, family = "binomial")
+col.intercept <- as.numeric(coef(col.fit))
+antilogit <- function(x) { exp(x) / (1 + exp(x) ) }
+avg.new.cover <- round(mean(colD[which(colD$Cover>0),"Cover"]),0)
+
+
+
 ####
 ####  Define simulation function -----------------------------------------------
 ####
-iterate_sage <- function(N, int, beta.dens, beta.clim, eta, weather){
-  dens.dep <- beta.dens*log(N)
-  clim.effs <- sum(beta.clim*weather)
-  mutmp <- exp(int + dens.dep + clim.effs + eta)
-  Nout <- rpois(length(eta), mutmp)
-  return(Nout)
+iterate_sage <- function(N, int, beta.dens, beta.clim, eta, weather,
+                         col.intercept, avg_new_cover){
+  dens.dep <- beta.dens*log(N)                   # density dependent effect
+  clim.effs <- sum(beta.clim*weather)            # climate effect
+  mutmp <- exp(int + dens.dep + clim.effs + eta) # deterministic outcome
+  tmp.out <- rpois(n = length(eta), lambda = mutmp) # probabilistic estimate
+  
+  ## Colonization Process
+  zeros <- which(N==0)
+  colonizers <- rbinom(length(zeros), size = 1, antilogit(col.intercept))
+  colonizer.cover <- colonizers*avg_new_cover
+  tmp.out[zeros] <- colonizer.cover
+  Nout <- tmp.out
+  return(Nout) # return the forecast
 }
 
 
@@ -98,7 +125,73 @@ niters <- length(unique(mcmc_outs$mcmc_iter))
 dogrid <- expand.grid(1:niters, 1:nchains)
 
 
-tmp.time=Sys.time()
+
+####
+####  First forecast using point estimates of parameters for mean --------------
+####
+##  Get parameter point estimates
+mean_params <- ddply(mcmc_outs, .(Parameter), summarise,
+                     value = mean(value))
+alphas <- mean_params[grep("alpha", mean_params$Parameter),"value"]
+beta_clims <- mean_params[grep("beta", mean_params$Parameter),"value"][2:6]
+eta <- K%*%alphas
+beta_mu <- mean_params[mean_params$Parameter=="beta_mu","value"]
+int_mu <- mean_params[mean_params$Parameter=="int_mu","value"]
+sd_int <- mean_params[mean_params$Parameter=="sig_yr","value"]
+
+##  Loop over model-scenarios
+count <- 1
+for(do_model in all_models){
+  
+  for(do_scenario in all_scenarios){
+    
+    temp_now <- subset(temp_projs, scenario==do_scenario & model==do_model)
+    ppt_now <- subset(ppt_projs, scenario==do_scenario & model==do_model)
+    climate_now <- format_climate(tdata = temp_now, 
+                                  pdata = ppt_now, 
+                                  years = sim_years)
+    
+    # Scale climate predictors
+    climate_now["pptLag"] <- (climate_now["pptLag"] - obs_clim_means["pptLag"])/obs_clim_sds["pptLag"]
+    climate_now["ppt1"] <- (climate_now["ppt1"] - obs_clim_means["ppt1"])/obs_clim_sds["ppt1"]
+    climate_now["ppt2"] <- (climate_now["ppt2"] - obs_clim_means["ppt2"])/obs_clim_sds["ppt2"]
+    climate_now["TmeanSpr1"] <- (climate_now["TmeanSpr1"] - obs_clim_means["TmeanSpr1"])/obs_clim_sds["TmeanSpr1"]
+    climate_now["TmeanSpr2"] <- (climate_now["TmeanSpr2"] - obs_clim_means["TmeanSpr2"])/obs_clim_sds["TmeanSpr2"]
+    
+    # Create storage matrix for population
+    n_save <- array(dim = c(1, num_sims+1, nrow(last_obs)))
+    n_save[,1,] <- last_obs$Cover # set first record to last observation
+    
+    for(t in 2:num_sims){
+      
+      weather <- climate_now[t-1, clim_vars] #t-1 since clim data starts in 2012
+      int_now <- rnorm(1, int_mu, sd_int)
+      n_save[1,t,] <- iterate_sage(N = n_save[1,t-1,], 
+                                   int = int_now, 
+                                   beta.dens = beta_mu,
+                                   beta.clim = beta_clims,
+                                   eta = eta,
+                                   weather = weather,
+                                   col.intercept = col.intercept,
+                                   avg_new_cover = avg.new.cover)
+      
+    } # next year (t)
+    
+    file <- paste0(do_model,"_", do_scenario, "_yearly_forecastsMEAN.RDS")
+    path <- "../results/yearlyforecasts/"
+    saveRDS(n_save, paste0(path,file))
+    
+    print(paste("Done with", do_model, do_scenario, "MEAN run"))
+    
+  } # next scenario
+  
+  print(paste(count, "of", length(all_models), "GCMs"))
+  count <- count+1
+  
+} # next model
+
+
+
 
 ####
 ####  Begin looping: parameters within years within scenario within model ------
@@ -149,7 +242,9 @@ for(do_model in all_models){
                                        beta.dens = beta_mu,
                                        beta.clim = beta_clims,
                                        eta = eta_now,
-                                       weather = weather)
+                                       weather = weather,
+                                       col.intercept = col.intercept,
+                                       avg_new_cover = avg.new.cover)
         
       } # next year (t)
       
@@ -165,8 +260,4 @@ for(do_model in all_models){
   } # next scenario
   count <- count+1
 } # next model
-
-
-# time.2=Sys.time()-tmp.time
-# time.2
 
