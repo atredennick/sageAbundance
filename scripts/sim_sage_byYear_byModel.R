@@ -78,7 +78,7 @@ iterate_sage <- function(N, int, beta.dens, beta.clim, eta, weather){
   clim.effs <- sum(beta.clim*weather)
   mutmp <- exp(int + dens.dep + clim.effs + eta)
   Nout <- rpois(length(eta), mutmp)
-  return(mutmp)
+  return(Nout)
 }
 
 
@@ -127,7 +127,7 @@ for(do_model in all_models){
     n_save[,1,] <- last_obs$Cover # set first record to last observation
     
       
-    for(i in parameter_reps){
+    for(i in 1:parameter_reps){
       randchain <- sample(1:nchains, 1)
       randiter <- sample(1:niters, 1)
 #       randchain <- dogrid[i,2]

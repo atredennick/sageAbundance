@@ -93,6 +93,6 @@ ggplot()+
                      name="IPCC \nScenario",
                      labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
   theme_bw()
-ggsave("../temporal_forecast.png", width = 5, height = 4)
+ggsave("../temporal_forecast_wpois.png", width = 5, height = 4)
 
 
