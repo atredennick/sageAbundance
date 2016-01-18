@@ -9,7 +9,7 @@ remotely-sensed, species-specific estimates of plant cover and
 statistical models developed for spatio-temporal dynamics of animal
 populations. Using computationally efficient model reparameterizations,
 we fit a spatiotemporal population model to a 28 year time series of
-sagebrush (*Artemisia* spp.) percent cover over a (2.5$\times$5) km
+sagebrush (*Artemisia* spp.) percent cover over a 2.5x5 km
 landscape in southwestern Wyoming while formally accounting for spatial
 autocorrelation. We include interannual variation in precipitation and
 temperature as covariates in the model to investigate how climate
