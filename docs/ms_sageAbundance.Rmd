@@ -211,7 +211,7 @@ The Bayesian posterior distribution of our spatio-temporal model can be expresse
 \vspace{-4em}
 \begin{align}
 [\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2 | \textbf{y}] &\propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \beta_{0,t}, \beta_{1}, \boldsymbol{\gamma},\boldsymbol{\alpha}] [\beta_{0,t}|\bar{\beta_{0}}, \sigma_{\beta_{0}}^2] \right) \times \\
-&\left(\prod_{m=1}^{M}[\alpha_j|\sigma_{\eta}^2]\right)[\bar{\beta_{0}}][\beta_{1}][\boldsymbol{\gamma}][\sigma_{\beta_{0}}^2][\sigma_{\eta}^2]. \nonumber
+&\left(\prod_{m=1}^{M}[\alpha_m|\sigma_{\eta}^2]\right)[\bar{\beta_{0}}][\beta_{1}][\boldsymbol{\gamma}][\sigma_{\beta_{0}}^2][\sigma_{\eta}^2]. \nonumber
 \end{align}
 \vspace{-4em}
 
