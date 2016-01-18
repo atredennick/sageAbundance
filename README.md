@@ -1,7 +1,7 @@
 # sageAbundance
-Population model for sagebrush based on remote sensing data.
+This is a 'read me' file for data and code associated with "Forecasting climate change impacts on plant populations over large spatial extents" by Andrew T. Tredennick, Mevin B. Hooten, Cameron L. Aldridge, Collin G. Homer, Andrew Kleinhesselink, and Peter B. Adler (in review).
 
-Abstract from our paper:
+### Paper abstract
 >Plant population models are powerful tools for predicting climate change
 impacts in one location, but are difficult to apply at landscape scales.
 We overcome this limitation by taking advantage of two recent advances:
