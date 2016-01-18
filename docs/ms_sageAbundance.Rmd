@@ -13,7 +13,7 @@ csl: components/ecology.csl
 output:
   pdf_document:
     fig_caption: true
-    keep_tex: false
+    keep_tex: true
 fontsize: 12pt
 geometry: margin=1in
 linkcolor: black
@@ -83,7 +83,7 @@ The ideal tool would be a large-scale, dynamic population model [@Schurr2012a; @
 Fortunately, new advances in remote sensing and statistics now allow us to overcome both of these limitations.
 First, new remote-sensing (RS) methods are now producing accurate time series of species-specific plant cover at landscape scales.  These data can be fit with dynamic population models which include yearly fluctuations in climate as covariates.
 Such RS time series have revolutionized models of how climate affects ecosystem-level processes [e.g., @Running2004] and have been used to detect long-term trends in plant population abundance [e.g., @Homer2015], but they have yet to be used to drive a dynamic population model.
-Second, animal population modelers have developed dimension reduction and reparameterization techniques to efficiently fit high-dimension spatiotemporal models [see @Conn2015 for a review]. 
+Second, animal population modelers have developed dimension reduction and reparameterization techniques to efficiently fit high-dimension spatiotemporal models [see @Conn2015 for a review].
 These new statistical methods have yet to be applied to RS-derived plant population data at broad scales. 
 
 Large-scale, spatially-explicit population models based on RS data could offer a valuable new way to investigate the effects of large-scale environmental changes playing out at landscape and regional scales.
@@ -93,7 +93,7 @@ However, the short-term and small-scale population dynamics that actually drive 
 Because SDMs typically rely on occurence data, their projections of habitat suitability or probability of occurence provide little information on the future states of populations in the core of their range -- areas where a species exists now and is expected to persist in the future [@Ehrlen2015]. 
 Furthermore, because they lack short-term dynamics, SDMs usually cannot produce any estimate of the rate at which local populations will increase or decrease in the near-term and instead project a future equilibrium species distribution that may or may not ever be reached. Direct validation of such predictions is extremely rare [@Roberts2012].
 Large-scale dynamic population models could overcome these limitations.
-They would produce spatially-explicit estimates of species abundance within the species range [@Ehrlen2015] and would provide testable predictions of how populations should respond to short-term climate perturbations.
+They would produce spatially-explicit estimates of species abundance within the species range [@Ehrlen2015], have the potential to model expansion in abundance outside the range when coupled with dynamic models of dispersal, and would provide testable predictions of how populations should respond to short-term climate perturbations.
 These short-term predictions also would give modelers the opportunity to repeatedly validate and refine their models [@Luo2011a].  
 
 Sagebrush (*Artemisia* spp.) ecosystems offer an ideal testing ground for new spatially explicit population models derived from RS data. Sagebrush species are widely distributed [@Kuchler1964], they are sensitive to climate [@Dalgleish2011; @Schlaepfer2014; @Schlaepfer2014a; @Miglia2005; @Poore2009; @Apodaca2013; @Perfors2003; @Xian2012; @Harte2015; @Homer2015], new landscape and regional scale time series of sagebrush cover are now being produced from aerial imagery [@Homer2012], and forecasts of future sagebrush ecosystems are in high demand due to the precarious conservation status of the greater sage-grouse (*Centrocercus urophasianus*) [@Arnett2015].
@@ -115,7 +115,7 @@ Materials and Methods
 #### Remotely-sensed time series
 To demonstrate our modeling approach, we use a subset of a remotely-sensed time series of sagebrush (\emph{Artemisia} spp.) canopy cover in Wyoming [@Homer2012].
 As part of a separate study, sagebrush percent cover was estimated using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1,780 field observations of sagebrush cover distributed across Wyoming.
-The regression tree model was further validated using another 500 field observations. For Wyoming sagebrush, the model achieved an $R^{2}$ = 0.65 and an out-of-sample RMSE of 5.46% [@Homer2012].
+The regression tree model was further validated using another 297 field observations. For Wyoming sagebrush, the model achieved an $R^{2}$ = 0.65 and an out-of-sample RMSE of 5.46% [@Homer2012].
 To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images. 
 This resulted in an annual time series of sagebrush cover at 30 meter resolution from 1984 to 2011.
 In this dataset, values represent the percentage of a 30 $\times$ 30 meter pixel covered by sagebrush.
@@ -137,6 +137,7 @@ We selected these variables *a priori* based on previous studies (see *Introduct
 
 ### Additive spatio-temporal model for sagebrush cover
 We use a descriptive model for sagebrush cover that includes additive spatial and temporal effects similar to that described by @Conn2015.
+Interannual change in percent cover represents the integrated outcome of recruitment, survival, growth, and retrogression (shrinkage) of individual plants from year to year.
 We model observed integer percent cover (*y*) in cell *i* at time *t* as conditionally Poisson
 
 \vspace{-4em}
@@ -210,7 +211,7 @@ The Bayesian posterior distribution of our spatio-temporal model can be expresse
 \vspace{-4em}
 \begin{align}
 [\boldsymbol{\beta}, \boldsymbol{\gamma}, \boldsymbol{\alpha}, \sigma_{\eta}^2 | \textbf{y}] &\propto \left( \prod_{t=1}^{T} \prod_{i=1}^{n} [y_{i,t} | \beta_{0,t}, \beta_{1}, \boldsymbol{\gamma},\boldsymbol{\alpha}] [\beta_{0,t}|\bar{\beta_{0}}, \sigma_{\beta_{0}}^2] \right) \times \\
-&\left(\prod_{j=1}^{J}[\alpha_j|\sigma_{\eta}^2]\right)[\bar{\beta_{0}}][\beta_{1}][\boldsymbol{\gamma}][\sigma_{\beta_{0}}^2][\sigma_{\eta}^2]. \nonumber
+&\left(\prod_{m=1}^{M}[\alpha_j|\sigma_{\eta}^2]\right)[\bar{\beta_{0}}][\beta_{1}][\boldsymbol{\gamma}][\sigma_{\beta_{0}}^2][\sigma_{\eta}^2]. \nonumber
 \end{align}
 \vspace{-4em}
 
@@ -250,8 +251,10 @@ To calculate average future equilibrium sagebrush cover, we ran simulation (3) f
 For simulation (2), we initialized each pixel with its actual percent cover value for time *t* and cell *s* and projected the model forward one time step and compared the one-step ahead forecast with the observed value.
 For simulation (4), we initialized each pixel with the final observed value in 2011 and then projected the model forward based on GCM yearly weather projections.
 We ran these simulations for each GCM and RCP scenario combination separately and then aggregated the results over the GMCs by calculating the mean and the 90th percentiles for each RCP scenario.
+
 We used the posterior mean of each parameter for all simulations except for (4) where we ran 50 simulations with unique sets of parameters from the chains.
-The random year effects were not used in simulations 1-3 where.
+Random year effects were included in simulations by randomly drawing a posterior mean year effect ($\beta_{0,t}$) for each iteration (simulations 1 and 3), using the posterior mean year effect for a specific year (simulation 2), or by a drawing a future-year random effect from the posterior mean and standard deviation of the mean intercept (simulation 4, e.g., $\beta_{0,T} \sim \text{normal}(\bar{\beta_{0}}, \sigma_{\beta_{0}}^2)$ for some future year *T*).
+Our simulation approach provides a reasonable and computationally efficient approximation to the true posterior predictive mean when used in these scenarios with our data.
 
 We required future projections of climate for our study area to conduct the equilibrium and temporally-explicit forecasts described above.
 Thus, we used the most recent climate projections from the Intergovernmental Panel on Climate Change (IPCC), the Coupled Model Intercomparison Project 5 (CMIP5; *available online*)[^link2].
@@ -321,7 +324,7 @@ Nonetheless, our model was capabable of detecting climate effects that agree wit
 
 Under projected climate, we forecast modest increases in sagebrush cover for all RCP scenarios (Figs. 5,6).
 Our forecasts reflect both the estimated effect size for each climate covariate and the amount of change in those covariates projected by the GCMs.
-Cumulative precipitation the year before before a given year-to-year transition was the strongest standardized effect (Fig. 3), but precipitation is projected to increase only moderately (Table 1, Fig. 2) and the negative effect of fall-through-spring precipitation in the first year of a cover transition (*ppt1*) had an offsetting effect.
+Cumulative precipitation the year before a given year-to-year transition was the strongest standardized effect (Fig. 3), but precipitation is projected to increase only moderately (Table 1, Fig. 2) and the negative effect of fall-through-spring precipitation in the first year of a cover transition (*ppt1*) had an offsetting effect.
 In contrast, mean spring temperature had a weak positive effect on sagebrush cover changes, but the projected temperature increase is large (Table 1, Fig. 2).
 An interesting consequence of explicitly modeling the effect of space (through $\boldsymbol{\eta}$) is the forecasted increase in spatial heterogeity (Fig. E1).
 Our model projects little change in low cover pixels but substantial increases in the cover of high cover pixels (Fig. 5). 
@@ -332,15 +335,18 @@ There are many potential explanations for this apparent contrast, ranging from t
 The response of plant species to weather varies along climatic gradients [e.g., @Clark2011; @Vanderwel2013b], and sagebrush are especially sensitive to the timing of snowmelt because their growth depends on recharge of deep soil water [@Schlaepfer2012; @Schlaepfer2014].
 In warmer parts of the sagebrush range, earlier snowmelt is detrimental to growth and survival [@Pechanec1937; @Schlaepfer2011; @Germino2014].
 In colder regions, earlier snowmelt due to temperature increases can lengthen the growing season and increase sagebrush occurence and cover [@Schlaepfer2012; @Schlaepfer2014].
-The average annual temperature across the sagebrush steppe biome is 6.9\textdegree C [sd = 1.6; @Schlaepfer2011], whereas average temperature at our study area from 1980 to 2013 is 4.6\textdegree C (calculated from Daymet estimates).
+The average annual temperature across the sagebrush steppe biome is 6.9\textdegree C [sd = 1.6; @Schlaepfer2011], whereas average temperature at our study area from 1980 to 2013 was 4.6\textdegree C (calculated from Daymet estimates).
 Our study area lies at the cold extreme of the sagebrush range, thus the weak positive response to temperature that we estimated (Fig. 3) and carried through to our forecasts (Figs. 5,6) likely represents the positive effect of earlier snowmelt, and thus higher moisture availability early in the growing season.
 
 A previous analysis of a different subset of the remote sensing data set we used also came to a different conclusion, projecting future sagebrush decline [@Homer2015].
 The discrepancy between the results of Homer et al. (2015) and ours primarily reflects a difference in the climate projections used for projecting future changes rather than differences in our inference about responses to historical variation in weather.
+Homer et al. (2015) used downscaled weather projections from a single model from the IPCC 4 whereas we used native-resolution weather projections from a suite of models from the IPCC 5.
 Consistent with our study, Homer et al. (2015) found a generally positive relationship between pixel-level sagebrush cover and precipitation, but the future climate scenario they chose resulted in a mean decrease in precipitation, causing a predicted decline in sagebrush cover.
 A second difference is that Homer et al. (2015) relied on regressions of decadal trends in sagebrush cover against decadal trends in climate at the level of individual pixels.
 Our current approach is fundamentally different in that we specifically model the impact of interannual variation in weather on year-to-year changes in sagebrush cover using a dynamic population model.
 Thus, our model takes advantage of the additional information contained within short-term responses to climate fluctuations.
+Lastly, the location of Homer et al.'s (2015) study area is, on average, at a lower elevation than our current study area.
+The geographic difference results in different historical and projected climate, and, as discussed above, sagebrush may respond differently to warming depending on geographic location.
 
 We projected sagebrush cover to the end of this century, but an important feature of our approach is that it could also produce short-term forecasts.
 For example, we could forecast the effects of a multi-year regional drought on sagebrush cover [@Debinski2010]. Validating spatial population models against short-term predictions would give ecological forecasters a way to assess and improve the performance of their models, which would greatly increase our confidence in long-term forecasts.
@@ -371,13 +377,6 @@ However, in future applications, it will be important to allow climate effects t
 @Conn2015 provide examples of how such spatiotemporal interactions can be included in abundance models.
 We might expect climate effects to interact with spatial covariates such as soil type, slope, and aspect. 
 In our relative small study area, we did not observe important effects of these factors, but it is possible to include such abiotic data layers as predictors when fitting models at larger spatial extents where variability may be greater.
-
-The contrast between our conclusions and those of Homer et al. (2015) emphasizes the role of climate projections in ecological forecasting.
-Weather projections from GCMs differ because each model incorporates processes and feedbacks in different ways [@Flato2013].
-These structural differences among GMCs can lead to divergent weather forecasts for specific regions, even if the GCMs converge on projections at the global scale [@Flato2013]. There is no clear answer to what climate model to use when making ecological forecasts at the regional scale.
-Much like weather forecasters [@Bauer2015], ecological forecasters may need to apply expert judgement to choose climate projections.
-If a certain GCM tends to better predict weather in a specific study area [e.g., @Rupp2013], then that GCM may be given more weight than others.
-Extensions of these ideas are the subject of ongoing research.
 
 
 Conclusion
@@ -453,7 +452,7 @@ img <- readPNG("../results/spatialfield.png")
 grid.raster(img)
 ```
 
-```{r figure_4,dependson="plot-options", fig.cap="Observed and predicted (A, B) equilibrium percent cover of sagebrush, and prediction bias and precision (C, D) for the extent of our spatial area at 30-m resolution. Observed equilibrium sagebrush cover (A) is the temporal mean of each pixel from the 28 year time series. Prediction results are from simulations that use mean parameter values and no random year effects. Axes definitions: Lat = latitude; Lon = longitude.", fig.height=8, eval=T}
+```{r figure_4,dependson="plot-options", fig.cap="Observed and predicted (A, B) equilibrium percent cover of sagebrush, and prediction bias and precision (C, D) for the extent of our spatial area at 30-m resolution. Observed equilibrium sagebrush cover (A) is the temporal mean of each pixel from the 28 year time series. Prediction results are from simulations that use posteior mean parameter values. Precision in (D) represents the variability of each pixel over the course of the 2,000 iteration simulation. Axes definitions: Lat = latitude; Lon = longitude.", fig.height=8, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/obs_pred_spatial_subset.png")
@@ -467,7 +466,7 @@ img <- readPNG("../results/obs_pred_hist.png")
 grid.raster(img)
 ```
 
-```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under three IPCC climate change scenarios (RCP = Representative Concentration Pathways) for our study area in southwestern Wyoming. The top panel shows equilibrium cover based on simulations using observed climate. Subsequent panels show equilibrium cover based on perturbed climate for each RCP scenario. Forecasts are based on the projected climate changes in Table 1 applied to the observed climate time series used to fit the statistical model. We used mean parameter estimates for all simulations. Color bar indicates percent cover of sagebrush in each 30x30 meter pixel. Axes definitions: Lat = latitude; Lon = longitude.", fig.height=6, eval=T}
+```{r figure_6,dependson="plot-options", fig.cap="Projected equilibrium cover under three IPCC climate change scenarios (RCP = Representative Concentration Pathways) for our study area in southwestern Wyoming. The top panel shows equilibrium cover based on simulations using observed climate. Subsequent panels show equilibrium cover based on perturbed climate for each RCP scenario. Forecasts are based on the projected climate changes in Table 1 applied to the observed climate time series used to fit the statistical model. We used posterior mean parameter estimates for all simulations. Color bar indicates percent cover of sagebrush in each 30x30 meter pixel. Axes definitions: Lat = latitude; Lon = longitude.", fig.height=6, eval=T}
 library(png)
 library(grid)
 img <- readPNG("../results/clim_change_mean_spatial.png")
