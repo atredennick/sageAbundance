@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  18 JAN 2016 12:40
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  18 JAN 2016 13:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1303,73 +1303,79 @@ Overfull \hbox (6.14273pt too wide) in paragraph at lines 1131--1140
  []
 
 [29]
-<components/figure/manuscript-figure_1_alt-1.pdf, id=239, 429.605pt x 433.62pt>
+Overfull \hbox (0.15044pt too wide) in paragraph at lines 1174--1184
+[]\T1/lmr/m/n/12 (+9) FIGURE 5: Pro-jected equi-lib-rium cover un-der three IPC
+C cli-mate change sce-nar-ios (RCP 
+ []
+
+[30] [31]
+<components/figure/manuscript-figure_1_alt-1.pdf, id=252, 429.605pt x 433.62pt>
 File: components/figure/manuscript-figure_1_alt-1.pdf Graphic file (type pdf)
 <use components/figure/manuscript-figure_1_alt-1.pdf>
 Package pdftex.def Info: components/figure/manuscript-figure_1_alt-1.pdf used o
-n input line 1148.
+n input line 1202.
 (pdftex.def)             Requested size: 429.61049pt x 433.62555pt.
 
-<components/figure/manuscript-figure_2a-1.pdf, id=240, 244.915pt x 325.215pt>
+<components/figure/manuscript-figure_2a-1.pdf, id=253, 244.915pt x 325.215pt>
 File: components/figure/manuscript-figure_2a-1.pdf Graphic file (type pdf)
 
 <use components/figure/manuscript-figure_2a-1.pdf>
 Package pdftex.def Info: components/figure/manuscript-figure_2a-1.pdf used on i
-nput line 1158.
+nput line 1212.
 (pdftex.def)             Requested size: 244.92184pt x 325.22412pt.
 
-<components/figure/manuscript-figure_2-1.pdf, id=241, 291.0875pt x 289.08pt>
+<components/figure/manuscript-figure_2-1.pdf, id=254, 291.0875pt x 289.08pt>
 File: components/figure/manuscript-figure_2-1.pdf Graphic file (type pdf)
 
 <use components/figure/manuscript-figure_2-1.pdf>
 Package pdftex.def Info: components/figure/manuscript-figure_2-1.pdf used on in
-put line 1166.
+put line 1220.
 (pdftex.def)             Requested size: 291.1001pt x 289.09251pt.
 
-<components/figure/manuscript-figure_4-1.pdf, id=242, 469.755pt x 471.7625pt>
+<components/figure/manuscript-figure_4-1.pdf, id=255, 469.755pt x 471.7625pt>
 File: components/figure/manuscript-figure_4-1.pdf Graphic file (type pdf)
 
 <use components/figure/manuscript-figure_4-1.pdf>
 Package pdftex.def Info: components/figure/manuscript-figure_4-1.pdf used on in
-put line 1180.
+put line 1234.
 (pdftex.def)             Requested size: 469.75386pt x 471.76134pt.
 
-<components/figure/manuscript-figure_6-1.pdf, id=243, 218.8175pt x 433.62pt>
+<components/figure/manuscript-figure_6-1.pdf, id=256, 218.8175pt x 433.62pt>
 File: components/figure/manuscript-figure_6-1.pdf Graphic file (type pdf)
 
 <use components/figure/manuscript-figure_6-1.pdf>
 Package pdftex.def Info: components/figure/manuscript-figure_6-1.pdf used on in
-put line 1193.
+put line 1247.
 (pdftex.def)             Requested size: 218.82028pt x 433.62555pt.
 
-<components/figure/manuscript-figure_8-1.pdf, id=244, 407.5225pt x 325.215pt>
+<components/figure/manuscript-figure_8-1.pdf, id=257, 407.5225pt x 325.215pt>
 File: components/figure/manuscript-figure_8-1.pdf Graphic file (type pdf)
 
 <use components/figure/manuscript-figure_8-1.pdf>
 Package pdftex.def Info: components/figure/manuscript-figure_8-1.pdf used on in
-put line 1208.
+put line 1262.
 (pdftex.def)             Requested size: 407.54015pt x 325.22908pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1221.
- [30 <./components/figure/manuscript-figure_1_alt-1.pdf>] [31 <./components/fig
-ure/manuscript-figure_2a-1.pdf>] [32 <./components/figure/manuscript-figure_2-1
-.pdf>] [33 <./components/figure/manuscript-figure_4-1.pdf>] [34 <./components/f
-igure/manuscript-figure_6-1.pdf>] [35 <./components/figure/manuscript-figure_8-
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1275.
+ [32 <./components/figure/manuscript-figure_1_alt-1.pdf>] [33 <./components/fig
+ure/manuscript-figure_2a-1.pdf>] [34 <./components/figure/manuscript-figure_2-1
+.pdf>] [35 <./components/figure/manuscript-figure_4-1.pdf>] [36 <./components/f
+igure/manuscript-figure_6-1.pdf>] [37 <./components/figure/manuscript-figure_8-
 1.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1221.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1275.
 
 (./ms_sageAbundance.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1221.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1221.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1275.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1275.
 
 Package rerunfilecheck Info: File `ms_sageAbundance.out' has not changed.
-(rerunfilecheck)             Checksum: 4ABAE80A2646A95418358D153032197B;2656.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1221.
+(rerunfilecheck)             Checksum: DC64B2BBB888B05F864FEEE6A5A9221B;2780.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1275.
  ) 
 Here is how much of TeX's memory you used:
- 12883 strings out of 493315
- 188813 string characters out of 6137904
+ 12887 strings out of 493315
+ 188851 string characters out of 6137904
  285225 words of memory out of 5000000
- 15942 multiletter control sequences out of 15000+600000
+ 15943 multiletter control sequences out of 15000+600000
  106694 words of font info for 132 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  34i,19n,35p,801b,391s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1405,10 +1411,10 @@ s/type1/public/lm/lmri12.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/pu
 blic/lm/lmri8.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/lm/lms
 s8.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></u
 sr/local/texlive/2013/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on ms_sageAbundance.pdf (35 pages, 1571821 bytes).
+Output written on ms_sageAbundance.pdf (37 pages, 1575378 bytes).
 PDF statistics:
- 472 PDF objects out of 1000 (max. 8388607)
- 353 compressed objects within 4 object streams
- 75 named destinations out of 1000 (max. 500000)
- 22695 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 487 PDF objects out of 1000 (max. 8388607)
+ 366 compressed objects within 4 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 22703 words of extra memory for PDF output out of 24883 (max. 10000000)
 
