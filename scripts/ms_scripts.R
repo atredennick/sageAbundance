@@ -203,6 +203,8 @@ time.steps <- 2000
 burn.in <- 100
 mean_params <- ddply(outs, .(Parameter), summarise,
                      value = mean(value))
+yrint_ids <- grep("int_yr", mean_params$Parameter)
+int_yrs <- mean_params[yrint_ids,"value"]
 alphas <- mean_params[grep("alpha", mean_params$Parameter),"value"]
 betas <- mean_params[grep("beta", mean_params$Parameter),"value"][2:6]
 eta <- K%*%alphas
@@ -213,9 +215,10 @@ clim_sim <- climD[climD$year %in% unique(growD$Year),]
 X_sim = clim_sim[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 X_sim = scale(X_sim, center = TRUE, scale = TRUE)
 for(t in 2:time.steps){
+  int_now <- int_yrs[sample(c(1:length(int_yrs)), 1)]
   Xtmp <- X_sim[sample(c(1:nrow(X_sim)), 1),]
   dens.dep <- mean_params[mean_params$Parameter=="beta_mu","value"]*log(ex.mat[t-1,])
-  tmp.mu <- mean_params[mean_params$Parameter=="int_mu","value"] + dens.dep + sum(betas*Xtmp)
+  tmp.mu <- int_now + dens.dep + sum(betas*Xtmp)
   tmp.mu <- exp(tmp.mu + eta)
   tmp.out <- rpois(ncol(ex.mat), lambda = tmp.mu)
   
@@ -303,6 +306,8 @@ dev.off()
 ####
 mean_params <- ddply(outs, .(Parameter), summarise,
                      mean(value))
+yrint_ids <- grep("int_yr", mean_params$Parameter)
+int_yrs <- mean_params[yrint_ids,"value"]
 alphas <- mean_params[grep("alpha", mean_params$Parameter),"..1"]
 betas <- mean_params[grep("beta", mean_params$Parameter),"..1"][2:6]
 eta <- K%*%alphas
@@ -314,6 +319,7 @@ clim_sim <- climD[climD$year %in% unique(growD$Year),]
 X_sim = clim_sim[,c("pptLag", "ppt1", "ppt2", "TmeanSpr1", "TmeanSpr2")]
 X_sim = scale(X_sim, center = TRUE, scale = TRUE)
 for(t in 1:time.steps){
+  int_now <- int_yrs[t]
   Xtmp <- X_sim[t,]
   lagcover <- growD[which(growD$Year==yearid[t]),"CoverLag"]
   dens.dep <- mean_params[mean_params$Parameter=="beta_mu","..1"]*log(lagcover)

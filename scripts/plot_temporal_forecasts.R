@@ -23,6 +23,8 @@ library(reshape2)
 ####
 setwd("../results/yearlyforecasts/")
 all_files <- list.files()
+torms <- grep("MEAN", all_files)
+all_files <- all_files[-torms]
 
 longdf <- data.frame(model=NA,
                      scenario=NA,

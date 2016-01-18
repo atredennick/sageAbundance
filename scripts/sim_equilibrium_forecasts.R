@@ -101,7 +101,7 @@ avg.new.cover <- round(mean(colD[which(colD$Cover>0),"Cover"]),0)
 ####
 sim_sage <- function(init_cover_vector, scaled_clim_matrix, 
                      avg_new_cover, params, time_steps){
-  int_mu <- params[["int_mu"]]
+  int_yrs <- params[["int_yrs"]]
   beta_mu <- params[["beta_mu"]]
   betas <- params[["betas"]]
   eta <- params[["eta"]]
@@ -111,10 +111,11 @@ sim_sage <- function(init_cover_vector, scaled_clim_matrix,
   pb <- txtProgressBar(min=2, max=time_steps, char="+", style=3, width=65)
   for(t in 2:time_steps){
     ## Growth Process
+    int_now <- int_yrs[sample(c(1:length(int_yrs)), 1)]
     Xtmp <- X[sample(c(1:nrow(X)), 1),]
     dens.dep <- beta_mu*log(cover_matrix[t-1,])
     dens.dep[which(dens.dep==-Inf)] <- 0
-    tmp.mu <- int_mu + dens.dep + sum(betas*Xtmp)
+    tmp.mu <- int_now + dens.dep + sum(betas*Xtmp)
     tmp.mu <- exp(tmp.mu + eta)
     tmp.out <- rpois(ncol(cover_matrix), lambda = tmp.mu)
     
@@ -140,8 +141,10 @@ alphas <- mean_params[grep("alpha", mean_params$Parameter),"value"]
 betas <- mean_params[grep("beta", mean_params$Parameter),"value"][2:6]
 eta <- K%*%alphas
 beta_mu <- mean_params[mean_params$Parameter=="beta_mu","value"]
-int_mu <- mean_params[mean_params$Parameter=="int_mu","value"]
-params <- list(int_mu=int_mu, beta_mu=beta_mu, betas=betas, eta=eta)
+# int_mu <- mean_params[mean_params$Parameter=="int_mu","value"]
+yrint_ids <- grep("int_yr", mean_params$Parameter)
+int_yrs <- mean_params[yrint_ids,"value"]
+params <- list(int_yrs=int_yrs, beta_mu=beta_mu, betas=betas, eta=eta)
 
 
 
