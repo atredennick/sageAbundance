@@ -24,3 +24,12 @@ do not include population dynamics. Our approach is among the first
 steps toward using remote sensing data to model population responses to
 environmental change that play out at spatial scales far greater than
 the traditional field study plot.
+
+Funding for this work was provided by the National Science Foundation through a Postdoctoral Research Fellowship in Biology to Andrew ([DBI-1400370](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1400370&HistoricalAwards=false)) and a CAREER award to Peter ([DEB-1054040](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1054040&HistoricalAwards=false)).
+
+_Send questions to_: Andrew Tredennick (atredenn@gmail.com)
+
+General Information
+-------------------
+This directory contains all of the data and R code necessary to reproduce the analysis and figures from Tredennick *et al.* 201x. The ``scripts/`` and ``data/`` directories holds all code and data, while the ``docs/`` directory contains a R Markdown file (``sageAbundance_ms.Rmd``) with paper text.
+
