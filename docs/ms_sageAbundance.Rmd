@@ -326,9 +326,12 @@ Under projected climate, we forecast modest increases in sagebrush cover for all
 Our forecasts reflect both the estimated effect size for each climate covariate and the amount of change in those covariates projected by the GCMs.
 Cumulative precipitation the year before a given year-to-year transition was the strongest standardized effect (Fig. 3), but precipitation is projected to increase only moderately (Table 1, Fig. 2) and the negative effect of fall-through-spring precipitation in the first year of a cover transition (*ppt1*) had an offsetting effect.
 In contrast, mean spring temperature had a weak positive effect on sagebrush cover changes, but the projected temperature increase is large (Table 1, Fig. 2).
+
 An interesting consequence of explicitly modeling the effect of space (through $\boldsymbol{\eta}$) is the forecasted increase in spatial heterogeity (Fig. E1).
 Our model projects little change in low cover pixels but substantial increases in the cover of high cover pixels (Fig. 5). 
 Had we not explicitly accounted for spatial-dependence in our model, we would have missed this result.
+We were unable to attribute the spatial structure apparent in the data (Fig. 4A) and approximated by our model ($\boldsymbol{\eta}$, Fig. D1) to slope, aspect, elevation, or coarse soil type (results not shown).
+The lack of correlation between $\boldsymbol{\eta}$ and landscape factors leads us to conclude that the spatial structure in our data set emerges from some combination of fine-scale microhabitat associations and legacy effects related to fire and species invasions.
 
 While we forecast an increase in sagebrush cover at our study area, SDM studies typically project dramatic declines in climate suitability for sagebrush with warming [@Shafer2001; @Neilson2005; @Bradley2010; @Schlaepfer2012; @Still2015].
 There are many potential explanations for this apparent contrast, ranging from the type of model used to the particular climate covariates considered, but the location of our study area in a cold portion of sagebrush's geographic distribution may be the best.
