@@ -18,14 +18,14 @@ geometry: margin=1in
 
 ---
 
-\renewcommand\thefigure{E\arabic{figure}}  
+\renewcommand\thefigure{F\arabic{figure}}  
 
-Appendix E: Posterior estimate of spatial random effects ($\boldsymbol{\eta}$)
+Appendix F: Density plots of sagebrush cover forecasts ($\boldsymbol{\eta}$)
 ==============================================================================
 
-```{r figure_E1,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=TRUE, echo=FALSE}
+```{r figure_F1,dependson="plot-options", fig.cap="Estimated kernel densities for current and projected sagebrush cover across space and simulation time. These densities represent the desnity of cover values from the spatial plots in Figure 5 of the main text.", eval=TRUE, echo=FALSE}
 library(png)
 library(grid)
-img <- readPNG("../figures/spatialfield.png")
+img <- readPNG("../figures/clim_change_densities.png")
 grid.raster(img)
 ```

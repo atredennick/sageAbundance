@@ -5,6 +5,7 @@ header-includes:
    - \linenumbers
    - \usepackage{setspace}
    - \doublespacing
+   - \usepackage{graphicx}
 bibliography: ~/Dropbox/Bibliography/SageAbundance.bib
 csl: components/ecology.csl
 
@@ -20,30 +21,14 @@ geometry: margin=1in
 
 \renewcommand\thefigure{B\arabic{figure}}  
 
-Appendix B: Detailed methods for knot choice and placement
-==========================================================
-Our dimension reduction approach requires fitting random effects associated with knots distributed nonrandomly in space. By distributing *m* knots across space, we can fit random effects for each knot and then use process convolution to interpolate the random effect between the knots. Increasing the number of knots results in a more finely-resolved spatial effect, but it also increases processe time. Thus, there exists a tension between the resolution of the spatial effect and computational effort. Without regard to computation time, it is possible to use common model selection techniques to guide the number of knots one should use. With regard to computation time, it is sensible to choose knot placement and number based on the observed residual spatial variation.
+Appendix B: Annual maps of sagebrush cover
+==========================================
 
-To do so, we fit a generalized linear model of the form
+We used remotely-sensed estimates of sagebrush cover [@Homer2012].
+Here we show the annual maps of sagebrush cover as hindcasted with the regression tree algorithm described in @Homer2012.
 
-\vspace{-4em}
-\begin{align}
-y_{i,t} \sim \text{Poisson}(\mu_{i,t}),
-\end{align}
-\vspace{-4em}
-
-where $\mu_{i,t}$ is the expected percent cover of pixel *i* in year *t*
-
-\vspace{-4em}
-\begin{align}
-\text{log}(\mu_{i,t}) &= \beta_{0} + \beta_{1}y_{i,t-1} + \textbf{x}_{t}'\boldsymbol{\gamma}
-\end{align}
-\vspace{-3em}
-
-that includes a density-dependence effect of log-transformed cover in the previous year ($y_{i,t-1}$) and climate effects ($\textbf{x}_t$). In other words, a non-hierarchial version of the model presented in our main text. We then examined a spatial variogram of the residuals from the above model to identify the the distance at which spatial dependence disappears.
-
-Spatial dependence existed in the residuals until pixels were separated by about 500 meters (Fig. B1). Thus, we set the kernel bandwidth ($\sigma$ in Eq. 6 of the main text) to 500/3 = `r round(500/3,2)` because the effective spatial range under an exponential covariance structure is equal to $\sigma \times 3$. We then placed equally-spaced knots across our spatial grid until the distance between nearest neighbors was approximately 500 meters. Knots were placed evenly across space in the x and y directions. This resulted in a 11 $\times$ 21 knot grid (231 knots; Fig. B2).
-
-![Spatial variogram of model residuals showing where spatial dependence disappears (~500 meters; asymptote of the variogram), and the value chosen for the kernel bandwidth in Eq. 6 of the main text (500/3; dashed black line).](../results/avgresidual_variogram_withrange_subset.png)
-
-![Map of our study area showing percent cover in 1984 and the location of the 231 evenly-spaced knots.](../results/SAGE_Grid_wKnots_subset.png)
+\begin{figure}[!ht]
+  \centering
+      \includegraphics[width=7in]{../figures/all_years_percCover.png}
+  \caption{Estimated percent cover of 30 x 30 meter pixels in our study area in southwestern Wyoming (see Fig. 1). Maps show percent cover for each year (1984-2011).}
+\end{figure}

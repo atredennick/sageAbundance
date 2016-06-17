@@ -19,13 +19,64 @@ geometry: margin=1in
 ---
 
 \renewcommand\thefigure{D\arabic{figure}}  
+\renewcommand\thetable{D\arabic{table}}  
 
-Appendix D: Posterior estimate of spatial random effects ($\boldsymbol{\eta}$)
-==============================================================================
+Appendix D: Model convergence diagnostics
+=========================================
+Scale reduction factors [@Gelman1992; @Gelman2009] were less than 1.1 for all fitted parameters (Figure D1).
+Visual inspection of traceplots indicated convergence.
 
-```{r figure_D1,dependson="plot-options", fig.cap="Standardized percent cover showing the general spatial structure of above and below average pixels in the data (top panel) compared to the mean posterior estimate of the spatial field, $\\eta$ (bottom panel).", eval=TRUE, echo=FALSE}
-library(png)
-library(grid)
-img <- readPNG("../results/spatialfield.png")
-grid.raster(img)
-```
+\footnotesize
+
+Table:  Definition of parameters and model notation for Figure D1.
+
+| Parameter | Definition | Notation in figures |
+| --------- | ---------- | -------------------------------------- |
+| $\alpha_{i}$ | spatial random effect for for knot *i* | ``alpha.i`` where ``i`` is the numeric knot id |
+| $\gamma_{x}$ | climate effect for covariate *x* | ``beta.x`` where ``x`` is the numeric climate covariate id |
+| $\beta_{0t}$ | random effect for year *t* on the intercept | ``int_yr.t`` where ``t`` is the numeric year id |
+| $\bar{\beta_{0}}$ | mean intercept | ``int_mu`` |
+| $\beta_{1}$ | density-dependent effect | ``beta_mu`` |
+| $\sigma_{\beta_{0}}^2$ | variance of year random effect | ``sig_yr`` |
+| $\sigma_{\eta}^2$ | variance of spatial random effect | ``sig_a`` |
+
+\normalsize
+
+![Scale reduction factors for each parameter ($\hat{R}$, points) and the unacceptable level of 1.1 shown in red.](../figures/rhat_plot.png)
+
+<!--
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_01.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_02.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_03.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_04.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_05.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_06.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_07.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_08.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_09.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_10.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_11.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_12.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_13.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_14.png)
+
+![Traceplots of three MCMC chains for each model parameter.](../results/poissonSage_randYear_traceplots_Page_15.png)
+
+-->
+
+References
+----------
