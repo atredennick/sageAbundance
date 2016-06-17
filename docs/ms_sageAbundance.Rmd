@@ -391,7 +391,7 @@ We might expect climate effects to interact with spatial covariates such as soil
 In our relative small study area, we did not observe important effects of these factors, but it is possible to include such abiotic data layers as predictors when fitting models at larger spatial extents where variability may be greater.
 
 \hl{The uncerainty associated with our forecasts highlights several opportunities to improve our approach.
-First, Parameter uncertainty could be reduced by regulating the variance of the posterior distributions of climate covariates via ridge regression} [e.g., @Gerber2015].
+First, parameter uncertainty could be reduced by regulating the variance of the posterior distributions of climate covariates via ridge regression} [e.g., @Gerber2015].
 \hl{Second, uncertainty associated with climate projections could be reduced by identifying GCMs that perform exceptionally well for a particular study location} [e.g., @Rupp2013].
 \hl{Such considerations will be important when forecasting in support of particular management objectives.}
 
@@ -435,7 +435,7 @@ Figures
 -------
 \begin{figure}[!ht]
   \centering
-      \includegraphics[height=6in]{./components/figure/studyarea_map.png}
+      \includegraphics[height=6in]{../figures/studyarea_map.png}
   \caption{Location of the 5,070 $\times$ 2,430 meter kilometer study area in southwestern Wyoming (black rectangle) and a snapshot of the percent cover data in 1984 (detailed inset). Scale bar is relevant for US map only; refer to axes labels on the detailed inset of sagebrush percent cover for scale of the study area.}
 \end{figure}
 
@@ -443,7 +443,7 @@ Figures
 
 \begin{figure}[!ht]
   \centering
-      \includegraphics[width=4in]{./components/figure/weather_projections.png}
+      \includegraphics[width=4in]{../figures/weather_projections.png}
   \caption{GCM yearly weather hindcasts (before solid line at 2011) and projections (after solid line at 2011) for precipitation (A) and temperature (B) at our study area in southwestern Wyoming (see Fig. 1).}
 \end{figure}
 
@@ -451,15 +451,15 @@ Figures
 
 \begin{figure}[!ht]
   \centering
-      \includegraphics[width=4in]{../results/post_climate_covariates.png}
-  \caption{Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \emph{t-2} (pptLag) is important (shown in dark grey; 90\% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \emph{t-2}; TmeanSpr1 = year \emph{t-1} average spring temperature; ppt2 = year \emph{t} fall through summer precipitation; TmeanSpr2 = year \emph{t} average spring temperature; ppt1 = year \emph{t-1} fall through summer precipitation.}
+      \includegraphics[width=4in]{../figures/post_climate_covariates.png}
+  \caption{Posterior distributions of climate covariates. The x-axis is the standardized coefficient value because we fit the statistical model for sagebrush cover change (Eq. 7) using standardized covariate values. Only cumulative precipitation at time \emph{t-2} (pptLag) is important (shown in blue; 90\% CI does not overlap zero). Climate covariate codes: pptLag = water year precipitation in year \emph{t-2}; TmeanSpr1 = year \emph{t-1} average spring temperature; ppt2 = year \emph{t} fall through summer precipitation; TmeanSpr2 = year \emph{t} average spring temperature; ppt1 = year \emph{t-1} fall through summer precipitation.}
 \end{figure}
 
 \newpage{}
 
 \begin{figure}[!ht]
   \centering
-      \includegraphics[height=6in]{../results/obs_pred_spatial_subset.png}
+      \includegraphics[height=6in]{../figures/obs_pred_spatial_subset.png}
   \caption{Observed and predicted (A, B) equilibrium percent cover of sagebrush, and prediction bias and precision (C, D) for the extent of our spatial area at 30-m resolution. Observed equilibrium sagebrush cover (A) is the temporal mean of each pixel from the 28 year time series. Prediction results are from simulations that use posteior mean parameter values. Precision in (D) represents the variability of each pixel over the course of the 2,000 iteration simulation. Axes definitions: Lat = latitude; Lon = longitude.}
 \end{figure}
 
@@ -467,7 +467,7 @@ Figures
 
 \begin{figure}[!ht]
   \centering
-      \includegraphics[height=6in]{../results/clim_change_mean_spatial.png}
+      \includegraphics[height=6in]{../figures/clim_change_mean_spatial.png}
   \caption{Projected equilibrium cover under three IPCC climate change scenarios (RCP = Representative Concentration Pathways) for our study area in southwestern Wyoming. The top panel shows equilibrium cover based on simulations using observed climate. Subsequent panels show equilibrium cover based on perturbed climate for each RCP scenario. Forecasts are based on the projected climate changes in Table 1 applied to the observed climate time series used to fit the statistical model. We used posterior mean parameter estimates for all simulations. Color bar indicates percent cover of sagebrush in each 30x30 meter pixel. Axes definitions: Lat = latitude; Lon = longitude.}
 \end{figure}
 
@@ -476,8 +476,8 @@ Figures
 
 \begin{figure}[!ht]
   \centering
-      \includegraphics[width=4in]{../results/temporal_forecast.png}
-  \caption{Observed (black line before 2011) and forecasted (colored lines after 2011) sagebrush percent cover. Forecasts were made for three IPCC emissions scenarios (RCPs 4.5, 6.0, and 8.5) and are for the period of 2012 to 2098. Shaded regions show 90\% quantiles for simulations conducted using 50 different sets of parameters from the MCMC output. Lines show mean trajectories. Uncertainty in forecasts arises from uncertainty in GCM projections, uncerainty around the ecological process, and uncertainty around parameter estimates. Before calculating the mean and 90\% quantiles for each year across parameter sets and GCMs, we averaged percent cover over the 13,689 pixles.}
+      \includegraphics[width=3in]{../figures/figure6.png}
+  \caption{Observed (black line before 2011) and forecasted (colored lines after 2011) sagebrush percent cover. Long-term forecasts (A) were made for three IPCC emissions scenarios (RCPs 4.5, 6.0, and 8.5) and are for the period of 2012 to 2098. Shaded regions show limits of the 5th and 95th quantiles for simulations conducted using 50 different sets of parameters from the MCMC output. Lines show mean trajectories. Uncertainty in forecasts arises from uncertainty in GCM projections, uncerainty around the ecological process, and uncertainty around parameter estimates. Before calculating the mean and quantiles for each year across parameter sets and GCMs, we averaged percent cover over the 13,689 pixels. Panel (B) shows an example short-term forecast (10 years) using the MIROC5 GCM projections under RCP 8.5. Each line shows a forecast from one parameter set.}
 \end{figure}
 
 \newpage{}

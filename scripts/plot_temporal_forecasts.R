@@ -86,7 +86,7 @@ ggplot()+
   geom_line(data=meandf, aes(x=year, y=avgcover, color=scenario))+
   geom_vline(aes(xintercept=2011))+
   ylab("Mean sagebrush cover (%)")+
-  guides(color=FALSE)+
+  guides(color=FALSE,fill=FALSE)+
   scale_y_continuous(limits=c(0,30))+
   scale_fill_manual(values=c("tan","coral","darkred"), 
                     name="IPCC \nScenario",
@@ -95,6 +95,21 @@ ggplot()+
                      name="IPCC \nScenario",
                      labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
   theme_bw()
-ggsave("../temporal_forecast_wpois.png", width = 5, height = 4)
+ggsave("../temporal_forecast_wpois.png", width = 5, height = 4, dpi = 120)
 
+
+
+####
+####  PLOT A SHORT TERM FORECAST FROM ONE GCM
+####
+one_gcm <- subset(longdf, model == "miroc5" & year < 2022 & scenario=="rcp85")
+ggplot()+
+  geom_line(data=obs_agg, aes(x=Year, y=avgcover))+
+  geom_line(data=one_gcm, aes(x=year, y=cover, group=paramset), alpha=0.5, color="darkred")+
+  geom_vline(aes(xintercept=2011))+
+  ylab("Mean sagebrush cover (%)")+
+  guides(color=FALSE)+
+  scale_y_continuous(limits=c(0,30))+
+  theme_bw()
+ggsave("../short_term_miroc.png", width = 5, height = 4, dpi=120)
 
