@@ -176,7 +176,7 @@ We can then approximate the spatial effect as
 \vspace{-4em}
 \begin{align}
 \boldsymbol{\eta} &\approx \textbf{K}\boldsymbol{\alpha}, \\
-\alpha_{j} &\sim \text{Normal}(0,\sigma_{\eta}^2).
+\alpha_{m} &\sim \text{Normal}(0,\sigma_{\eta}^2).
 \end{align}
 \vspace{-4em}
 
@@ -267,7 +267,7 @@ The three RCPs correspond to stabilization of radiative forcing before 2100, aft
 To simulate equilibrium sagebrush cover under projected future climate we applied average projected changes in precipitation and temperature to the observed climate time series.
 For each GCM and RCP scenario combination, we calculated average precipitation and temperature over the 1950-2000 time period and the 2050-2098 time period.
 We then calculated the absolute change in temperature between the two time periods ($\Delta T$) and the proportional change in precipitation between the two time periods ($\Delta P$) for each GCM and RCP scenario combination.
-Lastly, we applied $\Delta T$ and $\Delta P$ the the observed 28-year climate time series to generate a future climate time series for each GCM and RCP scenario combination.
+Lastly, we applied $\Delta T$ and $\Delta P$ to the observed 28-year climate time series to generate a future climate time series for each GCM and RCP scenario combination.
 These generated climate time series were used to simulate equilibrium sagebrush cover.
 We simulated equilibrium cover separately for each GCM and RCP scenario combination before averaging the results, but we show the average projected climate changes across all models in Table 1.
 
@@ -320,7 +320,7 @@ In agreement with those individual-level responses, posterior means for all prec
 The cumulative amount of precipitation the year before a cover transition (*pptLag* in our model) emerged as the strongest predictor of sagebrush cover change (Fig. 3).
 However, mean estimates for the climate effects are relatively weak (Fig. 3).
 Such small effects could indicate that sagebrush are not very sensitive to interannual climate variability, that our model is poorly specified, or that climate responses are difficult to detect using coarse-scale data.
-Given findings from previous research demonstrating the importance of precipitation and temperature on sagebrush growth [@Pechanec1937; @Schlaepfer2011; @Germino2014] and regeneration [@Schlaepfer2014a], it is unlikely that sagebrush are insensitive to climate.
+Given findings from previous research demonstrating the importance of precipitation and temperature to sagebrush growth [@Pechanec1937; @Schlaepfer2011; @Germino2014] and regeneration [@Schlaepfer2014a], it is unlikely that sagebrush are insensitive to climate.
 We used aggregated climate covariates that may not completely capture the climate-dependence of sagebrush cover change.
 However, the covariates we chose closely match the climate-related variables that have been shown to drive sagebrush growth, survival, and regeneration [e.g., @Dalgleish2011; @Schlaepfer2014a].
 More likely, aggregated estimates of plant abundance, such as percent cover, mask interannual variability at the level of the individual plant and makes it more difficult to detect the drivers of internanual variability.
