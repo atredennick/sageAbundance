@@ -1,0 +1,17 @@
+---
+title: "Options for including year random effect on intercept in simulations"
+output: pdf_document
+---
+
+When we simulate equilibrium sagebrush abundance (Figs. 4-5), we use point estimates of model parameters.
+Currently, we are only using the year random effects on the intercept for the temporally-explicit forecasts (Fig. 6).
+But maybe we should be using them in the equilibrium simulations too; the question is how to incorporate them.
+As a reminder, we fit the model with a temporal random effect on the intercept, such that
+
+\begin{align}
+\beta_{0,t} \sim \text{normal}(\bar{\beta_{0}}, \sigma_{\beta_{0}}^2)
+\end{align}
+
+So, when we use point estimates to simulate equilibrium abundance based on observed climate, do we use the mean of $\bar{\beta_{0}}$ for the intercept? Or, do we use the posterior mean of a randomly chosen $\beta_{0,t}$ at each time step for the intercept? Or, do we draw a random climate year *ct*, and then use the same year for the intercept, e.g., posterior mean of $\beta_{0,ct}$?
+
+Currently, for Figs. 4-5, we are using the posterior mean of $\bar{\beta_{0}}$ as the intercept for all time steps of the simulation. My intuition tells me we want to use the posterior mean of a randomly chosen $\beta_{0,t}$ at each time step for the intercept. But, I want to get a consensus on this.
