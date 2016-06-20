@@ -31,5 +31,7 @@ _Send questions to_: Andrew Tredennick (atredenn@gmail.com)
 
 General Information
 -------------------
-This directory contains all of the data and R code necessary to reproduce the analysis and figures from Tredennick *et al.* 201x. The ``scripts/`` and ``data/`` directories holds all code and data, while the ``docs/`` directory contains a R Markdown file (``sageAbundance_ms.Rmd``) with paper text.
+This directory contains all of the data and R code necessary to reproduce the analysis and figures from Tredennick *et al.* 201x. The ``scripts/`` and ``data/`` directories holds all code and data, while the ``docs/`` directory contains a R Markdown file (``sageAbundance_ms.Rmd``) with paper text. Note that model fitting is computationally demanding and was performed on the Utah State University High Performance Computing System. I would not attempt to fit the model on a PC. All non-essential code is in ``cache`` subdirectories and the ``devel`` directory.
+
+The reproduce our results, see the ``sourcing_all_script.R`` script.
 

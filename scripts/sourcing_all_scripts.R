@@ -1,7 +1,8 @@
 ##  Sourcing script for analysis and results 
-##  from Tredennick et al. 201x
+##  from Tredennick et al. 2016
 ##
 ##  Date created: 1-17-2016
+##  Last update:  6-20-2016
 ##  Author:       Andrew Tredennick
 ##  Email:        atredenn@gmail.com
 
@@ -16,6 +17,7 @@
 
 ### Subset data from full 5x5km raster to 5x2.5km working extent and
 ### place and parameterize knots (basis function matrix, K)
+### Also makes several supporting figures: knot locations, variogram
 setwd("/Users/atredenn/Repos/sageAbundance/scripts/")
 # source("subsetData_getKnots.R")
 
@@ -50,7 +52,7 @@ source("ms_scripts.R")
 ### Run and plot climate change equilibrium simulations (Figure 5)
 ### This will take awhile...hour or more on PC
 setwd("/Users/atredenn/Repos/sageAbundance/scripts/")
-source("sim_sage_byYear_byModel.R") # simulations and Figure 5
+source("sim_equilibrium_forecasts.R") # simulations and Figure 5
 
 
 ### Run temporally-explicit forecasts (Figure 6)
@@ -58,5 +60,9 @@ source("sim_sage_byYear_byModel.R") # simulations and Figure 5
 setwd("/Users/atredenn/Repos/sageAbundance/scripts/")
 source("sim_sage_byYear_byModel.R") # simulations
 source("plot_temporal_forecasts.R") # plot Figure 6
+
+
+### Calculate and plot R-hats for appendix
+source("rhat_calcs.R")
 
 
