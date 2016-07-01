@@ -68,7 +68,7 @@ Using computationally efficient model reparameterizations, we fit a spatiotempor
 We include interannual variation in precipitation and temperature as covariates in the model to investigate how climate affects the cover of sagebrush.
 We then use the model to forecast the future abundance of sagebrush at the landscape scale under projected climate change, generating spatially explicit estimates of change in a plant population that have, until now, been impossible to produce at this scale. 
 Our broad-scale and long-term predictions are rooted in small-scale and short-term population dynamics and provide an alternative to predictions offered by species distribution models that do not include population dynamics. 
-Our approach \hl{, which brings together several common techniques,} is among the first steps toward using remote sensing data to model population responses to environmental change that play out at spatial scales far greater than the traditional field study plot. 
+Our approach, \textcolor{blue}{which brings together several common techniques,} is among the first steps toward using remote sensing data to model population responses to environmental change that play out at spatial scales far greater than the traditional field study plot. 
 
 *Key words: population model, climate change, forecasting, spatiotemporal model, remote sensing, sagebrush*, Artemisia, *dimension reduction* 
 
@@ -107,22 +107,23 @@ Direct observations of individual plants and experimental plots tend to agree wi
 A large-scale, spatially-explicit population model for sagebrush driven by interannual climate variability would provide a valuable new tool for assessing how sagebrush could respond to climate change in the future. 
 
 Building on recent technological advances in spatial statistics [@Latimer2009; @Conn2015] and anticipating ever-increasing availability of RS data [@He2015], we demonstrate how large-scale plant population models could be used to predict population impacts of climate change. 
-\hl{As a proof-of-concept, we use} a process model motivated by Gompertz density-dependent population growth and a remotely-sensed time series of sagebrush cover from Wyoming [@Homer2012; @Homer2015]. 
+\textcolor{blue}{As a proof-of-concept, we use} a process model motivated by Gompertz density-dependent population growth and a remotely-sensed time series of sagebrush cover from Wyoming [@Homer2012; @Homer2015]. 
 We account for spatial autocorrelation with dimension reduction techniques [@Latimer2009; @Conn2015] and produce spatially-explicit estimates of sagebrush percent cover.
-The modeling framework we propose can be applied to any spatially-explicit time series of plant cover or density, but its application to remotely-sensed data products offers the greatest potential to combine the information of population models (e.g., population status \hl{and temporal dynamics}) and the spatial extent of species distribution models.
+\textcolor{blue}{Unlike most SDMs, our approach models the dynamics of plant abundance through time, and thus, is a population model, in the same spirit that models of animal counts through time are population models.}
+The modeling framework we propose can be applied to any spatially-explicit time series of plant cover or density, but its application to remotely-sensed data products offers the greatest potential to combine the information of population models (e.g., population status \textcolor{blue}{and temporal dynamics}) and the spatial extent of species distribution models.
 
 Materials and Methods
 ---------------------
 ### Data
 #### Remotely-sensed time series
 To demonstrate our modeling approach, we use a subset of a remotely-sensed time series of sagebrush (\emph{Artemisia} spp.) canopy cover in Wyoming [@Homer2012].
-As part of a separate study, \hl{Homer et al. 2012 estimated} sagebrush percent cover using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1,780 field observations of sagebrush cover distributed across Wyoming.
+As part of a separate study, \textcolor{blue}{Homer et al. 2012 estimated} sagebrush percent cover using a regression tree to relate ground reflectances retrieved by three sources of optical imagery (QuickBird, Landsat, and AWiFS) to 1,780 field observations of sagebrush cover distributed across Wyoming.
 The regression tree model was further validated using another 297 field observations. For Wyoming sagebrush, the model achieved an $R^{2}$ = 0.65 and an out-of-sample RMSE of 5.46% [@Homer2012].
-To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images \hl{to generate yearly predictions of sagebrush cover for all of Wyoming for the years 1984-2011}. 
+To hind-cast sagebrush cover the regression tree model was applied to historical remote sensing images \textcolor{blue}{to generate yearly predictions of sagebrush cover for all of Wyoming for the years 1984-2011}. 
 This resulted in an annual time series of sagebrush cover at 30 meter resolution from 1984 to 2011 (Fig. B1).
-In this \hl{remote sensing product}, values represent the percentage of a 30 $\times$ 30 meter pixel covered by sagebrush.
+In this \textcolor{blue}{remote sensing product}, values represent the percentage of a 30 $\times$ 30 meter pixel covered by sagebrush.
 In our study, we focused on a 5,070 $\times$ 2,430 meter subset totaling 13,689 30 $\times$ 30 meter pixels each year (Fig. 1).
-Thus, the full \hl{remote sensing product} contains 369,603 observations spanning 27 year-to-year transitions (27 years $\times$ 13,689 pixels).
+Thus, the full \textcolor{blue}{remote sensing product} contains 369,603 observations spanning 27 year-to-year transitions (27 years $\times$ 13,689 pixels).
 
 #### Climate covariates
 Our approach models interannual changes in plant cover as a function of seasonal climate variables.
@@ -162,8 +163,8 @@ The intercept, $\beta_{0,t}$, was allowed to vary through time; these random yea
 that all observations from a particular year share the same climate covariates and thus are not independent.
 We used a Poisson likelihood because integer percent cover values in the sagebrush data product can be considered a form of count data.
 We also evaluated a negative binomial model, but found little evidence for overdispersion beyond what our model was already accomodating via the spatial random effects ($\boldsymbol{\eta}$). There was no evidence of zero-inflation in our data, but see below (*Accomodating zeros*) for how we handled the small number of zero percent cover observations.
-\hl{We assume that the remotely sensed estimates of percent cover are "true" and free of error.}
-\hl{This need not be the case, and if measurement error is known then it could be included in our Bayesian model as a "data model"} [@Hobbs2015]. 
+\textcolor{blue}{We assume that the remotely sensed estimates of percent cover are "true" and free of error.}
+\textcolor{blue}{This need not be the case, and if measurement or sampling error is known then it could be included in our Bayesian model as a "sampling model"} [@Hobbs2015]. 
 
 The spatial random effect ($\boldsymbol{\eta}$) accounts for spatial autocorrelation among pixels that occur near each other in space.
 Thus, $\boldsymbol{\eta}$ acts as an offset on the intercept ($\beta_{0,t}$), creating a spatial field that defines how pixels differ from the mean, on average, in space (e.g., areas of perennially low or high cover, relative to average cover).
@@ -235,7 +236,7 @@ y_{i} &\sim \text{Bernoulli}(\mu_{i}) \\
 \vspace{-4em}
 
 where **y** is a vector of 0s and 1s corresponding to whether a pixel was colonized (>0% cover) or not (remains at 0% cover) and $\mu_i$ is the expected probability of colonization as a function of the mean probability of colonization ($b_0$). 
-We fit this simple model using the `glm' command in R [@R2013]. For data sets in which zeros are more common and the colonization process more important, the same spatial statistical approach we used for our cover change model could be applied \hl{and covariates such as cover of neighboring cells could be included}.
+We fit this simple model using the `glm' command in R [@R2013]. For data sets in which zeros are more common and the colonization process more important, the same spatial statistical approach we used for our cover change model could be applied \textcolor{blue}{and covariates such as cover of neighboring cells could be included}.
 
 ### Fitting the model
 We fit the spatiotemporal model in R [@R2013] using the 'No-U-Turn' Hamiltonian Monte Carlo sampler in Stan [@stan2014] and the RStan package [@rstan2014].
@@ -278,7 +279,7 @@ We simulated equilibrium cover separately for each GCM and RCP scenario combinat
 For the temporally-explicit forecasts we used yearly GCM projections from 2012 to 2098 to simulate the process starting from the end point of the remotely sensed sagebrush cover data (ends in 2011). 
 We aggregated daily GCM output for each GCM and RCP scenario into the seasonal climate covariates used to fit our model.
 These yearly climate time series were not aggregated further because we ran simulations for each GCM and RCP scenario, rather than one simulation per RCP scenario averaged over GCMs.
-\hl{Note that forecasting with our model, which relies on historical correlations between sagebrush cover change and weather, using future climate projections requires assuming such relationships remain in the future.}
+\textcolor{blue}{Note that forecasting with our model, which relies on historical correlations between sagebrush cover change and weather, using future climate projections requires assuming such relationships remain in the future.}
 
 Results
 -------
@@ -311,8 +312,8 @@ We also show how our model is capable of near-term forecasts in Fig 6B.
 Discussion
 -----------
 Despite the need to forecast population responses to climate change over large spatial extents, as demonstrated by the wide application of species distribution models [e.g., @Clark2014], landscape-scale population models for plant species remain more concept than reality [@Schurr2012a; @Merow2014].
-We \hl{introduced} a new approach \hl{that uses methods from the dynamic spatio-temporal modeling literature} [e.g., @Conn2015] \hl{to fit a population model to remotely-sensed estimated of plant percent cover}.
-\hl{As a proof-of-concept, we applied our approach to a remotely-sensed data product of sagebrush percent cover from 1984 to 2011 in Wyoming} [@Homer2012].
+We \textcolor{blue}{introduced} a new approach \textcolor{blue}{that uses methods from the dynamic spatio-temporal modeling literature} [e.g., @Conn2015] \textcolor{blue}{to fit a population model to remotely-sensed estimated of plant percent cover}.
+\textcolor{blue}{As a proof-of-concept, we applied our approach to a remotely-sensed data product of sagebrush percent cover from 1984 to 2011 in Wyoming} [@Homer2012].
 We first discuss our results specific to sagebrush ecology and response to climate, and then discuss the more general implications and limitations of our proposed approach.
 
 ### Sagebrush response to climate and climate change
@@ -365,7 +366,7 @@ This cycle of prediction, validation, and refinement is missing from most curren
 ### A landscape-scale plant population modeling approach: opportunities and limitations
 Our approach for modeling plant populations overcomes two major hurdles for spatially-explicit population models.
 First, we used moderate resolution, remotely-sensed estimates of sagebrush percent cover as a response variable, enabling us to fit a dynamic population model over a large spatial extent. 
-\hl{Species-specific estimates of plant abundance are becoming commonplace as remote sensing technology develops} [e.g., @Baldeck2014; @Colgan2014], \hl{and in a few years several remotely-sensed time series may be available.}
+\textcolor{blue}{Species-specific estimates of plant abundance are becoming commonplace as remote sensing technology develops} [e.g., @Baldeck2014; @Colgan2014], \textcolor{blue}{and in a few years several remotely-sensed time series may be available.}
 Second, borrowing from new methods in spatio-temporal modeling of animal abundance [e.g., @Conn2015], we fit the model using a dimension reduction strategy that accounted for spatial autocorrelation within a feasible computational time. 
 Accounting for spatial autocorrelation allows for statistically rigorous inference on the effects of interannual climate on sagebrush cover change in our study region. 
 The spatial covariance structure also provided a way to obtain spatially-explicit predictions at a resolution below that of the climate covariates (i.e., within the study region; Figs. 4,5).
@@ -391,11 +392,11 @@ However, in future applications, it will be important to allow climate effects t
 We might expect climate effects to interact with spatial covariates such as soil type, slope, and aspect. 
 In our relative small study area, we did not observe important effects of these factors, but it is possible to include such abiotic data layers as predictors when fitting models at larger spatial extents where variability may be greater.
 
-\hl{The uncerainty associated with our forecasts highlights several opportunities to improve our approach.
+\textcolor{blue}{The uncertainty associated with our forecasts highlights several opportunities to improve our approach.
 First, parameter uncertainty could be reduced by regulating the variance of the posterior distributions of climate covariates via ridge regression} [e.g., @Gerber2015].
-\hl{Second, uncertainty associated with climate projections could be reduced by identifying GCMs that perform exceptionally well for a particular study location} [e.g., @Rupp2013].
-\hl{Such considerations will be important when forecasting in support of particular management objectives.}
-
+\textcolor{blue}{Second, uncertainty associated with climate projections could be reduced by identifying GCMs that perform exceptionally well for a particular study location} [e.g., @Rupp2013].
+\textcolor{blue}{Such considerations will be important when forecasting in support of particular management objectives.}
+\textcolor{blue}{However, knowledge of uncertainty is itself important knowledge for management} [@Bradshaw2000].  \textcolor{blue}{Deciding that no management actions should be taken based on the data at hand is itself a management decision.}
 
 Conclusion
 ----------
@@ -410,7 +411,7 @@ The approach we have developed here fills an important gap in spatial scales bet
 
 Acknowledgments
 ---------------
-This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-1054040). David T. Iles, Eric LaMalfa, and Rebecca Mann participated in project conception as part of the distributed graduate seminar and provided comments that improved the manuscript. ATT was supported by an NSF Postdoctoral Research Fellowship in Biology (DBI-1400370) and AK was supported by an NSF Graduate Research Fellowship. Additional support came from the Utah Agricultural Experiment Station, Utah State University, and this article is approved as journal paper number 8856. We are grateful to Debra K. Meyer at USGS EROS for extracting the data set used in this paper and to David Koons for comments that improved the manuscript. Compute, storage, and other resources from the Division of Research Computing in the Office of Research and Graduate Studies at Utah State University are gratefully acknowledged. We acknowledge the World Climate Research Programme's Working Group on Coupled Modelling, which is responsible for CMIP, and we thank the climate modeling groups (listed in Table A1) for producing and making available their model output. For CMIP the U.S. Department of Energy's Program for Climate Model Diagnosis and Intercomparison provides coordinating support and led development of software infrastructure in partnership with the Global Organization for Earth System Science Portals. Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. government. 
+This work is the outcome of a distributed graduate seminar led by PBA and supported by a National Science Foundation CAREER award (DEB-1054040). David T. Iles, Eric LaMalfa, and Rebecca Mann participated in project conception as part of the distributed graduate seminar and provided comments that improved the manuscript. ATT was supported by an NSF Postdoctoral Research Fellowship in Biology (DBI-1400370) and AK was supported by an NSF Graduate Research Fellowship. Additional support came from the Utah Agricultural Experiment Station, Utah State University, and this article is approved as journal paper number 8856. We are grateful to Debra K. Meyer at USGS EROS for extracting the data set used in this paper and to David Koons \textcolor{blue}{and two anonymous reviewers} for comments that improved the manuscript. Compute, storage, and other resources from the Division of Research Computing in the Office of Research and Graduate Studies at Utah State University are gratefully acknowledged. We acknowledge the World Climate Research Programme's Working Group on Coupled Modelling, which is responsible for CMIP, and we thank the climate modeling groups (listed in Table A1) for producing and making available their model output. For CMIP the U.S. Department of Energy's Program for Climate Model Diagnosis and Intercomparison provides coordinating support and led development of software infrastructure in partnership with the Global Organization for Earth System Science Portals. Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. government. 
 
 \pagebreak{}
 
@@ -478,7 +479,7 @@ Figures
 \begin{figure}[!ht]
   \centering
       \includegraphics[width=3in]{../figures/figure6.png}
-  \caption{Observed (black line before 2011) and forecasted (colored lines after 2011) sagebrush percent cover. Long-term forecasts (A) were made for three IPCC emissions scenarios (RCPs 4.5, 6.0, and 8.5) and are for the period of 2012 to 2098. Shaded regions show limits of the 5th and 95th quantiles for simulations conducted using 50 different sets of parameters from the MCMC output. Lines show mean trajectories. Uncertainty in forecasts arises from uncertainty in GCM projections, uncerainty around the ecological process, and uncertainty around parameter estimates. Before calculating the mean and quantiles for each year across parameter sets and GCMs, we averaged percent cover over the 13,689 pixels. Panel (B) shows an example short-term forecast (10 years) using the MIROC5 GCM projections under RCP 8.5. Each line shows a forecast from one parameter set.}
+  \caption{Observed (black line before 2011) and forecasted (colored lines after 2011) sagebrush percent cover. Long-term forecasts (A) were made for three IPCC emissions scenarios (RCPs 4.5, 6.0, and 8.5) and are for the period of 2012 to 2098. Shaded regions show limits of the 5th and 95th quantiles for simulations conducted using 50 different sets of parameters from the MCMC output. Lines show mean trajectories. Uncertainty in forecasts arises from uncertainty in GCM projections, uncerainty around the ecological process, and uncertainty around parameter estimates. Before calculating the mean and quantiles for each year across parameter sets and GCMs, we averaged percent cover over the 13,689 pixels. \textcolor{blue}{Panel (B) shows an example short-term forecast (10 years) using the MIROC5 GCM projections under RCP 8.5. Each line shows a forecast from one parameter set.}}
 \end{figure}
 
 \newpage{}
