@@ -15,7 +15,7 @@ csl: components/ecology.csl
 output:
   pdf_document:
     fig_caption: true
-    keep_tex: false
+    keep_tex: true
 fontsize: 12pt
 geometry: margin=1in
 linkcolor: black
