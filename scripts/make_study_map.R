@@ -55,10 +55,10 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 ####  Read in and format map data ----------------------------------------------
 ####
 gpclibPermit()
-US.shp <- readShapeSpatial("/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/GIS/US_Shapefiles/Western_USt.shp")
+US.shp <- readShapeSpatial("../data/gis/Western_USt.shp")
 US.shp@data$id <- rownames(US.shp@data)
 US.pts <- fortify(US.shp, region="id")
-WY.shp <- readShapeSpatial("/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/GIS/US_Shapefiles/Wyoming.shp")
+WY.shp <- readShapeSpatial("../data/gis/Wyoming.shp")
 WY.shp@data$id <- rownames(WY.shp@data)
 WY.pts <- fortify(WY.shp, region="id")
 
@@ -68,7 +68,6 @@ WY.pts <- fortify(WY.shp, region="id")
 ####  Read in a format sagebrush RS data ---------------------------------------
 ####
 # 1.1-Bookkeeping to keep things in chronological order
-setwd("/Users/atredenn/Dropbox/sagebrush_class_2013/Wyoming/studyarea1/sage/")
 fileList <- as.matrix(list.files())
 years <- c(seq(2000,2011,1), seq(1984,1999,1))
 imgYears <- cbind(fileList, years) 
@@ -83,8 +82,6 @@ shrub.df <- data.frame(rasterToPoints(shrub.ras))
 shrub.df$Cover <- round(shrub.df[,3])
 shrub.center <- median(seq(1,dim(shrub.df)[1]))
 
-
-setwd("/Users/atredenn/Repos/sageAbundance/scripts/")
 sage_data <- read.csv("../data/wy_sagecover_subset_noNA.csv")
 sage_oneyear <- subset(sage_data, Year==1985)
 rm(sage_data)
