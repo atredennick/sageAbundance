@@ -73,7 +73,7 @@ g2 <- ggplot(temp_agg)+
   theme_bw()
 
 
-png("../docs/components/figure/weather_projections.png", width = 6, height = 8, res = 200, units="in")
+tiff("../figures/weather_projections.tiff", width = 5, height = 7, res=200, units="in")
 outplot <- grid.arrange(g1, g2, ncol=1)
 dev.off()
 

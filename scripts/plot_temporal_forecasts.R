@@ -75,7 +75,7 @@ obs_agg <- ddply(obs_data, .(Year), summarise,
 ####
 ####  Make the plot ------------------------------------------------------------
 ####
-ggplot()+
+g1 <- ggplot()+
   geom_line(data=obs_agg, aes(x=Year, y=avgcover))+
 #   geom_ribbon(data=obs_agg, 
 #               aes(x=Year, ymin=locover, ymax=upcover),
@@ -94,8 +94,9 @@ ggplot()+
   scale_color_manual(values=c("tan","coral","darkred"), 
                      name="IPCC \nScenario",
                      labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
+  ggtitle("A) Long-term forecast")+
   theme_bw()
-ggsave("../temporal_forecast_wpois.png", width = 5, height = 4, dpi = 120)
+# ggsave("../temporal_forecast_wpois.png", width = 5, height = 4, dpi = 120)
 
 
 
@@ -103,13 +104,19 @@ ggsave("../temporal_forecast_wpois.png", width = 5, height = 4, dpi = 120)
 ####  PLOT A SHORT TERM FORECAST FROM ONE GCM
 ####
 one_gcm <- subset(longdf, model == "miroc5" & year < 2022 & scenario=="rcp85")
-ggplot()+
+g2 <- ggplot()+
   geom_line(data=obs_agg, aes(x=Year, y=avgcover))+
   geom_line(data=one_gcm, aes(x=year, y=cover, group=paramset), alpha=0.5, color="darkred")+
   geom_vline(aes(xintercept=2011))+
   ylab("Mean sagebrush cover (%)")+
   guides(color=FALSE)+
   scale_y_continuous(limits=c(0,30))+
+  ggtitle("B) Short-term forecast")+
   theme_bw()
-ggsave("../short_term_miroc.png", width = 5, height = 4, dpi=120)
+# ggsave("../short_term_miroc.png", width = 5, height = 4, dpi=120)
 
+library(gridExtra)
+
+tiff("../../figures/figure6.tiff", width = 5, height = 8, units = "in", res = 200)
+gout <- grid.arrange(g1,g2)
+dev.off()
