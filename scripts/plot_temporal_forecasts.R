@@ -86,7 +86,7 @@ g1 <- ggplot()+
   geom_line(data=meandf, aes(x=year, y=avgcover, color=scenario))+
   geom_vline(aes(xintercept=2011))+
   ylab("Mean sagebrush cover (%)")+
-  guides(color=FALSE,fill=FALSE)+
+  # guides(color=FALSE,fill=FALSE)+
   scale_y_continuous(limits=c(0,30))+
   scale_fill_manual(values=c("tan","coral","darkred"), 
                     name="IPCC \nScenario",
@@ -94,7 +94,7 @@ g1 <- ggplot()+
   scale_color_manual(values=c("tan","coral","darkred"), 
                      name="IPCC \nScenario",
                      labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
-  ggtitle("A) Long-term forecast")+
+  ggtitle("Long-term forecast")+
   theme_bw()
 # ggsave("../temporal_forecast_wpois.png", width = 5, height = 4, dpi = 120)
 
@@ -109,14 +109,13 @@ g2 <- ggplot()+
   geom_line(data=one_gcm, aes(x=year, y=cover, group=paramset), alpha=0.5, color="darkred")+
   geom_vline(aes(xintercept=2011))+
   ylab("Mean sagebrush cover (%)")+
-  guides(color=FALSE)+
   scale_y_continuous(limits=c(0,30))+
-  ggtitle("B) Short-term forecast")+
+  ggtitle("Short-term forecast")+
   theme_bw()
 # ggsave("../short_term_miroc.png", width = 5, height = 4, dpi=120)
 
 library(gridExtra)
 
-tiff("../../figures/figure6.tiff", width = 5, height = 8, units = "in", res = 200)
-gout <- grid.arrange(g1,g2)
+png("../../figures/figure6.png", width = 8, height = 4, units = "in", res = 600)
+gout <- grid.arrange(g2,g1,ncol=2)
 dev.off()

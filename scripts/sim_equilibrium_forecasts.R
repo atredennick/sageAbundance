@@ -22,7 +22,7 @@ rm(list=ls())
 datapath <- "../data/"
 knotpath <- "../results/"
 
-global_time_steps <- 2000
+global_time_steps <- 500
 global_burnin <- 100
 
 
@@ -224,11 +224,11 @@ proj.equil2 <- melt(proj.equil, id.vars = c("Lon", "Lat"))
 ggplot(proj.equil2, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=value, fill=value))+
   scale_fill_gradientn(colours=myPalette(200), name="% Cover")+
-  facet_wrap("variable", ncol=1)+
+  facet_wrap("variable", ncol=2)+
   coord_equal()+
   tmp.theme+
   theme(strip.background=element_rect(fill="white"))
-ggsave("../results/clim_change_mean_spatial.png", height=8, width=4)
+ggsave("../results/clim_change_mean_spatial.png", height=8, width=8)
 
 
 

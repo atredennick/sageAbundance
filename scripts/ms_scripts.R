@@ -268,14 +268,14 @@ tmp.theme3=theme(axis.ticks = element_blank(), axis.text = element_blank(),
                 axis.title=element_text(size=12),text=element_text(size=12),
                 legend.text=element_text(size=10))
 
-png("../results/obs_pred_spatial_subset.png", width = 8, height=8, units = "in", res=300)
+png("../results/obs_pred_spatial_subset.png", width = 8, height=4, units = "in", res=300)
 g1 <- ggplot(subset(sp.equil2, variable=="Observed"), aes(x=Lon, y=Lat))+
   geom_raster(aes(z=value, fill=value))+
   scale_fill_gradientn(colours=myPalette(200), name="% Cover", limit=c(0,25))+
   coord_equal()+
   tmp.theme3+
   theme(strip.background=element_rect(fill="white"))+
-  ggtitle("A) Observed cover")
+  ggtitle("Observed cover")
 
 g2 <- ggplot(subset(sp.equil2, variable=="Predicted"), aes(x=Lon, y=Lat))+
   geom_raster(aes(z=value, fill=value))+
@@ -283,26 +283,9 @@ g2 <- ggplot(subset(sp.equil2, variable=="Predicted"), aes(x=Lon, y=Lat))+
   coord_equal()+
   tmp.theme3+
   theme(strip.background=element_rect(fill="white"))+
-  ggtitle("B) Predicted cover")
+  ggtitle("Predicted cover")
 
-
-g3 <- ggplot(wide_equil, aes(x=Lon, y=Lat))+
-  geom_raster(aes(z=bias, fill=bias))+
-  scale_fill_gradientn(colours=myPalette(200), name="% Cover", limits=c(-20, 20))+
-  coord_equal()+
-  tmp.theme3+
-  theme(strip.background=element_rect(fill="white"))+
-  ggtitle("C) Prediction bias")
-
-g4 <- ggplot(sp.predvar, aes(x=Lon, y=Lat))+
-  geom_raster(aes(z=pred.prec, fill=pred.prec))+
-  scale_fill_gradientn(colours=myPalette(200), name=expression("(% Cover)"^-2))+
-  coord_equal()+
-  tmp.theme3+
-  theme(strip.background=element_rect(fill="white"))+
-  ggtitle("D) Prediction precision")
-
-gout <- grid.arrange(g1, g2, g3, g4, ncol=1, nrow=4)
+gout <- grid.arrange(g1, g2, ncol=2, nrow=1)
 dev.off()
 
 
