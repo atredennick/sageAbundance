@@ -42,6 +42,7 @@ opts_chunk$set(dev='pdf')
 ```
 
 \renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\definecolor{blue}{rgb}{0,0,0} 
 
 \begin{centering}
 \textbf{\large{Forecasting climate change impacts on plant populations over large spatial extents}}

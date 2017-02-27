@@ -9,12 +9,10 @@
 \else % if luatex or xelatex
   \ifxetex
     \usepackage{mathspec}
-    \usepackage{xltxtra,xunicode}
   \else
     \usepackage{fontspec}
   \fi
-  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
-  \newcommand{\euro}{€}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \fi
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -24,27 +22,43 @@
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
 \usepackage[margin=1in]{geometry}
-\ifxetex
-  \usepackage[setpagesize=false, % page size defined by xetex
-              unicode=false, % unicode breaks when used with xetex
-              xetex]{hyperref}
-\else
-  \usepackage[unicode=true]{hyperref}
-\fi
-\hypersetup{breaklinks=true,
-            bookmarks=true,
-            pdfauthor={},
-            pdftitle={},
+\usepackage{hyperref}
+\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
+\hypersetup{unicode=true,
             colorlinks=true,
-            citecolor=blue,
-            urlcolor=black,
             linkcolor=black,
-            pdfborder={0 0 0}}
+            citecolor=Blue,
+            urlcolor=black,
+            breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
 
 %%% Use protect on footnotes to avoid problems with footnotes in titles
 \let\rmarkdownfootnote\footnote%
@@ -77,13 +91,11 @@
 \usepackage{color, soul}
 \usepackage{graphicx}
 
-
 \begin{document}
 
-\maketitle
-
-
 \renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+
+\definecolor{blue}{rgb}{0,0,0}
 
 \begin{centering}
 \textbf{\large{Forecasting climate change impacts on plant populations over large spatial extents}}
@@ -146,10 +158,10 @@ models is typically limited to small spatial extents because the data
 required is difficult to collect across broad species ranges. Almost
 every study of plant population dynamics relies on demographic
 observations recorded at the meter to sub-meter scale (see, e.g.,
-Salguero-G{ó}mez et al. 2015). Local-scale demographic data make
-building population projection models an easy task (Ellner and Rees
-2006, Rees and Ellner 2009, Adler et al. 2012), but it is very difficult
-to extrapolate small-scale studies to large spatial extents with any
+Salguero-Gómez et al. 2015). Local-scale demographic data make building
+population projection models an easy task (Ellner and Rees 2006, Rees
+and Ellner 2009, Adler et al. 2012), but it is very difficult to
+extrapolate small-scale studies to large spatial extents with any
 certainty because the data likely only represent a small subset of
 parameter space and environmental conditions (Freckleton et al. 2011,
 Queenborough et al. 2011). The real challenge is not to simply make
@@ -191,19 +203,19 @@ represented in most SDMs. Because SDMs typically rely on occurence data,
 their projections of habitat suitability or probability of occurence
 provide little information on the future states of populations in the
 core of their range -- areas where a species exists now and is expected
-to persist in the future (Ehrl{é}n and Morris 2015). Furthermore,
-because they lack short-term dynamics, SDMs usually cannot produce any
-estimate of the rate at which local populations will increase or
-decrease in the near-term and instead project a future equilibrium
-species distribution that may or may not ever be reached. Direct
-validation of such predictions is extremely rare (Roberts and Hamann
-2012). Large-scale dynamic population models could overcome these
-limitations. They would produce spatially-explicit estimates of species
-abundance within the species range (Ehrl{é}n and Morris 2015), have the
-potential to model expansion in abundance outside the range when coupled
-with dynamic models of dispersal, and would provide testable predictions
-of how populations should respond to short-term climate perturbations.
-These short-term predictions also would give modelers the opportunity to
+to persist in the future (Ehrlén and Morris 2015). Furthermore, because
+they lack short-term dynamics, SDMs usually cannot produce any estimate
+of the rate at which local populations will increase or decrease in the
+near-term and instead project a future equilibrium species distribution
+that may or may not ever be reached. Direct validation of such
+predictions is extremely rare (Roberts and Hamann 2012). Large-scale
+dynamic population models could overcome these limitations. They would
+produce spatially-explicit estimates of species abundance within the
+species range (Ehrlén and Morris 2015), have the potential to model
+expansion in abundance outside the range when coupled with dynamic
+models of dispersal, and would provide testable predictions of how
+populations should respond to short-term climate perturbations. These
+short-term predictions also would give modelers the opportunity to
 repeatedly validate and refine their models (Luo et al. 2011).
 
 Sagebrush (\emph{Artemisia} spp.) ecosystems offer an ideal testing
@@ -957,162 +969,201 @@ RCP 8.5 & 4.79\textdegree & 11.0\%\tabularnewline
 \subsection*{References}\label{references}
 \addcontentsline{toc}{subsection}{References}
 
+\hypertarget{refs}{}
+\hypertarget{ref-Adler2012}{}
 Adler, P. B., H. J. Dalgleish, and S. P. Ellner. 2012. Forecasting plant
 community impacts of climate variability and change: when do competitive
 interactions matter? Journal of Ecology 100:478--487.
 
+\hypertarget{ref-Apodaca2013}{}
 Apodaca, L. F. 2013. Assessing Growth Response to Climate Controls in a
 Great Basin Artemisia Tridentata Plant Community. PhD thesis, University
 of Nevada Las Vegas.
 
+\hypertarget{ref-Arnett2015}{}
 Arnett, E. B., and T. Z. Riley. 2015. Science, policy, and the fate of
 the greater sage-grouse. Frontiers in Ecology and the Environment
 13:235.
 
+\hypertarget{ref-Baldeck2014}{}
 Baldeck, C. A., and G. P. Asner. 2014. Improving remote species
 identification through efficient training data collection. Remote
 Sensing 6:2682--2698.
 
+\hypertarget{ref-Barry1996}{}
 Barry, R. P., and J. M. V. Hoef. 1996. Blackbox Kriging: Spatial
 Prediction without Specifying Variogram Models.
 
+\hypertarget{ref-Bradford2006}{}
 Bradford, J. B., and W. K. Lauenroth. 2006. Controls over invasion of
 Bromus tectorum: The importance of climate, soil, disturbance, and seed
 availability. Journal of Vegetation Science 17:693--704.
 
+\hypertarget{ref-Bradley2010}{}
 Bradley, B. A. 2010. Assessing ecosystem threats from global and
 regional change: hierarchical modeling of risk to sagebrush ecosystems
 from climate change, land use and invasive species in Nevada, USA.
 Ecography 33:198--208.
 
+\hypertarget{ref-Bradshaw2000}{}
 Bradshaw, G. A., and J. G. Borchers. 2000. Uncertainty as information:
 Narrowing the science-policy gap. Ecology and Society 4.
 
+\hypertarget{ref-Clark2011}{}
 Clark, J. S., D. M. Bell, M. H. Hersh, and L. Nichols. 2011. Climate
 change vulnerability of forest biodiversity: Climate and competition
 tracking of demographic rates. Global Change Biology 17:1834--1849.
 
+\hypertarget{ref-Clark2001}{}
 Clark, J. S., S. R. Carpenter, M. Barber, S. Collins, A. Dobson, J. A.
 Foley, D. M. Lodge, M. Pascual, R. Pielke, W. Pizer, C. Pringle, W. V.
 Reid, K. A. Rose, O. Sala, W. H. Schlesinger, D. H. Wall, and D. Wear.
-2001. Ecological forecasts: an emerging imperative. Science (New York,
-N.Y.) 293:657--660.
+2001. Ecological forecasts: an emerging imperative. Science
+293:657--660.
 
+\hypertarget{ref-Clark2014}{}
 Clark, J. S., A. E. Gelfand, C. W. Woodall, and K. Zhu. 2014. More than
 the sum of the parts: Forest climate response from joint species
 distribution models. Ecological Applications 24:990--999.
 
+\hypertarget{ref-Colgan2014}{}
 Colgan, M. S., and G. P. Asner. 2014. Coexistence and environmental
 filtering of species-specific biomass in an African savanna. Ecology
 95:1579--1590.
 
+\hypertarget{ref-Conn2015}{}
 Conn, P. B., D. S. Johnson, J. M. V. Hoef, M. B. Hooten, J. M. London,
 and P. L. Boveng. 2015. Using spatiotemporal statistical models to
 estimate animal abundance and infer ecological dynamics from survey
 counts. Ecological Monographs 85:235--252.
 
+\hypertarget{ref-Dalgleish2011}{}
 Dalgleish, H. J., D. N. Koons, M. B. Hooten, C. A. Moffet, and P. B.
 Adler. 2011. Climate influences the demography of three dominant
 sagebrush steppe plants. Ecology 92:75--85.
 
+\hypertarget{ref-Debinski2010}{}
 Debinski, D. M., H. Wickham, K. Kindscher, J. C. Caruthers, and M.
 Germino. 2010. Montane meadow change during drought varies with
 background hydrologic regime and plant functional group. Ecology
 91:1672--81.
 
-Ehrl{é}n, J., and W. F. Morris. 2015. Predicting changes in the
+\hypertarget{ref-Ehrlen2015}{}
+Ehrlén, J., and W. F. Morris. 2015. Predicting changes in the
 distribution and abundance of species under environmental change.
 Ecology Letters 18:303--314.
 
+\hypertarget{ref-Elith2009}{}
 Elith, J., and J. R. Leathwick. 2009. Species Distribution Models:
 Ecological Explanation and Prediction Across Space and Time.
 
+\hypertarget{ref-Ellner2006}{}
 Ellner, S. P., and M. Rees. 2006. Integral projection models for species
 with complex demography. The American naturalist 167:410--428.
 
+\hypertarget{ref-Freckleton2011}{}
 Freckleton, R. P., W. J. Sutherland, A. R. Watkinson, and S. A.
 Queenborough. 2011. Density-structured models for plant population
 dynamics. American Naturalist 177:1--17.
 
+\hypertarget{ref-Gelman2009}{}
 Gelman, A., and J. Hill. 2009. Data analysis using regression and
 multilevel/hierarchical models. Cambridge University Press, Cambridge.
 
+\hypertarget{ref-Gelman1992}{}
 Gelman, A., and D. B. Rubin. 1992. Inference from Iterative Simulation
 Using Multiple Sequences. Statistical Science 7:457--472.
 
+\hypertarget{ref-Gerber2015}{}
 Gerber, B. D., W. L. Kendall, M. B. Hooten, J. A. Dubovsky, and R. C.
 Drewien. 2015. Optimal population prediction of sandhill crane
 recruitment based on climate-mediated habitat limitations. Journal of
 Animal Ecology 84:1299--1310.
 
+\hypertarget{ref-Germino2014}{}
 Germino, M. J., and K. Reinhardt. 2014. Desert shrub responses to
 experimental modification of precipitation seasonality and soil depth:
 Relationship to the two-layer hypothesis and ecohydrological niche.
 Journal of Ecology 102:989--997.
 
+\hypertarget{ref-Hare2010}{}
 Hare, J. a, M. a Alexander, M. J. Fogarty, E. H. Williams, and J. D.
 Scott. 2010. Forecasting the dynamics of a coastal fishery species using
 a coupled climate--population model. Ecological applications : a
 publication of the Ecological Society of America 20:452--464.
 
+\hypertarget{ref-Harte2015}{}
 Harte, J., S. R. Saleska, and C. Levy. 2015. Convergent ecosystem
 responses to 23-year ambient and manipulated warming link advancing
 snowmelt and shrub encroachment to transient and long-term climate-soil
 carbon feedback. Global change biology 21:2349--56.
 
+\hypertarget{ref-He2015}{}
 He, K. S., B. A. Bradley, A. F. Cord, D. Rocchini, M.-N. Tuanmu, S.
 Schmidtlein, W. Turner, M. Wegmann, and N. Pettorelli. 2015. Will remote
 sensing shape the next generation of species distribution models? Remote
 Sensing in Ecology and Conservation 1:4--18.
 
+\hypertarget{ref-Higdon1998}{}
 Higdon, D. 1998. A process-convolution approach to modelling
 temperatures in the North Atlantic Ocean. Environmental and Ecological
 Statistics 5:173--190.
 
+\hypertarget{ref-Higdon2002}{}
 Higdon, D. M. 2002. Space and space-time modeling using process
 convolutions. Pages 37--56 \emph{in} C. Anderson, V. Barnett, P.
 Chatwin, and A. El-Shaarawi, editors. Quantitative methods for current
 environmental issues. Springer, London.
 
+\hypertarget{ref-Hobbs2015}{}
 Hobbs, N. T., and M. B. Hooten. 2015. Bayesian Models: A Statistical
 Primer for Ecologists. Princeton University Press, Princeton.
 
+\hypertarget{ref-Homer2012}{}
 Homer, C. G., C. L. Aldridge, D. K. Meyer, and S. J. Schell. 2012.
 Multi-scale remote sensing sagebrush characterization with regression
 trees over Wyoming, USA: Laying a foundation for monitoring.
 International Journal of Applied Earth Observation and Geoinformation
 14:233--244.
 
+\hypertarget{ref-Homer2015}{}
 Homer, C. G., G. Xian, C. L. Aldridge, D. K. Meyer, T. R. Loveland, and
 M. S. O'Donnell. 2015. Forecasting sagebrush ecosystem components and
 greater sage-grouse habitat for 2050: Learning from past climate
 patterns and Landsat imagery to predict the future. Ecological
 Indicators 55:131--145.
 
+\hypertarget{ref-Hooten2015}{}
 Hooten, M. B., and N. T. Hobbs. 2015. A guide to Bayesian model
 selection for ecologists. Ecological Monographs 85:3--28.
 
+\hypertarget{ref-Hooten2007a}{}
 Hooten, M. B., and C. K. Wikle. 2007. Shifts in the spatio-temporal
 growth dynamics of shortleaf pine. Environmental and Ecological
 Statistics 14:207--227.
 
+\hypertarget{ref-Hooten2003}{}
 Hooten, M. B., D. R. Larsen, and C. K. Wikle. 2003. Predicting the
 spatial distribution of ground flora on large domains using a
 hierarchical Bayesian model. Landscape Ecology 18:487--502.
 
+\hypertarget{ref-Kuchler1964}{}
 Kuchler, A. 1964. Potential Natural Vegetation of the Conterminous
 United States. American Geographical Society, Special Publication No.
 36.
 
+\hypertarget{ref-Latimer2009}{}
 Latimer, A. M., S. Banerjee, H. Sang, E. S. Mosher, and J. A. Silander.
 2009. Hierarchical models facilitate spatial analysis of large data
 sets: A case study on invasive plant species in the northeastern United
 States. Ecology Letters 12:144--154.
 
+\hypertarget{ref-Luo2011a}{}
 Luo, Y., K. Ogle, C. Tucker, S. Fei, C. Gao, S. LaDeau, J. S. Clark, and
 D. S. Schimel. 2011. Ecological forecasting and data assimilation in a
 data-rich era. Ecological Applications 21:1429--1442.
 
+\hypertarget{ref-Maiorano2013}{}
 Maiorano, L., R. Cheddadi, N. E. Zimmermann, L. Pellissier, B.
 Petitpierre, J. Pottier, H. Laborde, B. I. Hurdu, P. B. Pearman, A.
 Psomas, J. S. Singarayer, O. Broennimann, P. Vittoz, A. Dubuis, M. E.
@@ -1121,11 +1172,13 @@ time: using 13,000 years of data to predict the effects of climate
 change on three tree species in Europe. Global Ecology and Biogeography
 22:302--317.
 
+\hypertarget{ref-Merow2014}{}
 Merow, C., A. M. Latimer, A. M. Wilson, S. M. McMahon, A. G. Rebelo, and
 J. A. Silander. 2014. On using integral projection models to generate
 demographically driven predictions of species' distributions:
 development and validation using sparse data. Ecography 37:1167--1183.
 
+\hypertarget{ref-Miglia2005}{}
 Miglia, K., E. Mcarthur, W. Moore, H. Wang, J. Graham, and D. Freeman.
 2005. Nine-year reciprocal transplant experiment in the gardens of the
 basin and mountain big sagebrush (Artemisia tridentata: Asteraceae)
@@ -1133,120 +1186,147 @@ hybrid zone of Salt Creek Canyon: the importance of multiple-year
 tracking of fitness Title. Biological Journal of the Linnean
 Society:213--225.
 
+\hypertarget{ref-Neilson2005}{}
 Neilson, R., J. Lenihan, D. Bachelet, and R. Drapek. 2005. Climate
 change implications for sagebrush ecosystems. Page 145 \emph{in} North
 american wildlife and natural resources conference.
 
+\hypertarget{ref-Pechanec1937}{}
 Pechanec, J., G. Pickford, and G. Stewart. 1937. Effects of the 1934
 Drought on Native Vegetation of the Upper Snake River Plans, Idaho.
 Ecology:490--505.
 
+\hypertarget{ref-Perfors2003}{}
 Perfors, T., J. Harte, and S. E. Alter. 2003. Enhanced growth of
 sagebrush (Artemisia tridentata) in response to manipulated ecosystem
 warming. Global Change Biology 9:736--742.
 
-Petchey, O. L., M. Pontarp, T. M. Massie, S. K{é}fi, A. Ozgul, M.
+\hypertarget{ref-Petchey2015}{}
+Petchey, O. L., M. Pontarp, T. M. Massie, S. Kéfi, A. Ozgul, M.
 Weilenmann, G. M. Palamara, F. Altermatt, B. Matthews, J. M. Levine, D.
 Z. Childs, B. J. McGill, M. E. Schaepman, B. Schmid, P. Spaak, A. P.
 Beckerman, F. Pennekamp, and I. S. Pearse. 2015. The ecological forecast
 horizon, and examples of its uses and determinants. Ecology Letters
 18:597--611.
 
+\hypertarget{ref-Poore2009}{}
 Poore, R. E., C. A. Lamanna, J. J. Ebersole, and B. J. Enquist. 2009.
 Controls on Radial Growth of Mountain Big Sagebrush and Implications for
 Climate Change. Western North American Naturalist 69:556--562.
 
+\hypertarget{ref-Queenborough2011}{}
 Queenborough, S. A., K. M. Burnet, W. J. Sutherland, A. R. Watkinson,
 and R. P. Freckleton. 2011. From meso- to macroscale population
 dynamics: A new density-structured approach. Methods in Ecology and
 Evolution 2:289--302.
 
+\hypertarget{ref-R2013}{}
 R Core Team. 2013. R: A language and environment for statistical
 computing.
 
+\hypertarget{ref-Rees2009}{}
 Rees, M., and S. P. Ellner. 2009. Integral projection models for
 populations in temporally varying environments. Ecological Monographs
 79:575--594.
 
+\hypertarget{ref-Roberts2012}{}
 Roberts, D. R., and A. Hamann. 2012. Predicting potential climate change
 impacts with bioclimate envelope models: A palaeoecological perspective.
 Global Ecology and Biogeography 21:121--133.
 
+\hypertarget{ref-Ross2015}{}
 Ross, B. E., M. B. Hooten, J.-M. DeVink, and D. N. Koons. 2015. Combined
 effects of climate, predation, and density dependence on Greater and
 Lesser Scaup population dynamics. Ecological Applications 25:1606--1617.
 
+\hypertarget{ref-Running2004}{}
 Running, S. W., R. R. Nemani, F. A. Heinsch, M. Zhao, M. Reeves, and H.
 Hashimoto. 2004. A Continuous Satellite-Derived Measure of Global
 Terrestrial Primary Production. BioScience 54:547.
 
+\hypertarget{ref-Rupp2013}{}
 Rupp, D. E., J. T. Abatzoglou, K. C. Hegewisch, and P. W. Mote. 2013.
 Evaluation of CMIP5 20th century climate simulations for the Pacific
 Northwest US. Journal of Geophysical Research 118:1--23.
 
-Salguero-G{ó}mez, R., O. R. Jones, C. R. Archer, Y. M. Buckley, J.
+\hypertarget{ref-Salguero-Gomez2015}{}
+Salguero-Gómez, R., O. R. Jones, C. R. Archer, Y. M. Buckley, J.
 Che-Castaldo, H. Caswell, D. Hodgson, A. Scheuerlein, D. A. Conde, E.
 Brinks, H. de Buhr, C. Farack, F. Gottschalk, A. Hartmann, A. Henning,
-G. Hoppe, G. R{ö}mer, J. Runge, T. Ruoff, J. Wille, S. Zeh, R. Davison,
-D. Vieregg, A. Baudisch, R. Altwegg, F. Colchero, M. Dong, H. de Kroon,
+G. Hoppe, G. Römer, J. Runge, T. Ruoff, J. Wille, S. Zeh, R. Davison, D.
+Vieregg, A. Baudisch, R. Altwegg, F. Colchero, M. Dong, H. de Kroon,
 J.-D. Lebreton, C. J. E. Metcalf, M. M. Neel, I. M. Parker, T. Takada,
-T. Valverde, L. A. V{é}lez-Espino, G. M. Wardle, M. Franco, and J. W.
+T. Valverde, L. A. Vélez-Espino, G. M. Wardle, M. Franco, and J. W.
 Vaupel. 2015. The compadrePlant Matrix Database: an open online
 repository for plant demography. Journal of Ecology 103:202--218.
 
+\hypertarget{ref-Schlaepfer2011}{}
 Schlaepfer, D. R., W. K. Lauenroth, and J. B. Bradford. 2011.
 Ecohydrological niche of sagebrush ecosystems. Ecohydrology:n/a--n/a.
 
+\hypertarget{ref-Schlaepfer2014}{}
 Schlaepfer, D. R., W. K. Lauenroth, and J. B. Bradford. 2014a. Modeling
 regeneration responses of big sagebrush (Artemisia tridentata) to
 abiotic conditions. Ecological Modelling 286:66--77.
 
+\hypertarget{ref-Schlaepfer2012}{}
 Schlaepfer, D., W. K. Lauenroth, and J. B. Bradford. 2012. Effects of
 ecohydrological variables on current and future ranges, local
 suitability patterns, and model accuracy in big sagebrush. Ecography
 5:453--466.
 
+\hypertarget{ref-Schlaepfer2014a}{}
 Schlaepfer, D., W. K. Lauenroth, and J. B. Bradford. 2014b. Natural
 Regeneration Processes in Big Sagebrush (Artemisia tridentata).
 Rangeland Ecology \& Management 67:344--357.
 
+\hypertarget{ref-Schurr2012a}{}
 Schurr, F. M., J. Pagel, J. S. Cabral, J. Groeneveld, O. Bykova, R. B.
 O'Hara, F. Hartig, W. D. Kissling, H. P. Linder, G. F. Midgley, B.
-Schr{ö}der, A. Singer, and N. E. Zimmermann. 2012. How to understand
+Schröder, A. Singer, and N. E. Zimmermann. 2012. How to understand
 species' niches and range dynamics: A demographic research agenda for
 biogeography. Journal of Biogeography 39:2146--2162.
 
+\hypertarget{ref-Shafer2001}{}
 Shafer, S. L., P. J. Bartlein, and R. S. Thompson. 2001. Potential
 changes in the distributions of western North America tree and shrub
 taxa under future climate scenarios. Ecosystems 4:200--215.
 
+\hypertarget{ref-Shriver2015}{}
 Shriver, R. K. 2015. Quantifying how short-term environmental variation
 leads to long-term demographic responses to climate change. Journal of
 Ecology:n/a--n/a.
 
+\hypertarget{ref-stan2014}{}
 Stan Development Team. 2014a. Stan: A C++ Library for Probability and
 Sampling, Version 2.5.0.
 
+\hypertarget{ref-rstan2014}{}
 Stan Development Team. 2014b. Rstan: the R interface to Stan, Version
 2.5.0.
 
+\hypertarget{ref-Still2015}{}
 Still, S., and B. Richardson. 2015. Projections of Contemporary and
 Future Climate Niche for Wyoming Big Sagebrush (Artemisia tridentata
 subsp. wyomingensis): A Guide for Restoration. Natural Areas Journal
 35:30--43.
 
+\hypertarget{ref-Vanderwel2013b}{}
 Vanderwel, M. C., V. S. Lyutsarev, and D. W. Purves. 2013.
 Climate-related variation in mortality and recruitment determine
 regional forest-type distributions. Global Ecology and Biogeography
 22:1192--1203.
 
+\hypertarget{ref-Wikle2010}{}
 Wikle, C. K. 2010. Low-rank representations for spatial processes. Pages
 89--106 \emph{in} A. Gelfand, P. Diggle, M. Fuentes, and P. Guttopr,
 editors. Handbook of spatial statistics. Chapman; Hill, Upper Saddle
 River, New Jersey, USA.
 
+\hypertarget{ref-Xian2012}{}
 Xian, G., C. G. Homer, and C. L. Aldridge. 2012. Effects of Land Cover
 and Regional Climate Variations on Long-Term Spatiotemporal Changes in
 Sagebrush Ecosystems. GIScience \& Remote Sensing 49:378--396.
+
 
 \end{document}
