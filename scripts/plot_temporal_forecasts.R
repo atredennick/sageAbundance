@@ -86,7 +86,7 @@ g1 <- ggplot()+
   geom_line(data=meandf, aes(x=year, y=avgcover, color=scenario))+
   geom_vline(aes(xintercept=2011))+
   ylab("Mean sagebrush cover (%)")+
-  guides(color=FALSE,fill=FALSE)+
+  # guides(color=TRUE,fill=TRUE)+
   scale_y_continuous(limits=c(0,30))+
   scale_fill_manual(values=c("tan","coral","darkred"), 
                     name="IPCC \nScenario",
@@ -95,7 +95,8 @@ g1 <- ggplot()+
                      name="IPCC \nScenario",
                      labels=c("RCP 4.5", "RCP 6.0", "RCP 8.5"))+
   ggtitle("A) Long-term forecast")+
-  theme_bw()
+  theme_bw()+
+  theme(legend.position = c(0.4, 0.8))
 # ggsave("../temporal_forecast_wpois.png", width = 5, height = 4, dpi = 120)
 
 
@@ -120,3 +121,9 @@ library(gridExtra)
 tiff("../../figures/figure6.tiff", width = 5, height = 8, units = "in", res = 200)
 gout <- grid.arrange(g1,g2)
 dev.off()
+
+
+## for presentations
+library(cowplot)
+gout <- plot_grid(g1,g2,ncol=2)
+ggsave("../../results/temporal_forecasts_presentation.pdf",plot = gout, width = 8.5, height = 4)

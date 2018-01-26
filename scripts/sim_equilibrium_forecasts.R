@@ -230,6 +230,17 @@ ggplot(proj.equil2, aes(x=Lon, y=Lat))+
   theme(strip.background=element_rect(fill="white"))
 ggsave("../results/clim_change_mean_spatial.png", height=8, width=4)
 
+##  For presentations
+library(viridis)
+ggplot(proj.equil2, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=value, fill=value))+
+  scale_fill_viridis(direction=-1, name="% Cover", breaks=c(5,15,25))+
+  facet_wrap("variable", ncol=4)+
+  coord_equal()+
+  tmp.theme+
+  theme(strip.background=element_rect(fill="white"))
+ggsave("../results/clim_change_mean_spatial.pdf", height=3, width=8.5)
+
 
 
 
