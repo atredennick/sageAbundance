@@ -242,6 +242,22 @@ ggplot(proj.equil2, aes(x=Lon, y=Lat))+
 ggsave("../results/clim_change_mean_spatial.pdf", height=3, width=8.5)
 
 
+##  Empty one for presentations
+proj.equil <- data.frame(Lon=subset(growD, Year==1985)$Lon, 
+                         Lat=subset(growD, Year==1985)$Lat,
+                         CURRENT=equil_results,
+                         RCP45=NA,
+                         RCP60=NA,
+                         RCP85=NA)
+colnames(proj.equil)[4:6] <- c("RCP 4.5", "RCP 6.0", "RCP 8.5")
+proj.equil2 <- melt(proj.equil, id.vars = c("Lon", "Lat"))
 
-
+ggplot(proj.equil2, aes(x=Lon, y=Lat))+
+  geom_raster(aes(z=value, fill=value))+
+  scale_fill_viridis(direction=-1, name="% Cover", breaks=c(5,15,25), na.value = "transparent")+
+  facet_wrap("variable", ncol=4)+
+  coord_equal()+
+  tmp.theme+
+  theme(strip.background=element_rect(fill="white"))
+ggsave("../results/clim_change_mean_spatial_EMPTY.pdf", height=3, width=8.5)
 
