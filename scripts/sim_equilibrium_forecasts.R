@@ -254,10 +254,10 @@ proj.equil2 <- melt(proj.equil, id.vars = c("Lon", "Lat"))
 
 ggplot(proj.equil2, aes(x=Lon, y=Lat))+
   geom_raster(aes(z=value, fill=value))+
-  scale_fill_viridis(direction=-1, name="% Cover", breaks=c(5,15,25), na.value = "transparent")+
+  scale_fill_viridis(direction=-1, name="% Cover", breaks=c(5,15,25), na.value = "transparent", limits = c(3.74,27))+
   facet_wrap("variable", ncol=4)+
   coord_equal()+
   tmp.theme+
   theme(strip.background=element_rect(fill="white"))
-ggsave("../results/clim_change_mean_spatial_EMPTY.pdf", height=3, width=8.5)
+ggsave("../results/clim_change_mean_spatial_empty.pdf", height=3, width=8.5)
 
