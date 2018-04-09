@@ -1,5 +1,5 @@
 # sageAbundance
-This is a 'read me' file for data and code associated with "Forecasting climate change impacts on plant populations over large spatial extents" by Andrew T. Tredennick, Mevin B. Hooten, Cameron L. Aldridge, Collin G. Homer, Andrew Kleinhesselink, and Peter B. Adler, in press at *Ecosphere*.
+This is a 'read me' file for data and code associated with "Forecasting climate change impacts on plant populations over large spatial extents" by Andrew T. Tredennick, Mevin B. Hooten, Cameron L. Aldridge, Collin G. Homer, Andrew Kleinhesselink, and Peter B. Adler (2016, *Ecosphere*). Read the paper [here](https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecs2.1525).
 
 ### Paper abstract
 >Plant population models are powerful tools for predicting climate change
